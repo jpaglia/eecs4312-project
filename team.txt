@@ -4,4 +4,8 @@ EECS 4312 FINAL PROJECT
 TEAM MEMBERS:
 
 1) Julia Paglia (214762926)
-
+2) Joshua Abraham (214334643)
+3) Amer Alshoghri (214992291)
+4) Dennis Bragilevsky (214230445)
+5) Sam Guraya (214268916)
+6) Shawn Verma (215064447)
