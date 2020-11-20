@@ -1,0 +1,21 @@
+.topBarWrapper {
+  height: 100px;
+  width: calc(100vw - 5px);
+  display: flex;
+  flex-direction: row;
+  border: 2.5px solid #47bc56;
+  background-color: white;
+  .logo {
+    height: 100px;
+  }
+  img {
+    max-height: 100%;
+  }
+  .banner {
+    line-height: 106px;
+    font-size: 44px;
+    text-align: center;
+    width: calc(100vw - 300px);
+    font-weight: 600;
+  }
+}
