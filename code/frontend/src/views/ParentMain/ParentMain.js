@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class SecretaryMain extends Component {
+class ParentMain extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,9 +12,9 @@ class SecretaryMain extends Component {
   
     return (
       <div>
-       Secretary Page
+       Parent Page
       </div>
     );
   }
 }
-export default SecretaryMain;
+export default ParentMain;
