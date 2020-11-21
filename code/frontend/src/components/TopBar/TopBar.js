@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import Button from '@material-ui/core/Button';
+import { ThemeProvider } from '@material-ui/styles';
+import { COLOUR_THEME } from '../../constants';
 import './TopBar.scss';
 
 
@@ -11,9 +13,11 @@ class TopBar extends Component {
 
   render() {
     const logoutButton = this.props.showLogout ? <div className="logoutButton">
-      <Button onClick={this.logout.bind(this)} color="primary" variant="contained" autoFocus>
-         Logout
-       </Button> 
+       <ThemeProvider theme={COLOUR_THEME}>
+          <Button onClick={this.logout.bind(this)} color="primary" variant="contained" autoFocus>
+            Logout
+          </Button> 
+       </ThemeProvider>
     </div>
     : null;
 

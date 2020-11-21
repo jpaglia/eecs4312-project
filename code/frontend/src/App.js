@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import LoginPage from './views/LoginPage';
 import SecretaryMain from './views/SecretaryMain';
+import ParentMain from './views/ParentMain';
+import TeacherMain from './views/TeacherMain';
 class App extends Component {
   constructor(props) {
     super(props);
@@ -31,12 +33,26 @@ class App extends Component {
       /> : null;
 
     const secretaryMain = this.state.currentPage === 'SecretaryMain' ?
-    <SecretaryMain/> : null;
+    <SecretaryMain
+       onChange={this.onChange.bind(this)}
+    /> : null;
+
+    const parentMain = this.state.currentPage === 'ParentMain' ?
+    <ParentMain
+      onChange={this.onChange.bind(this)}
+    /> : null;
+
+    const teacherMain = this.state.currentPage === 'TeacherMain' ?
+    <TeacherMain
+      onChange={this.onChange.bind(this)}
+    /> : null;
 
     return (
       <div>
        {loginPage}
        {secretaryMain}
+       {parentMain}
+       {teacherMain}
       </div>
     );
   }
