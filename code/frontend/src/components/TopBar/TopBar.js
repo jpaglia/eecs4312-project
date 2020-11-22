@@ -47,7 +47,7 @@ TopBar.defaultProps = {
 
 TopBar.propTypes = {
   showLogout: Proptypes.bool,
-  onChange: Proptypes.func,
+  onChange: Proptypes.func
 }
 
 export default TopBar;

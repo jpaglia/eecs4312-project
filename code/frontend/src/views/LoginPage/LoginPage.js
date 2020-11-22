@@ -44,7 +44,7 @@ class LoginPage extends Component {
   signIn() {
     // Insert Endpoint Here
     // TODO
-    this.props.loginVerified('ParentMain')
+    this.props.loginVerified('SecretaryMain')
   }
 
   render() {
