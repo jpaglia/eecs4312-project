@@ -38,13 +38,12 @@ class LoginPage extends Component {
         password: textInput
       });
     }
-
   }
 
   signIn() {
     // Insert Endpoint Here
     // TODO
-    this.props.loginVerified('SecretaryMain')
+    this.props.loginVerified('Secretary')
   }
 
   render() {
