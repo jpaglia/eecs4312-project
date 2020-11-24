@@ -3,7 +3,6 @@ import Proptypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import TextField from '../../../components/TextField';
 
-//import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -87,14 +86,20 @@ class SystemAdmin extends Component {
               <Typography className="AddParent" component={'span'}>Add a New Parent</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <div>
-                  {parentName } 
-                  {parentEmail} 
-                  {parentPassword}
-                  <Button onClick={this.addParent.bind(this)} color="primary" variant="contained" autoFocus>
-                    Add Parent
-                  </Button>
+                <div className="accordionWrapper">
+                  <div className="textBoxWrapper">
+                    {parentName} 
+                    {parentEmail} 
+                    {parentPassword}
+                  </div>
+                  <div className="buttonWrapper">
+                    <Button onClick={this.addParent.bind(this)} color="primary" variant="contained" autoFocus>
+                      Add Parent
+                    </Button>
+                  </div>
                 </div>
+                
+                
               </AccordionDetails>
             </Accordion>
 
@@ -107,14 +112,16 @@ class SystemAdmin extends Component {
                 <Typography className="RemoveParent" component={'span'}>Remove a Parent</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <div>
+                <div className="accordionWrapper">
                   SEARCH FOR A PARENT
-                  <SearchBar
-                    //value={this.state.search.value}
-                    value = ""
-                    onChange={(filter) => this.setState({ searchParent: filter })}
-                    onRequestSearch={() => this.searchForParent.bind(this)}
-                  />
+                  <div className="searchBarWrapper">
+                    <SearchBar
+                      //value={this.state.search.value}
+                      value = ""
+                      onChange={(filter) => this.setState({ searchParent: filter })}
+                      onRequestSearch={() => this.searchForParent.bind(this)}
+                    />
+                  </div>
                 </div>
               </AccordionDetails>
             </Accordion>
@@ -129,17 +136,21 @@ class SystemAdmin extends Component {
               <Typography className="AddTeacher" component={'span'}>Add a New Teacher</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <div>
-                  {teacherName} 
-                  {teacherEmail} 
-                  {teacherPassword}
-                  <Button onClick={this.addTeacher.bind(this)} color="primary" variant="contained" autoFocus>
-                    Add Full-Time Teacher
-                  </Button>
-                  <Button onClick={this.generateCredentials.bind(this)} color="primary" variant="contained" autoFocus>
-                    Add Supply Teacher
-                  </Button>
-                </div>
+                <div className="accordionWrapper">
+                    <div className="textBoxWrapper">
+                      {teacherName} 
+                      {teacherEmail} 
+                      {teacherPassword}
+                    </div>
+                    <div className="buttonWrapper">
+                      <Button onClick={this.addTeacher.bind(this)} color="primary" variant="contained" autoFocus>
+                        Add as Full-Time Teacher
+                      </Button>
+                      <Button onClick={this.generateCredentials.bind(this)} color="primary" variant="contained" autoFocus>
+                        Add as Supply Teacher
+                      </Button>
+                    </div>
+                  </div>
               </AccordionDetails>
             </Accordion>
 
@@ -152,14 +163,16 @@ class SystemAdmin extends Component {
               <Typography className="RemoveTeacher" component={'span'}>Remove a Teacher</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <div>
+                <div className="accordionWrapper">
                   SEARCH FOR A TEACHER
-                  <SearchBar
-                    //value={this.state.search.value}
-                    value = ""
-                    onChange={(filter) => this.setState({ searchTeacher: filter })}
-                    onRequestSearch={() => this.searchForTeacher.bind(this)}
-                  />
+                  <div className="searchBarWrapper">
+                    <SearchBar
+                      //value={this.state.search.value}
+                      value = ""
+                      onChange={(filter) => this.setState({ searchTeacher: filter })}
+                      onRequestSearch={() => this.searchForTeacher.bind(this)}
+                    />
+                  </div>
                 </div>
               </AccordionDetails>
             </Accordion>
@@ -175,7 +188,6 @@ class SystemAdmin extends Component {
   addParent() {
     // Insert Endpoint Here
     // TODO
-    //this.props.parentName('SecretaryMain');
   }
   removeParent() {
   }
@@ -192,14 +204,14 @@ class SystemAdmin extends Component {
 }
 
 SystemAdmin.propTypes = {
-  parentName: Proptypes.func,
-  parentEmail: Proptypes.func,
-  parentPassword: Proptypes.func,
-  teacherName: Proptypes.func,
-  teacherEmail: Proptypes.func,
-  teacherPassword: Proptypes.func,
-  searchParent: Proptypes.func,
-  searchTeacher: Proptypes.func,
+  parentName: Proptypes.string,
+  parentEmail: Proptypes.string,
+  parentPassword: Proptypes.string,
+  teacherName: Proptypes.string,
+  teacherEmail: Proptypes.string,
+  teacherPassword: Proptypes.string,
+  searchParent: Proptypes.string,
+  searchTeacher: Proptypes.string,
 }
 
 export default SystemAdmin;

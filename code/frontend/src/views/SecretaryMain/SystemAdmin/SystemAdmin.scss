@@ -1,0 +1,40 @@
+.accordionWrapper {
+    width: 100vw;
+    //text-align: center;
+    //border-radius: 10px;
+    //color: white;
+    //background-color: #47bc56;
+    font-size: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+
+    .textBoxWrapper {
+        width: 80vw;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+    }
+    
+    .buttonWrapper {
+        width: 80vw;
+        padding-top: 30px;
+        padding-right: 30px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+
+    .searchBarWrapper {
+        width: 45vw;
+        //display: flex;
+        //flex-direction: row;
+    }
+
+
+  }
+
+
+
