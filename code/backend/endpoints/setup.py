@@ -39,3 +39,43 @@ def login():
     valid = valid,
     type = persontype
   )
+
+@setup.route('/getSchoolName', methods=['POST'])
+def getSchoolName():
+  """
+  Description: This endpoint gets the school name based on the email
+  Input Json Request: {
+    email
+  }
+  return: {
+    schoolName: String
+  }
+  """
+  data = request.get_json()
+  email = data['email']
+
+  schoolName = db_queries.getSchoolName(email)
+
+  return jsonify(
+    schoolName = schoolName
+  )
+
+@setup.route('/getListOfClasses', methods=['POST'])
+def getListOfClasses():
+  """
+  Description: This endpoint gets the list of classes at the specified school
+  Input Json Request: {
+    schoolName
+  }
+  return: {
+    listOfClasses: List[String]
+  }
+  """
+  data = request.get_json()
+  schoolName = data['schoolName']
+
+  listOfClasses = db_queries.getListOfClasses(schoolName)
+
+  return jsonify(
+    classes = listOfClasses
+  )
