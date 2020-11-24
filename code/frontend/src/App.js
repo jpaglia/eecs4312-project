@@ -32,17 +32,17 @@ class App extends Component {
       loginVerified={this.onLogin}
       /> : null;
 
-    const secretaryMain = this.state.currentPage === 'SecretaryMain' ?
+    const secretaryMain = this.state.currentPage === 'Secretary' ?
     <SecretaryMain
        onChange={this.onChange.bind(this)}
     /> : null;
 
-    const parentMain = this.state.currentPage === 'ParentMain' ?
+    const parentMain = this.state.currentPage === 'Parent' ?
     <ParentMain
       onChange={this.onChange.bind(this)}
     /> : null;
 
-    const teacherMain = this.state.currentPage === 'TeacherMain' ?
+    const teacherMain = this.state.currentPage === 'Teacher' ?
     <TeacherMain
       onChange={this.onChange.bind(this)}
     /> : null;

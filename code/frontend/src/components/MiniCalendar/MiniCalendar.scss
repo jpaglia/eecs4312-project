@@ -1,0 +1,14 @@
+.miniCalendarWrapper {
+  width: 300px;
+}
+.react-calendar__tile--active {
+  background-color: #47bc56;
+}
+
+.react-calendar__tile--now {
+  background-color: #e1e4e1;
+}
+
+.react-calendar__tile--active:enabled:hover, .react-calendar__tile--active:enabled:focus {
+  background-color: #3ec450;
+}
