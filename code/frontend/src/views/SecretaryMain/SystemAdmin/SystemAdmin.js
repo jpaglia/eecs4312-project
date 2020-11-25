@@ -15,8 +15,19 @@ import { COLOUR_THEME } from '../../../constants';
 import { v4 as uuidv4 } from 'uuid';
 import './SystemAdmin.scss'
 
-
 class SystemAdmin extends Component {
+
+  constructor() {
+    super();
+    this.state = {
+      parentName: '',
+      parentEmail: '',
+      parentPassword: '',
+      teacherName: '',
+      teacherEmail: '',
+      teacherPassword: ''
+    }
+  }
 
   getTextField(defaultValue, label) {
     return <TextField
@@ -73,7 +84,6 @@ class SystemAdmin extends Component {
     const teacherPassword = this.getTextField('TeacherPassword', 'Teacher Password')
 
     return (
-      
       <div>
         <div className="AddParent">
           <ThemeProvider theme={COLOUR_THEME}>
@@ -109,7 +119,7 @@ class SystemAdmin extends Component {
                 aria-controls="removeParent-content"
                 id="removeParent-header"
               >
-                <Typography className="RemoveParent" component={'span'}>Remove a Parent</Typography>
+              <Typography className="RemoveParent" component={'span'}>Remove a Parent</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <div className="accordionWrapper">
@@ -201,17 +211,6 @@ class SystemAdmin extends Component {
   }
   searchForTeacher(){
   }
-}
-
-SystemAdmin.propTypes = {
-  parentName: Proptypes.string,
-  parentEmail: Proptypes.string,
-  parentPassword: Proptypes.string,
-  teacherName: Proptypes.string,
-  teacherEmail: Proptypes.string,
-  teacherPassword: Proptypes.string,
-  searchParent: Proptypes.string,
-  searchTeacher: Proptypes.string,
 }
 
 export default SystemAdmin;
