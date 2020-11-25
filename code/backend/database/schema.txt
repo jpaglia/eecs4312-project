@@ -1,30 +1,30 @@
 Accounts:
 accountId INT
-creationData TEXT
-email TEXT
-password TEXT
-firstName TEXT
-lastName TEXT
-type TEXT
-school TEXT
+creationData VARCHAR(45)
+email VARCHAR(45)
+password VARCHAR(45)
+firstName VARCHAR(45)
+lastName VARCHAR(45)
+type VARCHAR(45)
+school VARCHAR(45)
 
 Students:
 studentId INT
-firstName TEXT
-lastName TEXT
+firstName VARCHAR(45)
+lastName VARCHAR(45)
 
-Class (Subject):
+Class:
 classId INT
-name TEXT
-school TEXT
+name VARCHAR(45)
+school VARCHAR(45)
 
 Attendance:
 attendanceId INT
-date TEXT
+date VARCHAR(45)
 Class_classId INT
 Student_studentId INT
 present BOOL
-reason 
+reason VARCHAR(45)
 
 Student_has_Parent:
 Student_studentId INT
@@ -39,4 +39,4 @@ Account_teacherId INT
 Class_classId INT
 
 
-DDMMYY
+Date format: DDMMYY
