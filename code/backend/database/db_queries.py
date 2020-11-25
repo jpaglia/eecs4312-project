@@ -8,6 +8,8 @@ def getpassword(email):
     """
 
     query = db_ops.runQuery("SELECT password from Accounts WHERE email=%s", email)
+    if len(query) == 0:
+        return ""
     return query[0]['password']
 
 
@@ -18,6 +20,8 @@ def getpersonType(email):
     """
 
     query = db_ops.runQuery("SELECT type from Accounts WHERE email=%s", email)
+    if len(query) == 0:
+        return "None"
     return query[0]['type']
 
 
