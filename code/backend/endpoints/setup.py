@@ -10,7 +10,7 @@ setup = Blueprint("setup", __name__)
 
 @setup.route('/getSampleInfo', methods=['GET'])
 def getSampleInfo():
-  return 'Hello'
+  return db_queries.getall()
 
 @setup.route('/login', methods=['POST'])
 def login():

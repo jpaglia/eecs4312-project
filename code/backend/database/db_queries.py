@@ -1,3 +1,8 @@
+import database.db_ops as db_ops
+
+def getallTeachers():
+    return str(db_ops.runQuery("SELECT * FROM Teachers"))
+
 def getpassword(email):
     """
     Input (str): email of user 
