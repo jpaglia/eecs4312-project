@@ -1,0 +1,38 @@
+.accordionWrapper {
+    width: 100vw;
+    //text-align: center;
+    //border-radius: 10px;
+    //color: white;
+    //background-color: #47bc56;
+    font-size: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+
+    .textBoxWrapper {
+        width: 80vw;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .buttonWrapper {
+        // TODO: fix formatting for addParent and addTeacher
+        width: 40vw;
+        padding-top: 30px;
+        padding-right: 30px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .searchBarWrapper {
+        width: 45vw;
+    }
+
+
+  }
+
+
+
