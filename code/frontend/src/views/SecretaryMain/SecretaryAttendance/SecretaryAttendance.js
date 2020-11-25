@@ -6,6 +6,12 @@ import { v4 as uuidv4 } from 'uuid'
 import MiniCalendar from '../../../components/MiniCalendar';
 import { ThemeProvider } from '@material-ui/styles';
 import { COLOUR_THEME } from '../../../constants';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AttendanceTable from '../../../components/AttendanceTable';
 import './SecretaryAttendance.scss'
 
 
@@ -62,41 +68,21 @@ class SecretaryAttendance extends Component {
     });
   }
 
-  getDownChevron() {
-    const button =
-      <div className="chevronWrapper">
-        <img
-          alt="Down Chevron"
-          src="down-chevron.png"
-          className="downChevron"
-        />
-      </div>;
-    return button;
-  }
-
-  onChevronClick() {
-    this.setState({ 'calendarAccordion': !this.state.calendarAccordion })
-  }
-
   getMiniCalendarFilter() {
-    const chevron = this.getDownChevron();
-    if (this.state.calendarAccordion) {
-      return (
-        <div>
-          <div className='calendarClosedAccordian' onClick={this.onChevronClick.bind(this)}>
-            Search By Date
-            <div style={{ 'transform': 'rotate(180deg)' }}>
-              {chevron}
-            </div>
-          </div>
-          <MiniCalendar updateDates={this.handleDateChange.bind(this)} />
-        </div>
-      )
-    }
     return (
-      <div className='calendarClosedAccordian' onClick={this.onChevronClick.bind(this)}>
-        Search By Date
-        {chevron}
+      <div className='calendarAccordian'>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="addParent-content"
+              id="addParent-header"
+            >
+              <Typography className="AddParent" component={'span'}>Search by Date</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <MiniCalendar updateDates={this.handleDateChange.bind(this)} />
+            </AccordionDetails>
+          </Accordion>
       </div>
     )
   }
@@ -132,12 +118,17 @@ class SecretaryAttendance extends Component {
     );
   }
 
+
   render() {
     const filterRow = this.getFilterRow();
 
     return (
       <div>
         {filterRow}
+        <div className='tableAttendance'>
+           <AttendanceTable/>
+        </div>
+       
       </div>
     );
   }
