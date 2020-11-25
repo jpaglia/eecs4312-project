@@ -61,6 +61,7 @@ class SecretaryMain extends Component {
 
   getMainPage() {
     return (
+      <div className='secretaryWrapperPage'>
       <div className='welcomePageTitleTextBox'>
         <div className='titleText'>
           Welcome to
@@ -68,6 +69,7 @@ class SecretaryMain extends Component {
         <div className='schoolNameText'>
           {this.state.schoolName}
         </div>
+      </div>
       </div>
     )
   }
@@ -78,7 +80,7 @@ class SecretaryMain extends Component {
     const secretaryAttendancePage = <SecretaryAttendance />;
 
     return (
-      <div className="secretaryWrapperPage">
+      <div>
         <TopBar
             showLogout={true}
             onChange={this.props.onChange.bind(this)}
