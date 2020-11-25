@@ -1,0 +1,42 @@
+Accounts:
+accountId INT
+creationData TEXT
+email TEXT
+password TEXT
+firstName TEXT
+lastName TEXT
+type TEXT
+school TEXT
+
+Students:
+studentId INT
+firstName TEXT
+lastName TEXT
+
+Class (Subject):
+classId INT
+name TEXT
+school TEXT
+
+Attendance:
+attendanceId INT
+date TEXT
+Class_classId INT
+Student_studentId INT
+present BOOL
+reason 
+
+Student_has_Parent:
+Student_studentId INT
+Account_parentId INT
+
+Student_has_Class:
+Student_studentId INT
+Class_classId INT
+
+Teacher_has_Class:
+Account_teacherId INT
+Class_classId INT
+
+
+DDMMYY
