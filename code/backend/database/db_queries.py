@@ -1,14 +1,14 @@
 import database.db_ops as db_ops
 
-def getallTeachers():
-    return str(db_ops.runQuery("SELECT * FROM Teachers"))
 
 def getpassword(email):
     """
     Input (str): email of user 
     return (str): password of user
     """
-    return "69"
+
+    query = db_ops.runQuery("SELECT password from Accounts WHERE email=%s", email)
+    return query[0]['password']
 
 
 def getpersonType(email):
@@ -16,15 +16,18 @@ def getpersonType(email):
     Input (str): email of person 
     return (str): type of individual Parent/Secretary/Teacher/None 
     """
-    return "Secretary"
+
+    query = db_ops.runQuery("SELECT type from Accounts WHERE email=%s", email)
+    return query[0]['type']
 
 
 def getSchoolName(email):
     """
-    Input (str): email of student/secretary
+    Input (str): email of secretary
     return (str): school name
     """
-    return "York"
+    query = db_ops.runQuery("SELECT school from Accounts WHERE email=%s", email)
+    return query[0]['school']
 
 
 def getListOfClasses(schoolName):
@@ -33,4 +36,11 @@ def getListOfClasses(schoolName):
     return List[str]: List of classes taught at school
         Example ['Math', 'English', 'Science']
     """
-    return ["Math", "English", "Science"]
+
+    qlist = []
+    query = db_ops.runQuery("SELECT name from Class WHERE school=%s", schoolName)
+
+    for q in query:
+        qlist.append(q['name'])
+        
+    return qlist

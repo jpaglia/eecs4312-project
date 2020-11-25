@@ -8,9 +8,9 @@ import requests
 
 setup = Blueprint("setup", __name__)
 
-@setup.route('/getSampleInfo', methods=['GET'])
+@setup.route('/getPassword', methods=['GET'])
 def getSampleInfo():
-  return db_queries.getall()
+  return str(db_queries.getListOfClasses("York"))
 
 @setup.route('/login', methods=['POST'])
 def login():

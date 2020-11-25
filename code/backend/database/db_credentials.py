@@ -3,5 +3,5 @@
 USERNAME = 'admin'
 PASSWORD = 'lol12345'
 HOST = 'eecs4314-schooldb-instance.ctcbke4ze9w6.us-east-1.rds.amazonaws.com'
-DB_NAME = 'schooldb'
+DB_NAME = 'schooldb1'
 PORT='3306'
