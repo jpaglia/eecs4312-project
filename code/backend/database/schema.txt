@@ -1,0 +1,42 @@
+Accounts:
+accountId INT
+creationData VARCHAR(45)
+email VARCHAR(45)
+password VARCHAR(45)
+firstName VARCHAR(45)
+lastName VARCHAR(45)
+type VARCHAR(45)
+school VARCHAR(45)
+
+Students:
+studentId INT
+firstName VARCHAR(45)
+lastName VARCHAR(45)
+
+Class:
+classId INT
+name VARCHAR(45)
+school VARCHAR(45)
+
+Attendance:
+attendanceId INT
+date VARCHAR(45)
+Class_classId INT
+Student_studentId INT
+present BOOL
+reason VARCHAR(45)
+
+Student_has_Parent:
+Student_studentId INT
+Account_parentId INT
+
+Student_has_Class:
+Student_studentId INT
+Class_classId INT
+
+Teacher_has_Class:
+Account_teacherId INT
+Class_classId INT
+
+
+Date format: DDMMYY
