@@ -48,7 +48,7 @@ class SecretaryMain extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      'schoolName': '',
+      'schoolName': 'Maplewood High School',   // get this based on login, or hardcode for demo idk
       'value': 0
     }
   }
@@ -61,47 +61,49 @@ class SecretaryMain extends Component {
 
   getMainPage() {
     return (
-      <div>
-        Secretary Page
+      <div className='secretaryWrapperPage'>
+      <div className='welcomePageTitleTextBox'>
+        <div className='titleText'>
+          Welcome to
+        </div>
+        <div className='schoolNameText'>
+          {this.state.schoolName}
+        </div>
+      </div>
       </div>
     )
   }
   
-
   render() {
     const secretaryMainPage = this.getMainPage();
     const systemAdminPage = <SystemAdmin />;
     const secretaryAttendancePage = <SecretaryAttendance />;
 
-    // TODO: Add in some welcome text or smthg 
-
     return (
       <div>
         <TopBar
-          showLogout={true}
-          onChange={this.props.onChange.bind(this)}
-          showBack={true}
-          onBack={this.onChange.bind(this)}
-        />
-        <div className="secretaryWrapperPage">
-          <div>
-            <AppBar className="appBarStyle" position="static">
-              <Tabs value={this.state.value} onChange={this.onChange.bind(this)} aria-label="simple tabs example">
-                <Tab label="Main Screen" {...a11yProps(0)} />
-                <Tab label="Administration Panel" {...a11yProps(1)} />
-                <Tab label="Attendance Records" {...a11yProps(2)} />
-              </Tabs>
-            </AppBar>
-            <TabPanel value={this.state.value} index={0}>
-              {secretaryMainPage}
+            showLogout={true}
+            onChange={this.props.onChange.bind(this)}
+            showBack={true}
+            onBack={this.onChange.bind(this)}
+          />
+        <div>
+          <AppBar className="appBarStyle" position="static">
+            <Tabs value={this.state.value} onChange={this.onChange.bind(this)} aria-label="simple tabs example">
+              <Tab label="Main Screen" {...a11yProps(0)} />
+              <Tab label="Administration Panel" {...a11yProps(1)} />
+              <Tab label="Attendance Records" {...a11yProps(2)} />
+            </Tabs>
+          </AppBar>
+          <TabPanel value={this.state.value} index={0}>
+            {secretaryMainPage}
+          </TabPanel>
+          <TabPanel value={this.state.value} index={1}>
+              {systemAdminPage}
             </TabPanel>
-            <TabPanel value={this.state.value} index={1}>
-               {systemAdminPage}
-             </TabPanel>
-            <TabPanel value={this.state.value} index={2}>
-              {secretaryAttendancePage}
-            </TabPanel>
-          </div>
+          <TabPanel value={this.state.value} index={2}>
+            {secretaryAttendancePage}
+          </TabPanel>
         </div>
       </div>
     );
