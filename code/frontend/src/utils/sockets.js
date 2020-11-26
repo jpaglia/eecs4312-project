@@ -10,3 +10,8 @@ export function postRequest(path, data) {
   let url = `${baseUrl}${path}`;
   return axios.post(`${url}`, data);
 }
+
+
+export function login(data) {
+  return postRequest('login', data)
+}

@@ -1,0 +1,19 @@
+.ag-header-cell {
+  padding-left: 2px !important;
+}
+
+.attendanceTableWrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.notifyParents {
+ height: 60vh;
+ width: calc(100vw - 1105px);
+ display: flex;
+ justify-content: center;
+ .notifyParentsButton {
+  height: 40px;
+  margin-top: calc(60vh - 40px);
+ }
+}

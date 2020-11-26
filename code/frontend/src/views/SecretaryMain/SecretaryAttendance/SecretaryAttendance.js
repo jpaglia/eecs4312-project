@@ -6,6 +6,12 @@ import { v4 as uuidv4 } from 'uuid'
 import MiniCalendar from '../../../components/MiniCalendar';
 import { ThemeProvider } from '@material-ui/styles';
 import { COLOUR_THEME } from '../../../constants';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AttendanceTable from '../../../components/AttendanceTable';
 import './SecretaryAttendance.scss'
 
 
@@ -23,7 +29,13 @@ class SecretaryAttendance extends Component {
       className: '',
       allClasses: ['All Classes', 'Math', 'English', 'Science'], // Swap on mounting
       calendarAccordion: false,
-      startingDate: Date.now()
+      startingDate: Date.now(),
+      searchParams: {
+        studentName: '',
+        className: '',
+        startingDate: Date.now()
+      },
+      rowData: [{ 'Name': 'Billy', 'Attendance': "Late", 'Class': "Math", 'Date': '02/04/20', 'Reason For Absence': 'Billy was sick', 'Reason Verified': false, 'Parent Notified': 'N' }]
     }
   }
 
@@ -62,41 +74,21 @@ class SecretaryAttendance extends Component {
     });
   }
 
-  getDownChevron() {
-    const button =
-      <div className="chevronWrapper">
-        <img
-          alt="Down Chevron"
-          src="down-chevron.png"
-          className="downChevron"
-        />
-      </div>;
-    return button;
-  }
-
-  onChevronClick() {
-    this.setState({ 'calendarAccordion': !this.state.calendarAccordion })
-  }
-
   getMiniCalendarFilter() {
-    const chevron = this.getDownChevron();
-    if (this.state.calendarAccordion) {
-      return (
-        <div>
-          <div className='calendarClosedAccordian' onClick={this.onChevronClick.bind(this)}>
-            Search By Date
-            <div style={{ 'transform': 'rotate(180deg)' }}>
-              {chevron}
-            </div>
-          </div>
-          <MiniCalendar updateDates={this.handleDateChange.bind(this)} />
-        </div>
-      )
-    }
     return (
-      <div className='calendarClosedAccordian' onClick={this.onChevronClick.bind(this)}>
-        Search By Date
-        {chevron}
+      <div className='calendarAccordian'>
+          <Accordion  className='accordionZIndex'>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="addParent-content"
+              id="addParent-header"
+            >
+              <Typography className="AddParent" component={'span'}>Search by Date</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <MiniCalendar updateDates={this.handleDateChange.bind(this)} />
+            </AccordionDetails>
+          </Accordion>
       </div>
     )
   }
@@ -109,6 +101,17 @@ class SecretaryAttendance extends Component {
 
   searchRecords() {
     // Get Search value
+    const searchParams = {
+      studentName: this.state.studentName,
+      className: this.state.className,
+      startingDate: this.state.startingDate
+    }
+
+    // call endpoint with Search Params
+    this.setState({
+      rowData: [], //Add in recieved rowdata here
+      searchParams: searchParams
+    })
   }
 
   getFilterRow() {
@@ -119,9 +122,15 @@ class SecretaryAttendance extends Component {
     return (
       <div id={`Filter_Row_${uuidv4()}`} className="secretaryFilterRowWrapper">
         <ThemeProvider theme={COLOUR_THEME}>
+          <div className='secretaryAttendanceLeft'>
+            <div className='secretaryAttendanceSpacer'>
           {nameFilter}
+          </div>
+          <div className='secretaryAttendanceSpacer'>
           {classListDropdown}
+          </div>
           {calendar}
+          </div>
           <div className="secretaryFilterButtonWrapper">
             <Button className="secretaryFilterButton" onClick={this.searchRecords.bind(this)} color="primary" variant="contained" autoFocus>
               Search Records
@@ -132,12 +141,27 @@ class SecretaryAttendance extends Component {
     );
   }
 
+  notifyParents(childList) {
+    // call endpoint to notify parents with childList
+    // refetch data with this.state.searchParams
+    this.setState({
+      rowData: [] // replace with endpoint result
+    })
+  }
+
+
   render() {
     const filterRow = this.getFilterRow();
 
     return (
       <div>
         {filterRow}
+        <div className='tableAttendance'>
+           <AttendanceTable
+           rowData={this.state.rowData}
+           notifyParents={this.notifyParents.bind(this)}
+           />
+        </div>
       </div>
     );
   }

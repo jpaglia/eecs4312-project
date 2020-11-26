@@ -10,7 +10,7 @@ export const COLOUR_THEME = createMuiTheme({
     },
   },
   typography: {
-    fontSize: 20,
+    fontSize: 14,
   },
 });
 

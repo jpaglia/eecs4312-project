@@ -2437,6 +2437,18 @@ adjust-sourcemap-loader@3.0.0:
     loader-utils "^2.0.0"
     regex-parser "^2.2.11"
 
+ag-grid-community@^24.1.0:
+  version "24.1.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-24.1.0.tgz#1e3cab51211822e08d56f03a491b7c0deaa398e6"
+  integrity sha512-pWnWphuDcejZ8ahf6C734EpCx3XQ6dHEZWMWTlCdHNT0mZBLJ4YKCGACX+ttAEtSX2MGM3G13JncvuratUlYag==
+
+ag-grid-react@^24.1.1:
+  version "24.1.1"
+  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-24.1.1.tgz#56d0086316d262cf6e5804e2b4bdeeb5fb3279b9"
+  integrity sha512-MuITqlVo1QD48DzLFFOcX/8eG7XvezkgqymSJrIo4JI6znAqNRpnRgDt+oFHRDgK1NSDh6rZRXGFZI/DRYWq0A==
+  dependencies:
+    prop-types "^15.6.2"
+
 aggregate-error@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/aggregate-error/-/aggregate-error-3.0.1.tgz#db2fe7246e536f40d9b5442a39e117d7dd6a24e0"
@@ -2811,6 +2823,13 @@ axe-core@^4.0.2:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.1.0.tgz#93d395e6262ecdde5cb52a5d06533d0a0c7bb4cd"
   integrity sha512-9atDIOTDLsWL+1GbBec6omflaT5Cxh88J0GtJtGfCVIXpI02rXHkju59W5mMqWa7eiC5OR168v3TK3kUKBW98g==
+
+axios@^0.21.0:
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.0.tgz#26df088803a2350dff2c27f96fef99fe49442aca"
+  integrity sha512-fmkJBknJKoZwem3/IKSSLpkdNXZeBu5Q7GA/aRsr2btgrptmSCxi2oFjZHqGdK9DoTil9PIHlPIZw2EcRJXRvw==
+  dependencies:
+    follow-redirects "^1.10.0"
 
 axobject-query@^2.2.0:
   version "2.2.0"
@@ -5561,6 +5580,11 @@ follow-redirects@^1.0.0:
   integrity sha512-4eyLK6s6lH32nOvLLwlIOnr9zrL8Sm+OvW4pVTJNoXeGzYIkHVf+pADQi+OJ0E67hiuSLezPVPyBcIZO50TmmQ==
   dependencies:
     debug "^3.0.0"
+
+follow-redirects@^1.10.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.0.tgz#b42e8d93a2a7eea5ed88633676d6597bc8e384db"
+  integrity sha512-aq6gF1BEKje4a9i9+5jimNFIpq4Q1WiwBToeRK5NvZBd/TRsmW8BsJfOEGkr76TbOyPVD3OVDN910EcUNtRYEA==
 
 for-in@^1.0.2:
   version "1.0.2"
