@@ -70,11 +70,15 @@ class AttendanceTable extends Component {
     const rowNode = this.gridApi.getRowNode(rowIndex);
     rowNode.setDataValue('Attendance', value)
     this.gridApi.redrawRows()
+
+    // Call endpoint to update child's attendance record
   }
 
   updateVerifiedReason(value, rowIndex) {
     const rowNode = this.gridApi.getRowNode(rowIndex);
     rowNode.setDataValue('Reason Verified', value)
+
+    // Call endpoint to update child's attendance record
   }
 
   onGridReady = (params) => {
