@@ -3,18 +3,21 @@
   object-fit: contain;
   width: 100vw;
   height: 100vh;
-
+  
   .innerWrapperLoginPage {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-top: -15vh;
-    margin-left: -15vw;
+    
+    display: flex;
+    flex-direction: column;
     width: 30vw;
     height: 340px;
     background-color: rgba(255, 255, 255, 0.9);
     text-align:center;
-
+    margin-left: 35vw;
+    margin-top: calc(50vh - 276px);
+    .test {
+      width: 30vw;
+      padding-left: calc(15vw - 150px);
+    }
     .loginPageTitleText {
       padding-top: 20px;
       font-size: 24px;

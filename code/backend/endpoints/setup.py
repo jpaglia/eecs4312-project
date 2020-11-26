@@ -25,7 +25,9 @@ def login():
     type: str -- type of user
   }
   """
+
   req_data = request.get_json()
+  print(req_data)
   email = req_data['email'] 
   password = req_data['password']
 
