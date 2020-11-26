@@ -122,9 +122,15 @@ class SecretaryAttendance extends Component {
     return (
       <div id={`Filter_Row_${uuidv4()}`} className="secretaryFilterRowWrapper">
         <ThemeProvider theme={COLOUR_THEME}>
+          <div className='secretaryAttendanceLeft'>
+            <div className='secretaryAttendanceSpacer'>
           {nameFilter}
+          </div>
+          <div className='secretaryAttendanceSpacer'>
           {classListDropdown}
+          </div>
           {calendar}
+          </div>
           <div className="secretaryFilterButtonWrapper">
             <Button className="secretaryFilterButton" onClick={this.searchRecords.bind(this)} color="primary" variant="contained" autoFocus>
               Search Records

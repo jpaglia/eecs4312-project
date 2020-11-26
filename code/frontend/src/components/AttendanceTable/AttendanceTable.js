@@ -95,10 +95,10 @@ class AttendanceTable extends Component {
 
   getNotifyParents() {
     return (
-      <div>
+      <div className='notifyParents'>
         <ThemeProvider theme={COLOUR_THEME}>
-          <Button className="secretaryFilterButton" onClick={this.notifyParents.bind(this)} color="primary" variant="contained" autoFocus>
-            Search Records
+          <Button className="notifyParentsButton" onClick={this.notifyParents.bind(this)} color="primary" variant="contained" autoFocus>
+            Notify Parents
         </Button>
         </ThemeProvider>
       </div>
@@ -120,7 +120,6 @@ class AttendanceTable extends Component {
           className="ag-theme-alpine"
         >
           <AgGridReact
-            className='test'
             columnDefs={this.state.columnDefs}
             defaultColDef={this.state.defaultColDef}
             frameworkComponents={this.state.frameworkComponents}
