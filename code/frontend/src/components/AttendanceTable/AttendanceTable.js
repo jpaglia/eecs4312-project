@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
-import {  AgGridReact } from 'ag-grid-react';
+import Proptypes from 'prop-types';
+import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import { ThemeProvider } from '@material-ui/styles';
+import { COLOUR_THEME } from '../../constants';
+import Button from '@material-ui/core/Button';
 import AttendanceDropdown from './AttendanceDropdown';
+import AttendanceCheckbox from './AttendanceCheckbox';
 import './AttendanceTable.scss';
 class AttendanceTable extends Component {
   constructor(props) {
@@ -24,35 +29,52 @@ class AttendanceTable extends Component {
         },
         {
           field: "Class",
-          minWidth: 100
+          minWidth: 75
         },
         {
-          field: "Date of Record",
-          minWidth: 200
+          field: "Date",
+          minWidth: 75
         },
         {
-          field: "Verified Attendance",
-          minWidth: 200
+          field: "Reason For Absence",
+          minWidth: 250,
+          editable: true
+        },
+        {
+          field: "Reason Verified",
+          cellRenderer: "attendanceCheckbox",
+          cellRendererParams: {
+            onChange: this.updateVerifiedReason.bind(this)
+          },
+          minWidth: 150
         },
         {
           field: "Parent Notified",
-          minWidth: 200
+          minWidth: 150
         },
       ],
       defaultColDef: {
         flex: 1,
-        minWidth: 100
+        minWidth: 100,
+        wrapText: true,
+        autoHeight: true
       },
       frameworkComponents: {
-        attendanceDropdown: AttendanceDropdown
-      },
-      rowData: [{'Name': 'Billy', 'Attendance': "Present", 'Class': "Math", 'Date of Record': 'Tuesday', 'Verified Attendance': 'Yes', 'Parent Notified': 'No'}]
+        attendanceDropdown: AttendanceDropdown,
+        attendanceCheckbox: AttendanceCheckbox
+      }
     };
   }
-  
+
   updateAttendance(value, rowIndex) {
     const rowNode = this.gridApi.getRowNode(rowIndex);
     rowNode.setDataValue('Attendance', value)
+    this.gridApi.redrawRows()
+  }
+
+  updateVerifiedReason(value, rowIndex) {
+    const rowNode = this.gridApi.getRowNode(rowIndex);
+    rowNode.setDataValue('Reason Verified', value)
   }
 
   onGridReady = (params) => {
@@ -60,10 +82,35 @@ class AttendanceTable extends Component {
     this.gridColumnApi = params.columnApi;
   };
 
-  render() {
-  
+  notifyParents() {
+    const childrenList = [];
+    this.gridApi.forEachNode(function(rowNode, index) {
+      if (rowNode.data['Parent Notified'] === 'N' && !rowNode.data['Reason Verified'] && (rowNode.data['Attendance'] === 'Late' || rowNode.data['Attendance'] === 'Absent')) {
+        childrenList.append({'Name' : rowNode.data['Name'], 'Date': rowNode.data['Name'], 'Class': rowNode.data['Class']})
+      }
+    })
+    // TODO: confirm date works.... may need to format it
+    this.props.notifyParents(childrenList);
+  }
+
+  getNotifyParents() {
     return (
       <div>
+        <ThemeProvider theme={COLOUR_THEME}>
+          <Button className="secretaryFilterButton" onClick={this.notifyParents.bind(this)} color="primary" variant="contained" autoFocus>
+            Search Records
+        </Button>
+        </ThemeProvider>
+      </div>
+
+    )
+  }
+
+  render() {
+    const notifyParentsButton = this.getNotifyParents();
+
+    return (
+      <div className='attendanceTableWrapper'>
         <div
           id="myGrid"
           style={{
@@ -78,16 +125,18 @@ class AttendanceTable extends Component {
             defaultColDef={this.state.defaultColDef}
             frameworkComponents={this.state.frameworkComponents}
             onGridReady={this.onGridReady}
-            rowData={this.state.rowData}
+            rowData={this.props.rowData}
           />
         </div>
+        {notifyParentsButton}
       </div>
     );
   }
 }
 
 AttendanceTable.propTypes = {
- 
+  notifyParents: Proptypes.func.isRequired,
+  rowData: Proptypes.array.isRequired
 }
 
 export default AttendanceTable;

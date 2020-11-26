@@ -29,7 +29,13 @@ class SecretaryAttendance extends Component {
       className: '',
       allClasses: ['All Classes', 'Math', 'English', 'Science'], // Swap on mounting
       calendarAccordion: false,
-      startingDate: Date.now()
+      startingDate: Date.now(),
+      searchParams: {
+        studentName: '',
+        className: '',
+        startingDate: Date.now()
+      },
+      rowData: [{ 'Name': 'Billy', 'Attendance': "Late", 'Class': "Math", 'Date': '02/04/20', 'Reason For Absence': 'Billy was sick', 'Reason Verified': false, 'Parent Notified': 'N' }]
     }
   }
 
@@ -71,7 +77,7 @@ class SecretaryAttendance extends Component {
   getMiniCalendarFilter() {
     return (
       <div className='calendarAccordian'>
-          <Accordion>
+          <Accordion  className='accordionZIndex'>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="addParent-content"
@@ -95,6 +101,17 @@ class SecretaryAttendance extends Component {
 
   searchRecords() {
     // Get Search value
+    const searchParams = {
+      studentName: this.state.studentName,
+      className: this.state.className,
+      startingDate: this.state.startingDate
+    }
+
+    // call endpoint with Search Params
+    this.setState({
+      rowData: [], //Add in recieved rowdata here
+      searchParams: searchParams
+    })
   }
 
   getFilterRow() {
@@ -118,6 +135,14 @@ class SecretaryAttendance extends Component {
     );
   }
 
+  notifyParents(childList) {
+    // call endpoint to notify parents with childList
+    // refetch data with this.state.searchParams
+    this.setState({
+      rowData: [] // replace with endpoint result
+    })
+  }
+
 
   render() {
     const filterRow = this.getFilterRow();
@@ -126,9 +151,11 @@ class SecretaryAttendance extends Component {
       <div>
         {filterRow}
         <div className='tableAttendance'>
-           <AttendanceTable/>
+           <AttendanceTable
+           rowData={this.state.rowData}
+           notifyParents={this.notifyParents.bind(this)}
+           />
         </div>
-       
       </div>
     );
   }
