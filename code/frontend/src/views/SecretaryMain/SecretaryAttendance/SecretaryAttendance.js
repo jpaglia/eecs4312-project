@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AttendanceTable from '../../../components/AttendanceTable';
 import './SecretaryAttendance.scss'
+import { getAttendanceList } from '../../../utils/sockets';
 
 
 // Working on calendar next
@@ -111,6 +112,13 @@ class SecretaryAttendance extends Component {
     this.setState({
       rowData: [], //Add in recieved rowdata here
       searchParams: searchParams
+    })
+
+    // CHECK THIS: I'm not fully sure if this is right so I'm sorry if it's not
+    getAttendanceList(searchParams).then(result => {
+      this.setState({
+        rowData : result.data
+      })
     })
   }
 

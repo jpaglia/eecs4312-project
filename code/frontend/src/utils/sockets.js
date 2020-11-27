@@ -15,3 +15,8 @@ export function postRequest(path, data) {
 export function login(data) {
   return postRequest('login', data)
 }
+
+export function getAttendanceList(data) {
+  return postRequest('getAttendanceList', data)
+}
+
