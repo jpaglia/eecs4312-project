@@ -5,6 +5,7 @@ from flask import jsonify
 from database import db_queries
 import json
 import requests
+import datetime
 
 setup = Blueprint("setup", __name__)
 
@@ -81,3 +82,23 @@ def getListOfClasses():
   return jsonify(
     classes = listOfClasses
   )
+
+@setup.route('/getAttendanceList', methods=['POST'])
+def getAttendanceList():
+  data = request.get_json()
+  studentName = data['studentName']
+  className = data['className']
+  
+  # TO-DO: FIX DATE AND SCHOOL HARDCODING
+  schoolName = 'Maplewood High School'
+  #schoolName = data['schoolName']
+  #date = int(data['date']) / 1000
+  date = 1606440131548 / 1000
+  date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
+  # *****************************
+
+  attendances = db_queries.getAttendanceList(schoolName, studentName, className, date)
+
+  return jsonify(attendances)
+
+
