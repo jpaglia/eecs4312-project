@@ -48,12 +48,13 @@ class LoginPage extends Component {
       'email': this.state.email,
       'password': this.state.password
     }
-    login(data).then(result => {
-      if (result.data.valid) {
-        this.props.loginVerified(result.data.type)
-      }
+    // login(data).then(result => {
+    //   if (result.data.valid) {
+    //     this.props.loginVerified(result.data.type)
+    //   }
       
-    })
+    // })
+    this.props.loginVerified('Parent')
   }
 
   render() {
@@ -68,7 +69,7 @@ class LoginPage extends Component {
             <div className='loginPageTitleText'>
               Welcome to the TDSB Attendance System!
             </div>
-            <div className='test'>
+            <div className='loginInner'>
             {email}
             {password}
             </div>
