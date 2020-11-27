@@ -13,11 +13,12 @@ class MiniCalendar extends Component {
   }
 
   render() {
-  
+    const dateObj = this.props.selectedDate === null ? null : new Date(this.props.selectedDate);
     return (
       <div className='miniCalendarWrapper'>
        <Calendar
         onChange={this.props.updateDates}
+        value={dateObj}
         selectRange={false}
         tileClassName={({date}) => this.test(date)}
         tileDisabled={({date, view}) => (view === 'month') && (date.getDay() === 0 || date.getDay() === 6)}
