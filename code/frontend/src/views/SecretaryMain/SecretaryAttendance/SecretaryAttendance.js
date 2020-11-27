@@ -92,7 +92,10 @@ class SecretaryAttendance extends Component {
               <Typography className="AddParent" component={'span'}>Search by Date</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <MiniCalendar updateDates={this.handleDateChange.bind(this)} />
+              <MiniCalendar
+                updateDates={this.handleDateChange.bind(this)}
+                selectedDate={this.state.startingDate}
+              />
             </AccordionDetails>
           </Accordion>
       </div>
