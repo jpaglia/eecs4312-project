@@ -29,11 +29,11 @@ class SecretaryAttendance extends Component {
       className: '',
       allClasses: ['All Classes', 'Math', 'English', 'Science'], // Swap on mounting
       calendarAccordion: false,
-      startingDate: Date.now(),
+      startingDate: null,
       searchParams: {
         studentName: '',
         className: '',
-        startingDate: Date.now()
+        startingDate: null
       },
       rowData: [{ 'Name': 'Billy', 'Attendance': "Late", 'Class': "Math", 'Date': '02/04/20', 'Reason For Absence': 'Billy was sick', 'Reason Verified': false, 'Parent Notified': 'N' }]
     }
@@ -75,6 +75,7 @@ class SecretaryAttendance extends Component {
   }
 
   getMiniCalendarFilter() {
+    const currentSelection = this.state.startingDate === null ? 'All': new Date(this.state.startingDate).toDateString()
     return (
       <div className='calendarAccordian'>
           <Accordion  className='accordionZIndex'>
@@ -83,10 +84,13 @@ class SecretaryAttendance extends Component {
               aria-controls="addParent-content"
               id="addParent-header"
             >
-              <Typography className="AddParent" component={'span'}>Search by Date</Typography>
+              <Typography className="AddParent" component={'span'}>Search by Date: {currentSelection}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <MiniCalendar updateDates={this.handleDateChange.bind(this)} />
+              <MiniCalendar
+              updateDates={this.handleDateChange.bind(this)} 
+              currentValue={this.state.startingDate}
+              />
             </AccordionDetails>
           </Accordion>
       </div>
@@ -94,9 +98,15 @@ class SecretaryAttendance extends Component {
   }
 
   handleDateChange(e) {
-    this.setState({
-      startingDate: e.getTime()
-    })
+    if (this.state.startingDate === e.getTime()) {
+      this.setState({
+        startingDate: null
+      })
+    } else {
+      this.setState({
+        startingDate: e.getTime()
+      })
+    }
   }
 
   searchRecords() {

@@ -8,11 +8,12 @@ class MiniCalendar extends Component {
 
 
   render() {
-  
+    const dateObj = this.props.currentValue === null ? null : new Date(this.props.currentValue);
     return (
       <div className='miniCalendarWrapper'>
        <Calendar
         onChange={this.props.updateDates}
+        value={dateObj}
         selectRange={false}
         tileDisabled={({date, view}) => (view === 'month') && (date.getDay() === 0 || date.getDay() === 6)}
       />
@@ -23,7 +24,8 @@ class MiniCalendar extends Component {
 }
 
 MiniCalendar.propTypes = {
- updateDates: Proptypes.func.isRequired
+ updateDates: Proptypes.func.isRequired,
+ currentValue: Proptypes.any.isRequired
 }
 
 export default MiniCalendar;
