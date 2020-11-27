@@ -33,11 +33,11 @@ class AttendanceTable extends Component {
         },
         {
           field: "Date",
-          minWidth: 75
+          minWidth: 90
         },
         {
           field: "Reason For Absence",
-          minWidth: 250,
+          minWidth: 235,
           editable: true
         },
         {

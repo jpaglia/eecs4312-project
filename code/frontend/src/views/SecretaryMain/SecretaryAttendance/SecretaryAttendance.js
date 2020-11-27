@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AttendanceTable from '../../../components/AttendanceTable';
 import './SecretaryAttendance.scss'
+import { getAttendanceList } from '../../../utils/sockets';
 
 
 // Working on calendar next
@@ -20,6 +21,11 @@ import './SecretaryAttendance.scss'
 class SecretaryAttendance extends Component {
   componentDidMount() {
     // Make call for all classes available within a school
+    getAttendanceList(this.state.searchParams).then(result => {
+      this.setState({
+        rowData : result.data
+      })
+    })
   }
 
   constructor() {
@@ -27,7 +33,7 @@ class SecretaryAttendance extends Component {
     this.state = {
       studentName: '',
       className: '',
-      allClasses: ['All Classes', 'Math', 'English', 'Science'], // Swap on mounting
+      allClasses: ['All Classes', 'MATH3U0', 'ENG4U0', 'PHYS4U0'], // Swap on mounting
       calendarAccordion: false,
       startingDate: Date.now(),
       searchParams: {
@@ -35,7 +41,7 @@ class SecretaryAttendance extends Component {
         className: '',
         startingDate: Date.now()
       },
-      rowData: [{ 'Name': 'Billy', 'Attendance': "Late", 'Class': "Math", 'Date': '02/04/20', 'Reason For Absence': 'Billy was sick', 'Reason Verified': false, 'Parent Notified': 'N' }]
+      rowData: []
     }
   }
 
@@ -103,14 +109,16 @@ class SecretaryAttendance extends Component {
     // Get Search value
     const searchParams = {
       studentName: this.state.studentName,
-      className: this.state.className,
+      className: this.state.className === 'All Classes' ? '': this.state.className,
       startingDate: this.state.startingDate
     }
 
-    // call endpoint with Search Params
-    this.setState({
-      rowData: [], //Add in recieved rowdata here
-      searchParams: searchParams
+   
+    getAttendanceList(searchParams).then(result => {
+      this.setState({
+        rowData : result.data,
+        searchParams: searchParams
+      })
     })
   }
 
