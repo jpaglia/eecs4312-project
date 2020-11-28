@@ -25,26 +25,21 @@ CREATE TABLE `schooldb1`.`Accounts` (
   PRIMARY KEY (`accountId`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
 
-CREATE TABLE `schooldb1`.`Attendance` (
-  `attendanceId` INT NOT NULL AUTO_INCREMENT,
-  `date` VARCHAR(45) NOT NULL,
-  `Class_classId` INT NOT NULL,
-  `Student_studentId` INT NOT NULL,
-  `present` TINYINT NOT NULL,
-  `reason` VARCHAR(45) NULL,
+CREATE TABLE `Attendance` (
+  `attendanceId` int NOT NULL AUTO_INCREMENT,
+  `date` varchar(45) NOT NULL,
+  `Class_classId` int NOT NULL,
+  `Student_studentId` int NOT NULL,
+  `status` varchar(45) NOT NULL,
+  `reason` varchar(45) DEFAULT NULL,
+  `verified` tinyint NOT NULL DEFAULT '0',
+  `notified` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`attendanceId`),
-  INDEX `studentId_idx` (`Student_studentId` ASC) VISIBLE,
-  INDEX `classId_idx` (`Class_classId` ASC) VISIBLE,
-  CONSTRAINT `classId`
-    FOREIGN KEY (`Class_classId`)
-    REFERENCES `schooldb1`.`Class` (`classId`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `studentId`
-    FOREIGN KEY (`Student_studentId`)
-    REFERENCES `schooldb1`.`Students` (`studentId`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE);
+  KEY `studentId_idx` (`Student_studentId`),
+  KEY `classId_idx` (`Class_classId`),
+  CONSTRAINT `classId` FOREIGN KEY (`Class_classId`) REFERENCES `Class` (`classId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `studentId` FOREIGN KEY (`Student_studentId`) REFERENCES `Students` (`studentId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `schooldb1`.`Student_has_Parent` (
   `Student_studentId` INT NOT NULL,

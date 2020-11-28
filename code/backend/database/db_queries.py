@@ -1,6 +1,20 @@
 import database.db_ops as db_ops
 
+def getStudentRecords(studentName, date, className):
 
+    # Get School Name
+    
+    query_str = "SELECT school from ((Attendance INNER JOIN Class ON Attendance.Class_classId = Class.classId) \
+        INNER JOIN Students ON Attendance.Student_studentId = Students.studentId) \
+        WHERE firstName=%s AND lastName=%s"
+
+    schoolName=db_ops.runQuery(query_str, studentName.split(' ')[0], studentName.split(' ')[1])
+
+    attendanceList = getAttendanceList(schoolName, studentName, className, date)
+
+    # {'Name': 'Billy',  'date': milliseconds from Epoch, className: string}
+    # Array of json objects with:  { 'Name': 'Billy', 'Attendance': "Late", 'Class': "Math", 'Date': '02/04/20'}
+    return attendanceList
 def getpassword(email):
     """
     Input (str): email of user 
@@ -41,11 +55,14 @@ def getListOfClasses(schoolName):
         Example ['Math', 'English', 'Science']
     """
 
+    if schoolName == "" or schoolName == None:
+        return []
+
     qlist = []
-    query = db_ops.runQuery("SELECT name from Class WHERE school=%s", schoolName)
+    query = db_ops.runQuery("SELECT className from Class WHERE school=%s", schoolName)
 
     for q in query:
-        qlist.append(q['name'])
+        qlist.append(q['className'])
         
     return qlist
 

@@ -28,6 +28,12 @@ def login():
   """
 
   req_data = request.get_json()
+
+  # Return invalid if no email/password included in request
+  # Can also return an http 400 response
+  if not ("email" in req_data) or not("password" in req_data):
+      return jsonify(valid = False)
+
   email = req_data['email'] 
   password = req_data['password']
 
@@ -54,6 +60,9 @@ def getSchoolName():
   }
   """
   data = request.get_json()
+  if not "email" in data:
+    return "No Email found in request body", 400
+
   email = data['email']
 
   schoolName = db_queries.getSchoolName(email)
@@ -64,29 +73,41 @@ def getSchoolName():
 
 @setup.route('/getListOfClasses', methods=['POST'])
 def getListOfClasses():
-  """
-  Description: This endpoint gets the list of classes at the specified school
-  Input Json Request: {
-    schoolName
-  }
-  return: {
-    listOfClasses: List[String]
-  }
-  """
   data = request.get_json()
+
+  if not "schoolName" in data:
+    return "No School name found in request body", 400
+
   schoolName = data['schoolName']
 
   listOfClasses = db_queries.getListOfClasses(schoolName)
 
-  return jsonify(
-    classes = listOfClasses
-  )
+  if listOfClasses == []:
+    return "No Classes Found", 404
+  else:
+    return jsonify(
+      classes = listOfClasses
+    )
 
 @setup.route('/getAttendanceList', methods=['POST'])
 def getAttendanceList():
   data = request.get_json()
-  studentName = data['studentName']
-  className = data['className']
+
+  if not "schoolName" in data:
+    return jsonify([])
+
+  studentName = ''
+  className = ''
+  date = ''
+
+  if "studentName" in data:
+    studentName = data['studentName']
+  
+  if "className" in data:
+    className = data['className']
+
+  if "date" in data:
+    date = data['date']
   
   # TO-DO: FIX DATE AND SCHOOL HARDCODING
   schoolName = 'Maplewood High School'
