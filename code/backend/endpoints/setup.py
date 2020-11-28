@@ -50,15 +50,6 @@ def login():
 
 @setup.route('/getSchoolName', methods=['POST'])
 def getSchoolName():
-  """
-  Description: This endpoint gets the school name based on the email
-  Input Json Request: {
-    email
-  }
-  return: {
-    schoolName: String
-  }
-  """
   data = request.get_json()
   if not "email" in data:
     return "No Email found in request body", 400
@@ -121,13 +112,25 @@ def getAttendanceList():
 
   return jsonify(attendances)
 
+# Filter by class is optional
 @setup.route('/getStudentRecords', methods=['POST'])
 def getStudentRecords():
   data = request.get_json()
-  name = data["Name"]
+  className = ''
+
+  if not "Name" in data:
+    return "No key 'Name' in request body", 400
+  if not "date" in data:
+    return "No key 'date' in request body", 400
+  if "className" in data:
+    className = data['className']
+
+  name = data['Name']
   date = data['date']
+
   date = int(date) / 1000
-  className = data["className"]
+  date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
+
   result = db_queries.getStudentRecords(name, date, className) 
   return jsonify(result)
 
@@ -135,5 +138,11 @@ def getStudentRecords():
 @setup.route('/getTeacherClasses', methods=['POST'])
 def getTeacherClasses():
   data = request.get_json()
+
+  if 'email' not in data:
+    return "key 'email' not found in request body", 400
   email = data["email"]
-  return jsonify("sammybwoi")
+
+  classes = db_queries.getTeacherClasses(email)
+
+  return jsonify(classes)

@@ -1,20 +1,48 @@
 import database.db_ops as db_ops
 
-def getStudentRecords(studentName, date, className):
+def getTeacherClasses(email):
+    query_str = "SELECT className FROM schooldb1.Teacher_has_Class \
+        INNER JOIN Accounts on Accounts.accountId = Teacher_has_Class.Account_teacherId \
+        INNER JOIN Class ON Class.classId = Teacher_has_Class.Class_classId \
+        WHERE email=%s"
 
-    # Get School Name
+    classes = db_ops.runQuery(query_str, email)
     
+    print("{}".format(classes))
+    return classes
+
+def getStudentRecords(studentName, date, className):
+    # Get School Name
     query_str = "SELECT school from ((Attendance INNER JOIN Class ON Attendance.Class_classId = Class.classId) \
         INNER JOIN Students ON Attendance.Student_studentId = Students.studentId) \
         WHERE firstName=%s AND lastName=%s"
-
     schoolName=db_ops.runQuery(query_str, studentName.split(' ')[0], studentName.split(' ')[1])
 
-    attendanceList = getAttendanceList(schoolName, studentName, className, date)
+    # return nothing if there's no valid schoolname
+    if len(schoolName) < 1 or not 'school' in schoolName[0]:
+        return []
 
-    # {'Name': 'Billy',  'date': milliseconds from Epoch, className: string}
-    # Array of json objects with:  { 'Name': 'Billy', 'Attendance': "Late", 'Class': "Math", 'Date': '02/04/20'}
-    return attendanceList
+    schoolName = schoolName[0]['school']
+
+    # Get records from all time, filtered by school
+    # In this call, date='' and className can optionally be =''
+    attendanceList = getAttendanceList(schoolName, studentName, className, '')
+    
+    # Filter for current month
+    studentRecord = []
+    for a in attendanceList:
+        if a['Date'].split('/')[1] == date.split('/')[1]:
+            record= {
+                "Name":a['Name'],
+                "Attendance":a['Attendance'],
+                "Class":a['Class'],
+                "Date":a['Date']
+            }
+            studentRecord.append(record)
+
+    return studentRecord
+
+
 def getpassword(email):
     """
     Input (str): email of user 
