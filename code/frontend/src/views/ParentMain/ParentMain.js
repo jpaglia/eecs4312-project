@@ -35,10 +35,10 @@ class ParentMain extends Component {
     return (
       <div>
         <TopBar showLogout={true} onChange={this.props.onChange.bind(this)}/>
-          {/* {parentHome} */}
-          <ParentCalendar
+          {parentHome}
+          {/* <ParentCalendar
           child={'Julia'}
-          />
+          /> */}
       </div>
     );
   }
