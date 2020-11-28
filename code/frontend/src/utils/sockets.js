@@ -20,3 +20,10 @@ export function getAttendanceList(data) {
   return postRequest('getAttendanceList', data)
 }
 
+export function getStudentRecords(data) {
+  return postRequest('getStudentRecords', data)
+}
+
+export function getTeacherClasses(data) {
+  return postRequest('getTeacherClasses', data)
+}

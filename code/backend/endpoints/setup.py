@@ -121,4 +121,19 @@ def getAttendanceList():
 
   return jsonify(attendances)
 
+@setup.route('/getStudentRecords', methods=['POST'])
+def getStudentRecords():
+  data = request.get_json()
+  name = data["Name"]
+  date = data['date']
+  date = int(date) / 1000
+  className = data["className"]
+  result = db_queries.getStudentRecords(name, date, className) 
+  return jsonify(result)
 
+
+@setup.route('/getTeacherClasses', methods=['POST'])
+def getTeacherClasses():
+  data = request.get_json()
+  email = data["email"]
+  return jsonify("sammybwoi")
