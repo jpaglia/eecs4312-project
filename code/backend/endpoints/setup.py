@@ -237,7 +237,7 @@ def addParent():
   email = data['Email']
   password = data['Password']
 
-  if (db_queries.checkIfParentExists(name)):
+  if (db_queries.checkIfParentExists(email)):
     return jsonify(
       valid = "False"
     )

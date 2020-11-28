@@ -1,4 +1,7 @@
 import database.db_ops as db_ops
+from datetime import date
+today = date.today()
+
 
 def getTeacherClasses(email):
     query_str = "SELECT className FROM schooldb1.Teacher_has_Class \
@@ -150,13 +153,26 @@ def addParent(name, email, password):
     """
     return true if parent added to the db with their info, false otherwise
     """
-    pass
+    date = today.strftime("%m/%d/%y")
+    email = email
+    firstName = name.split(" ")[0]
+    lastName = name.split(" ")[1]
+    command = "INSERT INTO schooldb1.Accounts (creationDate, email, password, firstName, lastName, type) VALUES (%s, %s, %s, %s, %s, %s);"
+    try:
+        db_ops.runCommand(command, date, email, password, firstName, lastName, "Parent")
+        return True
+    except Exception as e:
+        return False
 
-def checkIfParentExists(name):
+def checkIfParentExists(email):
     """
-    return true if name already exists in db
+    return true if email already exists in db
     """
-    pass
+    query = db_ops.runQuery("Select * FROM schooldb1.Accounts Where email=%s", email)
+    print(query)
+    if len(query) == 0:
+        return False
+    return True
 
 def removeParent(name):
     """
