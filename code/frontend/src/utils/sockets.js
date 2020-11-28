@@ -16,8 +16,40 @@ export function login(data) {
   return postRequest('login', data)
 }
 
+export function getSchoolName(data) {
+  return postRequest('getSchoolName', data)
+}
+
+export function getListOfClasses(data) {
+  return postRequest('getListOfClasses', data)
+}
+
 export function getAttendanceList(data) {
   return postRequest('getAttendanceList', data)
+}
+
+export function notifyParents(data) {
+  return postRequest('notifyParents', data)
+}
+
+export function updateAttendanceRecord(data) {
+  return postRequest('updateAttendanceRecord', data)
+}
+
+export function addParent(data) {
+  return postRequest('addParent', data)
+}
+
+export function removeParent(data) {
+  return postRequest('removeParent', data)
+}
+
+export function addTeacher(data) {
+  return postRequest('addTeacher', data)
+}
+
+export function removeTeacher(data) {
+  return postRequest('removeTeacher', data)
 }
 
 export function getStudentRecords(data) {
@@ -26,4 +58,16 @@ export function getStudentRecords(data) {
 
 export function getTeacherClasses(data) {
   return postRequest('getTeacherClasses', data)
+}
+
+export function getClassData(data) {
+  return postRequest('getClassData', data)
+}
+
+export function getAttendanceStatus(data) {
+  return postRequest('getAttendanceStatus', data)
+}
+
+export function getChildren(data) {
+  return postRequest('getChildren', data)
 }

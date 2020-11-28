@@ -132,6 +132,20 @@ def getAttendanceList(schoolName, studentName, className, date):
     
     return qlist
 
+def notifyParents(firstName, lastName, date, className):
+    """
+    this notifies parents of attendence. Sets Parent = True
+    """
+    pass
+
+
+def updateAttendanceRecord(firstName, lastName, attendence, 
+    date, reason, verified, parentNotified):
+    """
+    updates attendence record for student. When secretary is verifying sickness or late
+    """
+    pass
+
 def addParent(name, email, password):
     """
     add the parent to the db with their info
@@ -167,3 +181,17 @@ def removeTeacher(name):
     remove the teacher from the db
     """
     pass
+
+def getAttendanceStatus(className, date):
+    """
+    Need to know if the attendance for a class has been sent for the data already
+    Return: True or False if attendance has been sent
+    """
+    return True
+
+def getChildren(email):
+    """
+    Gets list of children of parent
+    """
+    return ["Child1", "Child 2"]
+

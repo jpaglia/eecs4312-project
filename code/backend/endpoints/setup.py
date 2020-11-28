@@ -36,7 +36,11 @@ def login():
 
   email = req_data['email'] 
   password = req_data['password']
-
+  if email == "" or password == "":
+    return jsonify(
+      valid = False,
+      type = None
+    )
   actual_password = db_queries.getpassword(email)
   persontype = db_queries.getpersonType(email)
   valid = False
@@ -111,6 +115,66 @@ def getAttendanceList():
   attendances = db_queries.getAttendanceList(schoolName, studentName, className, date)
 
   return jsonify(attendances)
+
+
+@setup.route('/notifyParents', methods=['POST'])
+def notifyParents():
+  """
+  Description: This endpoint adds the parent according to the inputs
+  Input Json Request: {
+    Name - Name of Student FirstName and LastName
+    Date - Date 
+    Class - Class Name
+  }
+  """
+  data = request.get_json()
+  for d in data:
+    name = d["Name"]
+    firstName = name.split(" ")[0]
+    lastName = name.split(" ")[1]
+    date = d["Date"]
+    className = d["Class"]
+    db_queries.notifyParents(firstName, lastName, date, className)
+  return jsonify([])
+
+@setup.route('/updateAttendanceRecord', methods=['POST'])
+def updateAttendanceRecord():
+  """
+  Disscription: Endpoint updates attendence record for of student- reason for sick 
+  { 'Name': 'Billy', 
+  'Attendance': "Late", 
+  'Class': "Math", 
+  'Date': '02/04/20', 
+  'Reason For Absence': 'Billy was sick', 
+  'Reason Verified': false, 
+  'Parent Notified': 'N' }
+  """
+  data = request.get_json()
+  if "Name" not in data:
+    return "No key 'Name' in request body", 400
+  if "Attendance" not in data:
+    return "No key 'Name' in request body", 400
+  if "Class" not in data:
+    return "No key 'Name' in request body", 400
+  if "Date" not in data:
+    return "No key 'Name' in request body", 400
+  if "Reason For Absence" not in data:
+    return "No key 'Name' in request body", 400
+  if "Reason Verified" not in data:
+    return "No key 'Name' in request body", 400
+  if "Parent Notified" not in data:
+    return "No key 'Name' in request body", 400
+
+  firstName = data["Name"].split(" ")[0]
+  lastName = data["Name"].split(" ")[1]
+  attendence = data["Attendance"]
+  date = data["Date"]
+  reason = data["Reason For Absence"]
+  verified = data["Reason Verified"]
+  parentNotified = data["Parent Notified"]
+  db_queries.updateAttendanceRecord(firstName, lastName, attendence, 
+    date, reason, verified, parentNotified)
+  return jsonify([])
 
 # Filter by class is optional
 @setup.route('/getStudentRecords', methods=['POST'])
@@ -258,3 +322,39 @@ def removeTeacher():
     return jsonify(
       valid = "True"
     )
+
+@setup.route('/getAttendanceStatus', methods=['POST'])
+def getAttendanceStatus():
+  data = request.get_json()
+  className = ''
+  if not "date" in data:
+    return "No key 'date' in request body", 400
+  if "className" in data:
+    className = data['className']
+
+  date = data['date']
+
+  date = int(date) / 1000
+  date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
+  result = db_queries.getAttendanceStatus(className, date)
+  return jsonify(result)
+
+
+@setup.route('/getChildren', methods=['POST'])
+def getChildren():
+  """
+  Description: gets children of parent
+    Input Json Request: {
+    email:
+  }
+  returns ["Child1", "Child2"]
+  """
+  data = request.get_json()
+  if not "email" in data:
+    return "No key 'date' in request body", 400
+
+  email = data["email"]
+  result = db_queries.getChildren(email)
+  return jsonify(result)
+
+
