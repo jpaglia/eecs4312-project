@@ -54,6 +54,7 @@ class LoginPage extends Component {
       }
       
     })
+    //this.props.loginVerified('Parent')
   }
 
   render() {
@@ -68,7 +69,7 @@ class LoginPage extends Component {
             <div className='loginPageTitleText'>
               Welcome to the TDSB Attendance System!
             </div>
-            <div className='test'>
+            <div className='loginInner'>
             {email}
             {password}
             </div>
