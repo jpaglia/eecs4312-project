@@ -54,6 +54,7 @@ class LoginPage extends Component {
       }
       
     })
+   // this.props.loginVerified(this.state.email, 'Teacher')
   }
 
   render() {
