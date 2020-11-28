@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
-import { v4 as uuidv4 } from 'uuid'
 import './ChildDetails.scss';
+import ParentCalendar from '../../../components/ParentCalendar'
+
 class ChildDetails extends Component {
   constructor() {
     super();
@@ -13,7 +14,9 @@ class ChildDetails extends Component {
   render() {
      return (
       <div>
-        {this.props.childName}
+        <ParentCalendar
+          child={this.props.childName}
+        />
       </div>
     );
   }
