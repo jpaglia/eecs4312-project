@@ -40,7 +40,7 @@ MiniCalendar.defaultProps = {
 MiniCalendar.propTypes = {
  updateDates: Proptypes.func.isRequired,
  disableTile: Proptypes.bool,
- selectedDate: Proptypes.any.isRequired
+ selectedDate: Proptypes.any
 }
 
 export default MiniCalendar;
