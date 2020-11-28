@@ -225,21 +225,25 @@ def addParent():
   }
   """
   data = request.get_json()
+
+  if 'Name' not in data:
+    return "key 'Name' not found in request body", 400
+  if 'Email' not in data:
+    return "key 'Email' not found in request body", 400
+  if 'Password' not in data:
+    return "key 'Password' not found in request body", 400
+
   name = data['Name']
   email = data['Email']
   password = data['Password']
 
-  if (name == "" or email == "" or password == ""):
-    return jsonify(
-      valid = "False"
-    )
   if (db_queries.checkIfParentExists(name)):
     return jsonify(
       valid = "False"
     )
-  db_queries.addParent(name, email, password)
+  added = db_queries.addParent(name, email, password)
   return jsonify(
-      valid = "True"
+      valid = added
     )
 
 @setup.route('/removeParent', methods=['POST'])
@@ -254,17 +258,16 @@ def removeParent():
   }
   """
   data = request.get_json()
+
+  if 'Name' not in data:
+    return "key 'Name' not found in request body", 400
+
   name = data['Name']
 
-  if (name == ""):
-    return jsonify(
-      valid = "False"
-    )
-  else:
-    db_queries.removeParent(name)
-    return jsonify(
-      valid = "True"
-    )
+  db_queries.removeParent(name)
+  return jsonify(
+    valid = "True"
+  )
 
 @setup.route('/addTeacher', methods=['POST'])
 def addTeacher():
@@ -281,22 +284,28 @@ def addTeacher():
   }
   """
   data = request.get_json()
+
+  if 'Name' not in data:
+    return "key 'Name' not found in request body", 400
+  if 'Email' not in data:
+    return "key 'Email' not found in request body", 400
+  if 'Password' not in data:
+    return "key 'Password' not found in request body", 400
+  if 'Class' not in data:
+    return "key 'Class' not found in request body", 400
+
   name = data['Name']
   email = data['Email']
   password = data['Password']
   subject = data['Class']
 
-  if (name == "" or email == "" or password == "" or subject == ""):
-    return jsonify(
-      valid = "False"
-    )
   if (db_queries.checkIfTeacherExists(name)):
     return jsonify(
       valid = "False"
     )
-  db_queries.addTeacher(name, email, password, subject)
+  added = db_queries.addTeacher(name, email, password, subject)
   return jsonify(
-      valid = "True"
+      valid = added
     )
 
 @setup.route('/removeTeacher', methods=['POST'])
@@ -311,17 +320,16 @@ def removeTeacher():
   }
   """
   data = request.get_json()
+
+  if 'Name' not in data:
+    return "key 'Name' not found in request body", 400
+
   name = data['Name']
 
-  if (name == ""):
-    return jsonify(
-      valid = "False"
-      )
-  else:
-    db_queries.removeTeacher(name)
-    return jsonify(
-      valid = "True"
-    )
+  db_queries.removeTeacher(name)
+  return jsonify(
+    valid = "True"
+  )
 
 @setup.route('/getAttendanceStatus', methods=['POST'])
 def getAttendanceStatus():
@@ -357,4 +365,28 @@ def getChildren():
   result = db_queries.getChildren(email)
   return jsonify(result)
 
+@setup.route('/getClassData', methods=['POST'])
+def getClassData():
+  data = request.get_json()
+  
+  if not "className" in data:
+    return "No key 'className' in request body", 400
+  
+  className = data['className']
+  
+  [hour, minute] = db_queries.getClassTime(className)
+  studentList = db_queries.getClassStudentList(className)
 
+  classTimeDict = {"hour": hour, "min": minute}
+  
+  studentListDict = []
+  for i in studentList:
+    name = i[0]
+    attendance = i[1]
+    studentDict = {"Name": name, "Attendance": attendance}
+    studentListDict.append(studentDict)
+  
+  return jsonify(
+    classTime = classTimeDict,
+    studentList = studentListDict
+  )

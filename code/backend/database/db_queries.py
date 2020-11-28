@@ -148,7 +148,7 @@ def updateAttendanceRecord(firstName, lastName, attendence,
 
 def addParent(name, email, password):
     """
-    add the parent to the db with their info
+    return true if parent added to the db with their info, false otherwise
     """
     pass
 
@@ -166,7 +166,7 @@ def removeParent(name):
 
 def addTeacher(name, email, password, subject):
     """
-    add the teacher to the db with their info
+    return true if teacher added to the db with their info, false otherwise
     """
     pass
 
@@ -195,3 +195,16 @@ def getChildren(email):
     """
     return ["Child1", "Child 2"]
 
+def getClassTime(className):
+    """
+    Gets the class time of the class passed in
+    Return: [hour, minute]
+    """
+    pass
+
+def getClassStudentList(className):
+    """
+    Gets the students name and attendance for the class passed in
+    Return: [[name, attendence], [name, attendence], ...]
+    """
+    pass
