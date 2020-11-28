@@ -28,6 +28,12 @@ def login():
   """
 
   req_data = request.get_json()
+
+  # Return invalid if no email/password included in request
+  # Can also return an http 400 response
+  if not ("email" in req_data) or not("password" in req_data):
+      return jsonify(valid = False)
+
   email = req_data['email'] 
   password = req_data['password']
 
@@ -44,16 +50,10 @@ def login():
 
 @setup.route('/getSchoolName', methods=['POST'])
 def getSchoolName():
-  """
-  Description: This endpoint gets the school name based on the email
-  Input Json Request: {
-    email
-  }
-  return: {
-    schoolName: String
-  }
-  """
   data = request.get_json()
+  if not "email" in data:
+    return "No Email found in request body", 400
+
   email = data['email']
 
   schoolName = db_queries.getSchoolName(email)
@@ -64,29 +64,41 @@ def getSchoolName():
 
 @setup.route('/getListOfClasses', methods=['POST'])
 def getListOfClasses():
-  """
-  Description: This endpoint gets the list of classes at the specified school
-  Input Json Request: {
-    schoolName
-  }
-  return: {
-    listOfClasses: List[String]
-  }
-  """
   data = request.get_json()
+
+  if not "schoolName" in data:
+    return "No School name found in request body", 400
+
   schoolName = data['schoolName']
 
   listOfClasses = db_queries.getListOfClasses(schoolName)
 
-  return jsonify(
-    classes = listOfClasses
-  )
+  if listOfClasses == []:
+    return "No Classes Found", 404
+  else:
+    return jsonify(
+      classes = listOfClasses
+    )
 
 @setup.route('/getAttendanceList', methods=['POST'])
 def getAttendanceList():
   data = request.get_json()
-  studentName = data['studentName']
-  className = data['className']
+
+  if not "schoolName" in data:
+    return jsonify([])
+
+  studentName = ''
+  className = ''
+  date = ''
+
+  if "studentName" in data:
+    studentName = data['studentName']
+  
+  if "className" in data:
+    className = data['className']
+
+  if "date" in data:
+    date = data['date']
   
   # TO-DO: FIX DATE AND SCHOOL HARDCODING
   schoolName = 'Maplewood High School'
@@ -100,4 +112,149 @@ def getAttendanceList():
 
   return jsonify(attendances)
 
+# Filter by class is optional
+@setup.route('/getStudentRecords', methods=['POST'])
+def getStudentRecords():
+  data = request.get_json()
+  className = ''
 
+  if not "Name" in data:
+    return "No key 'Name' in request body", 400
+  if not "date" in data:
+    return "No key 'date' in request body", 400
+  if "className" in data:
+    className = data['className']
+
+  name = data['Name']
+  date = data['date']
+
+  date = int(date) / 1000
+  date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
+
+  result = db_queries.getStudentRecords(name, date, className) 
+  return jsonify(result)
+
+
+@setup.route('/getTeacherClasses', methods=['POST'])
+def getTeacherClasses():
+  data = request.get_json()
+
+  if 'email' not in data:
+    return "key 'email' not found in request body", 400
+  email = data["email"]
+
+  classes = db_queries.getTeacherClasses(email)
+
+  return jsonify(classes)
+
+@setup.route('/addParent', methods=['POST'])
+def addParent():
+  """
+  Description: This endpoint adds the parent according to the inputs
+  Input Json Request: {
+    name
+    email
+    password
+  }
+  return: {
+    valid: boolean
+  }
+  """
+  data = request.get_json()
+  name = data['Name']
+  email = data['Email']
+  password = data['Password']
+
+  if (name == "" or email == "" or password == ""):
+    return jsonify(
+      valid = "False"
+    )
+  if (db_queries.checkIfParentExists(name)):
+    return jsonify(
+      valid = "False"
+    )
+  db_queries.addParent(name, email, password)
+  return jsonify(
+      valid = "True"
+    )
+
+@setup.route('/removeParent', methods=['POST'])
+def removeParent():
+  """
+  Description: This endpoint removes the selected parent
+  Input Json Request: {
+    name
+  }
+  return: {
+    valid: boolean
+  }
+  """
+  data = request.get_json()
+  name = data['Name']
+
+  if (name == ""):
+    return jsonify(
+      valid = "False"
+    )
+  else:
+    db_queries.removeParent(name)
+    return jsonify(
+      valid = "True"
+    )
+
+@setup.route('/addTeacher', methods=['POST'])
+def addTeacher():
+  """
+  Description: This endpoint adds the teacher according to the inputs
+  Input Json Request: {
+    name
+    email
+    password
+    class
+  }
+  return: {
+    valid: boolean
+  }
+  """
+  data = request.get_json()
+  name = data['Name']
+  email = data['Email']
+  password = data['Password']
+  subject = data['Class']
+
+  if (name == "" or email == "" or password == "" or subject == ""):
+    return jsonify(
+      valid = "False"
+    )
+  if (db_queries.checkIfTeacherExists(name)):
+    return jsonify(
+      valid = "False"
+    )
+  db_queries.addTeacher(name, email, password, subject)
+  return jsonify(
+      valid = "True"
+    )
+
+@setup.route('/removeTeacher', methods=['POST'])
+def removeTeacher():
+  """
+  Description: This endpoint removes the selected teacher
+  Input Json Request: {
+    name
+  }
+  return: {
+    valid: boolean
+  }
+  """
+  data = request.get_json()
+  name = data['Name']
+
+  if (name == ""):
+    return jsonify(
+      valid = "False"
+      )
+  else:
+    db_queries.removeTeacher(name)
+    return jsonify(
+      valid = "True"
+    )
