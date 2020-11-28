@@ -91,7 +91,7 @@ class TeacherHistoricalRecords extends Component {
             <AccordionDetails>
               <MiniCalendar
                 updateDates={this.handleDateChange.bind(this)} 
-                currentValue={this.state.startingDate}
+                selectedDate={this.state.startingDate}
                 disableTile={true}
               />
             </AccordionDetails>

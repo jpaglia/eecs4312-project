@@ -87,8 +87,8 @@ class SecretaryAttendance extends Component {
             </AccordionSummary>
             <AccordionDetails>
               <MiniCalendar
-              updateDates={this.handleDateChange.bind(this)} 
-              currentValue={this.state.startingDate}
+                updateDates={this.handleDateChange.bind(this)}
+                selectedDate={this.state.startingDate}
               />
             </AccordionDetails>
           </Accordion>

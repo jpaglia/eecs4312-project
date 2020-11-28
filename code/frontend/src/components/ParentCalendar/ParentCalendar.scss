@@ -1,0 +1,34 @@
+.parentCalendarWrapper {
+  min-width: 700px;
+  min-height: 500px;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.calendarInner {
+  min-width: 700px;
+}
+
+.calendarPresent{
+  height: 90px;
+  font-size: 30px;
+  background-color: #47bc56 !important;
+}
+
+.calendarLate{
+  height: 90px;
+  font-size: 30px;
+  background-color: #e9d200 !important;
+}
+
+.calendarAbsent{
+  height: 90px;
+  font-size: 30px;
+  background-color: #cf0000  !important;
+}
+
+.calendarStandard{
+  height: 90px;
+  font-size: 30px;
+}
