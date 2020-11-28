@@ -1,0 +1,42 @@
+.tileRow {
+  // Using Flex to centre divs without using screen size
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100vw;
+  height: 20vh;
+  padding-bottom: 3vh;
+  padding-top: 40px;
+  .tileShape {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: center;
+    color: white;
+    font-weight: 500;
+    font-size: 24px;
+    border-radius: 15px;
+    background-color: rgba(71,188,86, 0.9);
+    width: 20vw;
+  }
+  .tileShapeWarning {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: center;
+    color: white;
+    font-weight: 500;
+    font-size: 24px;
+    border-radius: 15px;
+    background-color: rgba(196, 22, 22, 0.9);
+    width: 20vw;
+  }
+  .tileShape:hover {
+    background-color: rgb(50, 128, 61);
+  }
+
+  .tileShapeWarning:hover {
+    background-color: rgba(148, 3, 3, 0.9);
+  }
+}
+
