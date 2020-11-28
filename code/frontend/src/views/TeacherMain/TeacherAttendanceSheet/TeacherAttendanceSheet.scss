@@ -1,0 +1,42 @@
+.secretaryFilterRowWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 90vw;
+  height: 150px;
+  .secretaryAttendanceLeft {
+    display: flex;
+    flex-direction: row;
+    .secretaryAttendanceSpacer {
+      padding-right: 72.5px;
+    }
+  }
+}
+
+.tableAttendance {
+  position: absolute;
+  top: 300px;
+  z-index: 1;
+}
+
+.accordionZIndex {
+  position: absolute;
+  z-index: 2
+}
+
+.calendarAccordian {
+  width: 330px;
+  height: 50px;
+  margin-top: 27px;
+}
+
+.secretaryFilterButtonWrapper {
+  padding-top: 30px;
+  min-width: calc(100vw - 1105px);
+  display: flex;
+  justify-content: center;
+  .secretaryFilterButton {
+    height: 45px;
+    line-height: 45px;
+  }
+}
