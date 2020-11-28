@@ -13,11 +13,17 @@ class ChildDetails extends Component {
 
   render() {
      return (
-      <div>
-        <ParentCalendar
-          child={this.props.childName}
-        />
+      <div className="childDetails">
+        <div className="childCalendar">
+          <ParentCalendar
+            child={this.props.childName}
+          />
+        </div>
+        <div className="notificationPanel">
+          Notifications
+        </div>
       </div>
+      
     );
   }
 }
