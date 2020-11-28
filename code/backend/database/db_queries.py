@@ -132,4 +132,38 @@ def getAttendanceList(schoolName, studentName, className, date):
     
     return qlist
 
+def addParent(name, email, password):
+    """
+    add the parent to the db with their info
+    """
+    pass
 
+def checkIfParentExists(name):
+    """
+    return true if name already exists in db
+    """
+    pass
+
+def removeParent(name):
+    """
+    remove the parent from the db
+    """
+    pass
+
+def addTeacher(name, email, password, subject):
+    """
+    add the teacher to the db with their info
+    """
+    pass
+
+def checkIfTeacherExists(name):
+    """
+    return true if name already exists in db
+    """
+    pass
+
+def removeTeacher(name):
+    """
+    remove the teacher from the db
+    """
+    pass

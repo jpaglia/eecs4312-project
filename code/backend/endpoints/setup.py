@@ -146,3 +146,115 @@ def getTeacherClasses():
   classes = db_queries.getTeacherClasses(email)
 
   return jsonify(classes)
+
+@setup.route('/addParent', methods=['POST'])
+def addParent():
+  """
+  Description: This endpoint adds the parent according to the inputs
+  Input Json Request: {
+    name
+    email
+    password
+  }
+  return: {
+    valid: boolean
+  }
+  """
+  data = request.get_json()
+  name = data['Name']
+  email = data['Email']
+  password = data['Password']
+
+  if (name == "" or email == "" or password == ""):
+    return jsonify(
+      valid = "False"
+    )
+  if (db_queries.checkIfParentExists(name)):
+    return jsonify(
+      valid = "False"
+    )
+  db_queries.addParent(name, email, password)
+  return jsonify(
+      valid = "True"
+    )
+
+@setup.route('/removeParent', methods=['POST'])
+def removeParent():
+  """
+  Description: This endpoint removes the selected parent
+  Input Json Request: {
+    name
+  }
+  return: {
+    valid: boolean
+  }
+  """
+  data = request.get_json()
+  name = data['Name']
+
+  if (name == ""):
+    return jsonify(
+      valid = "False"
+    )
+  else:
+    db_queries.removeParent(name)
+    return jsonify(
+      valid = "True"
+    )
+
+@setup.route('/addTeacher', methods=['POST'])
+def addTeacher():
+  """
+  Description: This endpoint adds the teacher according to the inputs
+  Input Json Request: {
+    name
+    email
+    password
+    class
+  }
+  return: {
+    valid: boolean
+  }
+  """
+  data = request.get_json()
+  name = data['Name']
+  email = data['Email']
+  password = data['Password']
+  subject = data['Class']
+
+  if (name == "" or email == "" or password == "" or subject == ""):
+    return jsonify(
+      valid = "False"
+    )
+  if (db_queries.checkIfTeacherExists(name)):
+    return jsonify(
+      valid = "False"
+    )
+  db_queries.addTeacher(name, email, password, subject)
+  return jsonify(
+      valid = "True"
+    )
+
+@setup.route('/removeTeacher', methods=['POST'])
+def removeTeacher():
+  """
+  Description: This endpoint removes the selected teacher
+  Input Json Request: {
+    name
+  }
+  return: {
+    valid: boolean
+  }
+  """
+  data = request.get_json()
+  name = data['Name']
+
+  if (name == ""):
+    return jsonify(
+      valid = "False"
+      )
+  else:
+    db_queries.removeTeacher(name)
+    return jsonify(
+      valid = "True"
+    )
