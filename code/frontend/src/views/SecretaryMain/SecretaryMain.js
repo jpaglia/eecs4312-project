@@ -7,6 +7,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import { getAttendanceList } from '../../utils/sockets';
 import './SecretaryMain.scss'
 
 function TabPanel(props) {
@@ -45,11 +46,15 @@ function a11yProps(index) {
 
 
 class SecretaryMain extends Component {
+  componentDidMount() {
+    this.getInitialRowData();
+  }
   constructor(props) {
     super(props);
     this.state = {
       'schoolName': 'Maplewood High School',   // get this based on login, or hardcode for demo idk
-      'value': 0
+      'value': 0,
+      'initialRowData': []
     }
   }
 
@@ -73,11 +78,28 @@ class SecretaryMain extends Component {
       </div>
     )
   }
+
+  getInitialRowData() {
+    const searchParams = {
+      studentName: '',
+      className: '',
+      startingDate: null
+    }
+
+    getAttendanceList(searchParams).then(result => {
+      this.setState({
+        initialRowData: result.data
+      })
+    })
+  }
   
   render() {
     const secretaryMainPage = this.getMainPage();
     const systemAdminPage = <SystemAdmin />;
-    const secretaryAttendancePage = <SecretaryAttendance />;
+    const secretaryAttendancePage = 
+    <SecretaryAttendance
+      initialRowData={this.state.initialRowData}
+    />;
 
     return (
       <div>
