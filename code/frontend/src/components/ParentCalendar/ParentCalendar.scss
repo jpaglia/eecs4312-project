@@ -1,9 +1,11 @@
 .parentCalendarWrapper {
   min-width: 700px;
-  min-height: 500px;
+  max-width: 700px;
+  min-height: 600px;
   display: flex;
   justify-content: center;
   margin-top: 30px;
+  margin-left: 30px;
 }
 
 .calendarInner {
@@ -31,4 +33,12 @@
 .calendarStandard{
   height: 90px;
   font-size: 30px;
+}
+
+.test {
+  position: absolute;
+  height: 90px;
+  width: 100px;
+  margin-left: -15px;
+  margin-top: -64px;
 }
