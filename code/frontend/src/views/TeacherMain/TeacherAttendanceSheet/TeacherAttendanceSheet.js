@@ -22,7 +22,6 @@ class TeacherAttendanceSheet extends Component {
       className: '',
       rowData: [],
       classStartHour: 0,
-      classStartMin: 0,
       attendanceSubmitted: false
     }
   }
@@ -54,7 +53,6 @@ class TeacherAttendanceSheet extends Component {
      rowData={this.state.rowData}
      currentUser={'Teacher-Record'}
      classStartHour={this.state.classStartHour}
-     classStartMin={this.state.classStartMin}
     />
 
     return (

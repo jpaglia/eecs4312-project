@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import Calendar from 'react-calendar';
 import Popover from '@material-ui/core/Popover';
-import Typography from '@material-ui/core/Typography';
 import { getStudentRecords } from '../../utils/sockets';
 import 'react-calendar/dist/Calendar.css';
 import './ParentCalendar.scss';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import Box from '@material-ui/core/Box';
-
 
 class ParentCalendar extends Component {
 
@@ -86,7 +84,7 @@ class ParentCalendar extends Component {
   }
 
   getTileContent(date, view) {
-    if (view === 'month' && (date.getDay() !== 0 && date.getDay() !== 6)) {
+    if (view === 'month' && (date.getDay() !== 0 && date.getDay() !== 6) && date.getTime() < new Date().getTime()) {
       const structuredDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
       const dailyData = this.state.structuredDates[structuredDate];
       if (typeof (dailyData) !== 'undefined') {
@@ -94,7 +92,7 @@ class ParentCalendar extends Component {
           const value = singleClass['Attendance'].charAt(0).toUpperCase() + singleClass['Attendance'].slice(1)
 
           return(
-          <div>{singleClass['Class']}: {value}</div>
+          <div key={value}>{singleClass['Class']}: {value}</div>
           )
         })
         
@@ -102,7 +100,7 @@ class ParentCalendar extends Component {
           <PopupState variant="popover" popupId="demo-popup-popover">
             {(popupState) => (
               <div>
-                <div className='test' {...bindTrigger(popupState)}>
+                <div className='parentCalendarPopover' {...bindTrigger(popupState)}>
   
                 </div>
                 <Popover
@@ -130,6 +128,12 @@ class ParentCalendar extends Component {
     return (null)
   }
 
+  showRecord(date, e) {
+    if (date.getDate() === new Date().getDate() && date.getMonth() === new Date().getMonth()) {
+      this.props.onSelectToday()
+    }
+  }
+
   render() {
 
     return (
@@ -137,7 +141,7 @@ class ParentCalendar extends Component {
         <Calendar
           className='calendarInner'
           minDetail={'year'}
-          onChange={null}
+          onChange={this.showRecord.bind(this)}
           showNeighboringMonth={false}
           selectRange={false}
           onActiveStartDateChange={({ activeStartDate, view }) => this.viewChange(activeStartDate, view)}
@@ -152,7 +156,8 @@ class ParentCalendar extends Component {
 }
 
 ParentCalendar.propTypes = {
-  child: Proptypes.string.isRequired
+  child: Proptypes.string.isRequired,
+  onSelectToday: Proptypes.func.isRequired
 }
 
 export default ParentCalendar;

@@ -194,7 +194,6 @@ class AttendanceTable extends Component {
       disableButton={this.state.disableButton}
       submitAttendance={this.submitAttendance.bind(this)}
       classStartHour={this.props.classStartHour}
-      classStartMin={this.props.classStartMin}
     />
     )
   }
@@ -232,8 +231,7 @@ AttendanceTable.propTypes = {
   notifyParents: Proptypes.func,
   rowData: Proptypes.array.isRequired,
   currentUser: Proptypes.string.isRequired,
-  classStartHour: Proptypes.number,
-  classStartMin: Proptypes.number
+  classStartHour: Proptypes.number
 }
 
 export default AttendanceTable;

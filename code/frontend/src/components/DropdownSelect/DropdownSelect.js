@@ -27,7 +27,7 @@ class DropdownSelect extends Component {
   render() {
     const menuOptions = this.createMenuItems();
     return(
-      <div  className='dropdownWrapper'>
+      <div  className={this.props.className}>
         <ThemeProvider theme={COLOUR_THEME}>
           <FormControl className='dropdownSelect'>
             <InputLabel id={`Dropdown_${this.props.dropdownName}`} color="primary"
@@ -55,6 +55,7 @@ DropdownSelect.defaultProps = {
   hoverText: '',
   enableTooltip: false,
   currentSelection: '',
+  className: 'dropdownWrapper'
 }
 
 DropdownSelect.propTypes = {
@@ -63,7 +64,8 @@ DropdownSelect.propTypes = {
  dropdownName: Proptypes.string,
  currentSelection: Proptypes.string,
  hoverText: Proptypes.string,
- onChange: Proptypes.func.isRequired
+ onChange: Proptypes.func.isRequired,
+ className: Proptypes.string
 }
 
 export default DropdownSelect;
