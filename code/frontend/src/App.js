@@ -7,7 +7,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      'currentPage': 'LoginPage'
+      'currentPage': 'LoginPage',
+      'email': ''
     }
 
     this.onChange = this.onChange.bind(this)
@@ -20,9 +21,10 @@ class App extends Component {
     })
   }
 
-  onLogin(newPage) {
+  onLogin(email, newPage) {
     this.setState({
       'currentPage': newPage,
+      'email': email
     });
   }
 
@@ -35,16 +37,19 @@ class App extends Component {
     const secretaryMain = this.state.currentPage === 'Secretary' ?
     <SecretaryMain
        onChange={this.onChange.bind(this)}
+       email={this.state.email}
     /> : null;
 
     const parentMain = this.state.currentPage === 'Parent' ?
     <ParentMain
       onChange={this.onChange.bind(this)}
+      email={this.state.email}
     /> : null;
 
     const teacherMain = this.state.currentPage === 'Teacher' ?
     <TeacherMain
       onChange={this.onChange.bind(this)}
+      email={this.state.email}
     /> : null;
 
     return (

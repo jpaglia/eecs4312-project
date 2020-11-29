@@ -8,51 +8,17 @@ import { COLOUR_THEME } from '../../constants';
 import Button from '@material-ui/core/Button';
 import AttendanceDropdown from './AttendanceDropdown';
 import AttendanceCheckbox from './AttendanceCheckbox';
+import AttendanceDiv from './AttendanceDiv';
+import SubmitAttendance from './SubmitAttendance';
 import './AttendanceTable.scss';
+
+
 class AttendanceTable extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      columnDefs: [
-        {
-          field: "Name",
-          minWidth: 200
-        },
-        {
-          field: "Attendance",
-          cellRenderer: "attendanceDropdown",
-          cellRendererParams: {
-            clicked: this.updateAttendance.bind(this)
-          },
-          minWidth: 150
-        },
-        {
-          field: "Class",
-          minWidth: 75
-        },
-        {
-          field: "Date",
-          minWidth: 90
-        },
-        {
-          field: "Reason For Absence",
-          minWidth: 235,
-          editable: true
-        },
-        {
-          field: "Reason Verified",
-          cellRenderer: "attendanceCheckbox",
-          cellRendererParams: {
-            onChange: this.updateVerifiedReason.bind(this)
-          },
-          minWidth: 150
-        },
-        {
-          field: "Parent Notified",
-          minWidth: 150
-        },
-      ],
+      columnDefs: this.getTableColumnDefs(),
       defaultColDef: {
         flex: 1,
         minWidth: 100,
@@ -61,17 +27,122 @@ class AttendanceTable extends Component {
       },
       frameworkComponents: {
         attendanceDropdown: AttendanceDropdown,
-        attendanceCheckbox: AttendanceCheckbox
-      }
+        attendanceCheckbox: AttendanceCheckbox,
+        attendanceDiv: AttendanceDiv
+      },
+      disableButton: true
     };
   }
 
+  getTableColumnDefs() {
+    if (this.props.currentUser === 'Secretary') {
+      return (
+        [
+          {
+            field: "Name",
+            minWidth: 200
+          },
+          {
+            field: "Attendance",
+            cellRenderer: "attendanceDropdown",
+            cellRendererParams: {
+              clicked: this.updateAttendance.bind(this),
+              type: 'Secretary'
+            },
+            minWidth: 150
+          },
+          {
+            field: "Class",
+            minWidth: 75
+          },
+          {
+            field: "Date",
+            minWidth: 90
+          },
+          {
+            field: "Reason For Absence",
+            minWidth: 235,
+            editable: true
+          },
+          {
+            field: "Reason Verified",
+            cellRenderer: "attendanceCheckbox",
+            cellRendererParams: {
+              onChange: this.updateVerifiedReason.bind(this)
+            },
+            minWidth: 150
+          },
+          {
+            field: "Parent Notified",
+            minWidth: 150
+          },
+        ]
+      )
+    } else if (this.props.currentUser === 'Teacher-Historical') {
+      return (
+        [
+          {
+            field: "Name",
+            minWidth: 268
+          },
+          {
+            field: "Attendance",
+            cellRenderer: "attendanceDiv",
+            minWidth: 268
+          },
+          {
+            field: "Class",
+            minWidth: 268
+          },
+          {
+            field: "Date",
+            minWidth: 269
+          }
+        ]
+      )
+    } else if (this.props.currentUser === 'Teacher-Record') {
+        return (
+          [
+            {
+              field: "Name",
+              minWidth: 250
+            },
+            {
+              field: "Attendance",
+              cellRenderer: "attendanceDropdown",
+              cellRendererParams: {
+                clicked: this.markAttendance.bind(this),
+                type: 'Teacher-Record'
+              },
+              minWidth: 150
+            }
+          ]
+        )
+      }
+    }
+
+  // For secretary only
   updateAttendance(value, rowIndex) {
     const rowNode = this.gridApi.getRowNode(rowIndex);
     rowNode.setDataValue('Attendance', value)
     this.gridApi.redrawRows()
-
     // Call endpoint to update child's attendance record
+  }
+
+  // For Teacher Only
+  markAttendance(value, rowIndex) {
+    const rowNode = this.gridApi.getRowNode(rowIndex);
+    rowNode.setDataValue('Attendance', value)
+    let disableButton = false;
+    this.gridApi.forEachNode(function(rowNode, index) {
+      if (rowNode.data['Attendance'] === '') {
+        disableButton = true;
+      }
+    })
+
+    if (disableButton !== this.state.disableButton) {
+      this.setState({ disableButton: disableButton})
+    }
   }
 
   updateVerifiedReason(value, rowIndex) {
@@ -106,12 +177,31 @@ class AttendanceTable extends Component {
         </Button>
         </ThemeProvider>
       </div>
+    )
+  }
 
+  
+  submitAttendance() {
+   // TODO
+   // endpoint to submit attendance 
+   console.log('test')
+  }
+
+  // Submit record for Teacher
+  getSubmitAttendanceButton() {
+    return (
+    <SubmitAttendance
+      disableButton={this.state.disableButton}
+      submitAttendance={this.submitAttendance.bind(this)}
+      classStartHour={this.props.classStartHour}
+      classStartMin={this.props.classStartMin}
+    />
     )
   }
 
   render() {
-    const notifyParentsButton = this.getNotifyParents();
+    const notifyParentsButton = this.props.currentUser === 'Secretary' ? this.getNotifyParents() : null;
+    const submitAttendanceTeacher = this.props.currentUser === 'Teacher-Record' ? this.getSubmitAttendanceButton() : null;
 
     return (
       <div className='attendanceTableWrapper'>
@@ -119,7 +209,7 @@ class AttendanceTable extends Component {
           id="myGrid"
           style={{
             height: "60vh",
-            width: "1075px"
+            width: this.props.currentUser === 'Teacher-Record' ? "405px" : "1075px"
           }}
           className="ag-theme-alpine"
         >
@@ -132,14 +222,18 @@ class AttendanceTable extends Component {
           />
         </div>
         {notifyParentsButton}
+        {submitAttendanceTeacher}
       </div>
     );
   }
 }
 
 AttendanceTable.propTypes = {
-  notifyParents: Proptypes.func.isRequired,
-  rowData: Proptypes.array.isRequired
+  notifyParents: Proptypes.func,
+  rowData: Proptypes.array.isRequired,
+  currentUser: Proptypes.string.isRequired,
+  classStartHour: Proptypes.number,
+  classStartMin: Proptypes.number
 }
 
 export default AttendanceTable;

@@ -50,11 +50,11 @@ class LoginPage extends Component {
     }
     login(data).then(result => {
       if (result.data.valid) {
-        this.props.loginVerified(result.data.type)
+        this.props.loginVerified(this.state.email, result.data.type)
       }
       
     })
-    //this.props.loginVerified('Parent')
+  // this.props.loginVerified(this.state.email, 'Parent')
   }
 
   render() {

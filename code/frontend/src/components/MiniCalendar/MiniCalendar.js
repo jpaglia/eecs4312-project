@@ -6,13 +6,14 @@ import './MiniCalendar.scss';
 
 class MiniCalendar extends Component {
 
-  test(date) {
+  setTile(date) {
     if (date.getTime() === this.props.selectedDate) {
       return 'miniCalendarSelected'
     }
   }
 
   render() {
+    const today = new Date();
     const dateObj = this.props.selectedDate === null ? null : new Date(this.props.selectedDate);
     return (
       <div className='miniCalendarWrapper'>
@@ -20,8 +21,11 @@ class MiniCalendar extends Component {
         onChange={this.props.updateDates}
         value={dateObj}
         selectRange={false}
-        tileClassName={({date}) => this.test(date)}
-        tileDisabled={({date, view}) => (view === 'month') && (date.getDay() === 0 || date.getDay() === 6)}
+        tileDisabled={({date, view}) => (view === 'month')
+          && (date.getDay() === 0 || date.getDay() === 6 || 
+          (this.props.disableTile && date.getTime() > today.getTime()))
+        }
+        tileClassName={({date}) => this.setTile(date)}
       />
 
       </div>
@@ -29,9 +33,14 @@ class MiniCalendar extends Component {
   }
 }
 
+MiniCalendar.defaultProps = {
+  disableTile: false
+}
+
 MiniCalendar.propTypes = {
  updateDates: Proptypes.func.isRequired,
- selectedDate: Proptypes.any.isRequired
+ disableTile: Proptypes.bool,
+ selectedDate: Proptypes.any
 }
 
 export default MiniCalendar;
