@@ -11,7 +11,6 @@ class ParentHome extends Component {
       'currentPage': 'ParentHome',
       'selectedChild': ''
     }
-    this.onClick = this.onClick.bind(this)
   }
 
   onClick(newPage, childName) {
@@ -39,32 +38,17 @@ class ParentHome extends Component {
   render() {
     const rowButtons = this.props.childList.map((childData) =>
       this.createClickableChildBox(childData));
-    const tileRow = (
-      <div className="tileRow">
-        {rowButtons}
-      </div>
-    );
 
-    const childDetails = this.state.currentPage === 'ChildDetails' ?
+    const pageDetails = this.state.currentPage === 'ChildDetails' ?
     <ChildDetails
       childName={this.state.selectedChild}
-    /> : null;
+    /> :  <div className="tileRow"> {rowButtons} </div>;
 
-    if (childDetails == null) {
-      return (
-        <div>
-          {tileRow}
-        </div>
-      );
-    }
-    else {
-      return (
-        <div>
-          {childDetails}
-        </div>
-      );
-    }
-    
+    return (
+      <div>
+        {pageDetails}
+      </div>
+    );
   }
 }
 

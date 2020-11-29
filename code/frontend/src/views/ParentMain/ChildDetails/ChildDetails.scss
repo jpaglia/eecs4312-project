@@ -7,15 +7,26 @@
   padding-top: 40px;
 
   .childCalendar {
-    width: 70vw;
-    
+    width: 60vw;
   }
 
   .notificationPanel {
-    width: 30vw;
+    width: 40vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
+    height: 40vh;
+    margin-right: 10px;
+    .notificationParentTitle {
+      font-size: 20px;
+    }
   }
 }
 
+.MuiAlert-message{
+  text-align: center;
+  width: 350px;
+}
 
 

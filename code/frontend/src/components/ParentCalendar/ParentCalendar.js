@@ -56,7 +56,7 @@ class ParentCalendar extends Component {
         className: '',
         startingDate: activeStartDate.getTime()
       }
-  
+      
      // TODO: Need to change this to get a full month of data
      // Need a diff endpoint
      // I am sending back epoch time, but you need to only use the MONTH
