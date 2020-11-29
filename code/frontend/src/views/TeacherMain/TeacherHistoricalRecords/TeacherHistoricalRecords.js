@@ -13,14 +13,17 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AttendanceTable from '../../../components/AttendanceTable';
-import './SecretaryAttendance.scss'
+import './TeacherHistoricalRecords.scss'
 import { getAttendanceList } from '../../../utils/sockets';
 
 
 // Working on calendar next
 // Need to add in dates
-class SecretaryAttendance extends Component {
-
+class TeacherHistoricalRecords extends Component {
+  componentDidMount() {
+    this.searchRecords()
+  }
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -87,8 +90,9 @@ class SecretaryAttendance extends Component {
             </AccordionSummary>
             <AccordionDetails>
               <MiniCalendar
-                updateDates={this.handleDateChange.bind(this)}
+                updateDates={this.handleDateChange.bind(this)} 
                 selectedDate={this.state.startingDate}
+                disableTile={true}
               />
             </AccordionDetails>
           </Accordion>
@@ -116,7 +120,7 @@ class SecretaryAttendance extends Component {
       startingDate: this.state.startingDate
     }
 
-   
+    // TODO: Add in proper endpoint here
     getAttendanceList(searchParams).then(result => {
       this.setState({
         rowData : result.data,
@@ -152,13 +156,7 @@ class SecretaryAttendance extends Component {
     );
   }
 
-  notifyParents(childList) {
-    // call endpoint to notify parents with childList
-    // refetch data with this.state.searchParams
-    this.setState({
-      rowData: [] // replace with endpoint result
-    })
-  }
+  
 
 
   render() {
@@ -170,8 +168,7 @@ class SecretaryAttendance extends Component {
         <div className='tableAttendance'>
            <AttendanceTable
            rowData={this.state.rowData}
-           notifyParents={this.notifyParents.bind(this)}
-           currentUser={'Secretary'}
+           currentUser={'Teacher-Historical'}
            />
         </div>
       </div>
@@ -179,8 +176,8 @@ class SecretaryAttendance extends Component {
   }
 }
 
-SecretaryAttendance.propTypes = {
-  initialRowData: Proptypes.array.isRequired,
+TeacherHistoricalRecords.propTypes = {
+  initialRowData: Proptypes.array.isRequired
 }
 
-export default SecretaryAttendance;
+export default TeacherHistoricalRecords;

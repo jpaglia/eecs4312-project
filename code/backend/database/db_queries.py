@@ -50,13 +50,11 @@ def getStudentRecords(studentName, date, className):
 
     return studentRecord
 
-
 def getpassword(email):
     query = db_ops.runQuery("SELECT password from Accounts WHERE email=%s", email)
     if len(query) == 0:
         return ""
     return query[0]['password']
-
 
 def getpersonType(email):
     query = db_ops.runQuery("SELECT type from Accounts WHERE email=%s", email)
@@ -64,11 +62,9 @@ def getpersonType(email):
         return "None"
     return query[0]['type']
 
-
 def getSchoolName(email):
     query = db_ops.runQuery("SELECT school from Accounts WHERE email=%s", email)
     return query[0]['school']
-
 
 def getListOfClasses(schoolName):
     if schoolName == "" or schoolName == None:
@@ -197,11 +193,14 @@ def removeTeacher(name):
     pass
 
 def getAttendanceStatus(className, date):
-    """
-    Need to know if the attendance for a class has been sent for the data already
-    Return: True or False if attendance has been sent
-    """
-    return True
+    query_str = 'SELECT COUNT(*) FROM schooldb1.Attendance INNER JOIN Class ON Attendance.Class_classId = Class.classId'
+    query_str += ' WHERE className="' + className + '" AND date="' + date + '"'
+    query_count = db_ops.runQuery(query_str)[0]['COUNT(*)']
+    
+    if (query_count > 0):
+        return True
+
+    return False
 
 def getChildren(email):
     """
