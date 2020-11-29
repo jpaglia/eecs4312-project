@@ -1,6 +1,5 @@
 import database.db_ops as db_ops
 from datetime import date
-today = date.today()
 
 
 def getTeacherClasses(email):
@@ -136,10 +135,17 @@ def getAttendanceList(schoolName, studentName, className, date):
     return qlist
 
 def notifyParents(firstName, lastName, date, className):
-    """
-    this notifies parents of attendence. Sets Parent = True
-    """
-    pass
+    # First get the student ID given the info
+    studentId = db_ops.runQuery("SELECT studentId FROM Students WHERE firstName=%s AND lastName=%s", firstName, lastName)
+
+    # TODO error check whether that student was found
+    studentId = studentId[0]['studentId']
+
+    command = db_ops.runCommand("UPDATE Attendance \
+        INNER JOIN Class ON Attendance.Class_classId = Class.classId \
+        SET notified = '1' \
+        WHERE Student_studentId=%s AND date=%s AND className=%s", studentId, date, className)
+    return command
 
 
 def updateAttendanceRecord(firstName, lastName, attendence, 
@@ -153,15 +159,15 @@ def addParent(name, email, password):
     """
     return true if parent added to the db with their info, false otherwise
     """
-    date = today.strftime("%m/%d/%y")
-    email = email
+    today = date.today()
+    today = today.strftime("%m/%d/%y")
     firstName = name.split(" ")[0]
     lastName = name.split(" ")[1]
     command = "INSERT INTO schooldb1.Accounts (creationDate, email, password, firstName, lastName, type) VALUES (%s, %s, %s, %s, %s, %s);"
     try:
-        db_ops.runCommand(command, date, email, password, firstName, lastName, "Parent")
+        db_ops.runCommand(command, today, email, password, firstName, lastName, "Parent")
         return True
-    except Exception as e:
+    except Exception:
         return False
 
 def checkIfParentExists(email):

@@ -93,7 +93,7 @@ def getAttendanceList():
 
   studentName = ''
   className = ''
-  date = ''
+  d = ''
 
   if "studentName" in data:
     studentName = data['studentName']
@@ -102,17 +102,12 @@ def getAttendanceList():
     className = data['className']
 
   if "date" in data:
-    date = data['date']
+    d = int(data['date']) / 1000
+    d = datetime.datetime.fromtimestamp(d).strftime('%d/%m/%Y')
   
-  # TO-DO: FIX DATE AND SCHOOL HARDCODING
-  schoolName = 'Maplewood High School'
-  #schoolName = data['schoolName']
-  #date = int(data['date']) / 1000
-  date = 1606440131548 / 1000
-  date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
-  # *****************************
+  schoolName = data['schoolName']
 
-  attendances = db_queries.getAttendanceList(schoolName, studentName, className, date)
+  attendances = db_queries.getAttendanceList(schoolName, studentName, className, d)
 
   return jsonify(attendances)
 
@@ -128,13 +123,28 @@ def notifyParents():
   }
   """
   data = request.get_json()
+
+  for d in data:
+    if not "Name" in d:
+      return "keyname 'Name' not found in body: {}".format(d), 400
+    elif not "Date" in d:
+      return "keyname 'Date' not found in body: {}".format(d), 400
+    elif not "Class" in d:
+      return "keyname 'Class' not found in body: {}".format(d), 400
+
   for d in data:
     name = d["Name"]
     firstName = name.split(" ")[0]
     lastName = name.split(" ")[1]
-    date = d["Date"]
+
+    mydate = d["Date"]
+    mydate = int(mydate) / 1000
+    mydate = datetime.datetime.fromtimestamp(mydate).strftime('%d/%m/%Y')
+
     className = d["Class"]
-    db_queries.notifyParents(firstName, lastName, date, className)
+
+    db_queries.notifyParents(firstName, lastName, mydate, className)
+
   return jsonify([])
 
 @setup.route('/updateAttendanceRecord', methods=['POST'])
