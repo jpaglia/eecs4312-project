@@ -1,4 +1,6 @@
 import database.db_ops as db_ops
+from datetime import date
+
 
 def getTeacherClasses(email):
     query_str = "SELECT className FROM schooldb1.Teacher_has_Class \
@@ -42,47 +44,23 @@ def getStudentRecords(studentName, date, className):
 
     return studentRecord
 
-
 def getpassword(email):
-    """
-    Input (str): email of user 
-    return (str): password of user
-    """
-
     query = db_ops.runQuery("SELECT password from Accounts WHERE email=%s", email)
     if len(query) == 0:
         return ""
     return query[0]['password']
 
-
 def getpersonType(email):
-    """
-    Input (str): email of person 
-    return (str): type of individual Parent/Secretary/Teacher/None 
-    """
-
     query = db_ops.runQuery("SELECT type from Accounts WHERE email=%s", email)
     if len(query) == 0:
         return "None"
     return query[0]['type']
 
-
 def getSchoolName(email):
-    """
-    Input (str): email of secretary
-    return (str): school name
-    """
     query = db_ops.runQuery("SELECT school from Accounts WHERE email=%s", email)
     return query[0]['school']
 
-
 def getListOfClasses(schoolName):
-    """
-    Input (str): name of school
-    return List[str]: List of classes taught at school
-        Example ['Math', 'English', 'Science']
-    """
-
     if schoolName == "" or schoolName == None:
         return []
 
@@ -132,17 +110,50 @@ def getAttendanceList(schoolName, studentName, className, date):
     
     return qlist
 
-def addParent(name, email, password):
+def notifyParents(firstName, lastName, date, className):
+    # First get the student ID given the info
+    studentId = db_ops.runQuery("SELECT studentId FROM Students WHERE firstName=%s AND lastName=%s", firstName, lastName)
+
+    # TODO error check whether that student was found
+    studentId = studentId[0]['studentId']
+
+    command = db_ops.runCommand("UPDATE Attendance \
+        INNER JOIN Class ON Attendance.Class_classId = Class.classId \
+        SET notified = '1' \
+        WHERE Student_studentId=%s AND date=%s AND className=%s", studentId, date, className)
+    return command
+
+def updateAttendanceRecord(firstName, lastName, attendence, 
+    date, reason, verified, parentNotified):
     """
-    add the parent to the db with their info
+    updates attendence record for student. When secretary is verifying sickness or late
     """
     pass
 
-def checkIfParentExists(name):
+def addParent(name, email, password):
     """
-    return true if name already exists in db
+    return true if parent added to the db with their info, false otherwise
     """
-    pass
+    today = date.today()
+    today = today.strftime("%m/%d/%y")
+    firstName = name.split(" ")[0]
+    lastName = name.split(" ")[1]
+    command = "INSERT INTO schooldb1.Accounts (creationDate, email, password, firstName, lastName, type) VALUES (%s, %s, %s, %s, %s, %s);"
+    try:
+        db_ops.runCommand(command, today, email, password, firstName, lastName, "Parent")
+        return True
+    except Exception:
+        return False
+
+def checkIfParentExists(email):
+    """
+    return true if email already exists in db
+    """
+    query = db_ops.runQuery("Select * FROM schooldb1.Accounts Where email=%s", email)
+    print(query)
+    if len(query) == 0:
+        return False
+    return True
 
 def removeParent(name):
     """
@@ -152,7 +163,7 @@ def removeParent(name):
 
 def addTeacher(name, email, password, subject):
     """
-    add the teacher to the db with their info
+    return true if teacher added to the db with their info, false otherwise
     """
     pass
 
@@ -165,5 +176,35 @@ def checkIfTeacherExists(name):
 def removeTeacher(name):
     """
     remove the teacher from the db
+    """
+    pass
+
+def getAttendanceStatus(className, date):
+    query_str = 'SELECT COUNT(*) FROM schooldb1.Attendance INNER JOIN Class ON Attendance.Class_classId = Class.classId'
+    query_str += ' WHERE className="' + className + '" AND date="' + date + '"'
+    query_count = db_ops.runQuery(query_str)[0]['COUNT(*)']
+    
+    if (query_count > 0):
+        return True
+
+    return False
+
+def getChildren(email):
+    """
+    Gets list of children of parent
+    """
+    return ["Child1", "Child 2"]
+
+def getClassTime(className):
+    """
+    Gets the class time of the class passed in
+    Return: [hour, minute]
+    """
+    pass
+
+def getClassStudentList(className):
+    """
+    Gets the students name and attendance for the class passed in
+    Return: [[name, attendence], [name, attendence], ...]
     """
     pass
