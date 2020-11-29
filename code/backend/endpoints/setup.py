@@ -64,7 +64,6 @@ def getListOfClasses():
   schoolName = data['schoolName']
 
   listOfClasses = db_queries.getListOfClasses(schoolName)
-
   if listOfClasses == []:
     return "No Classes Found", 404
   else:

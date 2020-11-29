@@ -7,7 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import TeacherHistoricalRecords from './TeacherHistoricalRecords'
 import TeacherAttendanceSheet from './TeacherAttendanceSheet'
-import { getAttendanceList } from '../../utils/sockets';
+import { getAttendanceList, getSchoolName } from '../../utils/sockets';
 // import './TeacherMain.scss'
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -45,6 +45,14 @@ function a11yProps(index) {
 class TeacherMain extends Component {
 
   componentDidMount() {
+    const data = {
+      'email': this.props.email
+    }
+    getSchoolName(data).then(result => {
+      this.setState({
+        schoolName: result.data['schoolName']
+      })
+    })
     this.getInitialData()
    
   }

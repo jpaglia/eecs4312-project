@@ -12,7 +12,8 @@ class AttendanceCheckbox extends Component {
     const onCheckChanged = () => {
       this.props.onChange(!this.props.value, this.props.rowIndex)
     }
-    const cell = this.props.data['Attendance'] === 'Present' ?
+
+    const cell = this.props.data['Attendance'] === 'Present' || this.props.data['Attendance'] === 'present' ?
     <div></div>:
       <div className='checkBox' id={`check_box_${uuidv4()}`}>
         <ThemeProvider theme={COLOUR_THEME}>

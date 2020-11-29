@@ -14,19 +14,35 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AttendanceTable from '../../../components/AttendanceTable';
 import './SecretaryAttendance.scss'
-import { getAttendanceList } from '../../../utils/sockets';
+import { getAttendanceList, getListOfClasses, notifyParents } from '../../../utils/sockets';
 
-
-// Working on calendar next
-// Need to add in dates
 class SecretaryAttendance extends Component {
+
+  componentDidMount() {
+    const data = {
+      'schoolName': this.props.schoolName
+    }
+    getAttendanceList(this.state.searchParams).then(result => {
+      const rowData = result.data;
+
+      getListOfClasses(data).then(result => {
+        const classes = result.data['classes']
+        classes.unshift('All Classes')
+        this.setState({
+          allClasses: classes,
+          initialRowData: rowData
+        })
+      })
+    })
+    
+  }
 
   constructor(props) {
     super(props);
     this.state = {
       studentName: '',
       className: '',
-      allClasses: ['All Classes', 'MATH3U0', 'ENG4U0', 'PHYS4U0'], // Swap on mounting
+      allClasses: [],
       calendarAccordion: false,
       startingDate: null,
       searchParams: {
@@ -111,11 +127,11 @@ class SecretaryAttendance extends Component {
   searchRecords() {
     // Get Search value
     const searchParams = {
+      schoolName: this.props.schoolName,
       studentName: this.state.studentName,
       className: this.state.className === 'All Classes' ? '': this.state.className,
-      startingDate: this.state.startingDate
+      date: this.state.startingDate
     }
-
    
     getAttendanceList(searchParams).then(result => {
       this.setState({
@@ -155,9 +171,13 @@ class SecretaryAttendance extends Component {
   notifyParents(childList) {
     // call endpoint to notify parents with childList
     // refetch data with this.state.searchParams
-    this.setState({
-      rowData: [] // replace with endpoint result
-    })
+    // notifyParents(childList).then(result => {
+    //   getAttendanceList(this.state.searchParams).then(result => {
+    //     this.setState({
+    //       rowData : result.data,
+    //     })
+    //   })
+    // })
   }
 
 
@@ -181,6 +201,7 @@ class SecretaryAttendance extends Component {
 
 SecretaryAttendance.propTypes = {
   initialRowData: Proptypes.array.isRequired,
+  schoolName: Proptypes.string.isRequired
 }
 
 export default SecretaryAttendance;
