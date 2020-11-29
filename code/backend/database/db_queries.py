@@ -1,6 +1,12 @@
 import database.db_ops as db_ops
 from datetime import date
 
+def student_id_from_name(firstName, lastName):
+    studentId = db_ops.runQuery("SELECT studentId FROM Students WHERE firstName=%s AND lastName=%s", firstName, lastName)
+    if len(studentId) < 1 or not 'studentId' in studentId[0]:
+        return ""
+    
+    return studentId[0]['studentId']
 
 def getTeacherClasses(email):
     query_str = "SELECT className FROM schooldb1.Teacher_has_Class \
@@ -112,10 +118,7 @@ def getAttendanceList(schoolName, studentName, className, date):
 
 def notifyParents(firstName, lastName, date, className):
     # First get the student ID given the info
-    studentId = db_ops.runQuery("SELECT studentId FROM Students WHERE firstName=%s AND lastName=%s", firstName, lastName)
-
-    # TODO error check whether that student was found
-    studentId = studentId[0]['studentId']
+    studentId = student_id_from_name(firstName, lastName)
 
     command = db_ops.runCommand("UPDATE Attendance \
         INNER JOIN Class ON Attendance.Class_classId = Class.classId \
@@ -123,12 +126,22 @@ def notifyParents(firstName, lastName, date, className):
         WHERE Student_studentId=%s AND date=%s AND className=%s", studentId, date, className)
     return command
 
-def updateAttendanceRecord(firstName, lastName, attendence, 
+
+def updateAttendanceRecord(firstName, lastName, attendance, className,
     date, reason, verified, parentNotified):
-    """
-    updates attendence record for student. When secretary is verifying sickness or late
-    """
-    pass
+    studentId = student_id_from_name(firstName, lastName)
+
+    if studentId == "":
+        return False
+
+    db_ops.runCommand("UPDATE Attendance \
+    INNER JOIN Class ON Attendance.Class_classId = Class.classId \
+    SET status = %s, reason = %s, verified = %s, notified=%s\
+    WHERE Student_studentId=%s AND date=%s AND className=%s", 
+    attendance, reason, verified, parentNotified, 
+    studentId, date, className)
+
+    return True
 
 def addParent(name, email, password):
     """
