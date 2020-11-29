@@ -180,11 +180,14 @@ def removeTeacher(name):
     pass
 
 def getAttendanceStatus(className, date):
-    """
-    Need to know if the attendance for a class has been sent for the data already
-    Return: True or False if attendance has been sent
-    """
-    return True
+    query_str = 'SELECT COUNT(*) FROM schooldb1.Attendance INNER JOIN Class ON Attendance.Class_classId = Class.classId'
+    query_str += ' WHERE className="' + className + '" AND date="' + date + '"'
+    query_count = db_ops.runQuery(query_str)[0]['COUNT(*)']
+    
+    if (query_count > 0):
+        return True
+
+    return False
 
 def getChildren(email):
     """

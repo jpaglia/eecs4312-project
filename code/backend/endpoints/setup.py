@@ -177,7 +177,6 @@ def getStudentRecords():
   result = db_queries.getStudentRecords(name, date, className) 
   return jsonify(result)
 
-
 @setup.route('/getTeacherClasses', methods=['POST'])
 def getTeacherClasses():
   data = request.get_json()
@@ -272,16 +271,11 @@ def removeTeacher():
 @setup.route('/getAttendanceStatus', methods=['POST'])
 def getAttendanceStatus():
   data = request.get_json()
-  className = ''
-  if not "date" in data:
-    return "No key 'date' in request body", 400
-  if "className" in data:
-    className = data['className']
-
+  className = data['className']
   date = data['date']
-
   date = int(date) / 1000
   date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
+  
   result = db_queries.getAttendanceStatus(className, date)
   return jsonify(result)
 
@@ -322,4 +316,3 @@ def getClassData():
   )
 
 
-  
