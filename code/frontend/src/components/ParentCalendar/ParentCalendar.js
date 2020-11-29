@@ -3,7 +3,7 @@ import Proptypes from 'prop-types';
 import Calendar from 'react-calendar';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
-import { getAttendanceList } from '../../utils/sockets';
+import { getStudentRecords } from '../../utils/sockets';
 import 'react-calendar/dist/Calendar.css';
 import './ParentCalendar.scss';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
@@ -29,10 +29,10 @@ class ParentCalendar extends Component {
     const dateObj = {}
 
     for (let i = 0; i < this.state.calendarDates.length; i++) {
-      if (dateObj[this.state.calendarDates[i]] === null) {
-        dateObj[this.state.calendarDates[i]] = [];
+      if (typeof(dateObj[`${this.state.calendarDates[i]['Date']}`]) === 'undefined') {
+        dateObj[`${this.state.calendarDates[i]['Date']}`] = [];
       }
-      dateObj[this.state.calendarDates[i]].push({ 'Class': this.state.calendarDates[i]['Class'], 'Attendance': this.state.calendarDates[i]['Attendance'] })
+      dateObj[`${this.state.calendarDates[i]['Date']}`].push({ 'Class': this.state.calendarDates[i]['Class'], 'Attendance': this.state.calendarDates[i]['Attendance'] })
     }
     this.setState({ structuredDates: dateObj })
   }
@@ -71,16 +71,13 @@ class ParentCalendar extends Component {
 
     if (view === 'month') {
       const searchParams = {
-        studentName: this.props.child,
+        Name: this.props.child,
         className: '',
-        startingDate: activeStartDate.getTime()
+        date: activeStartDate.getTime()
       }
 
-      // TODO: Need to change this to get a full month of data
-      // Need a diff endpoint
-      // I am sending back epoch time, but you need to only use the MONTH
-      // Could be any day wihtin the month...
-      getAttendanceList(searchParams).then(result => {
+      getStudentRecords(searchParams).then(result => {
+        
         this.setState({
           calendarDates: result.data
         }, () => this.structureDates())
@@ -88,47 +85,47 @@ class ParentCalendar extends Component {
     }
   }
 
-  // UNTESTED LOGIC
-  // TODO: Add endpoints and test
   getTileContent(date, view) {
     if (view === 'month' && (date.getDay() !== 0 && date.getDay() !== 6)) {
       const structuredDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
       const dailyData = this.state.structuredDates[structuredDate];
-      let displayInfo = <div></div>
-        if (typeof (dailyData) !== 'undefined') {
-          displayInfo = dailyData.map((singleClass) => {
-            return(
-              <div>{singleClass['Class']}</div>
-            )
-          })
-        }
-      return (
-        <PopupState variant="popover" popupId="demo-popup-popover">
-          {(popupState) => (
-            <div>
-              <div className='test' {...bindTrigger(popupState)}>
+      if (typeof (dailyData) !== 'undefined') {
+        const displayInfo = dailyData.map((singleClass) => {
+          const value = singleClass['Attendance'].charAt(0).toUpperCase() + singleClass['Attendance'].slice(1)
 
+          return(
+          <div>{singleClass['Class']}: {value}</div>
+          )
+        })
+        
+        return (
+          <PopupState variant="popover" popupId="demo-popup-popover">
+            {(popupState) => (
+              <div>
+                <div className='test' {...bindTrigger(popupState)}>
+  
+                </div>
+                <Popover
+                  {...bindPopover(popupState)}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                >
+                  <Box p={2}>
+                {displayInfo}
+                  </Box>
+                </Popover>
               </div>
-              <Popover
-                {...bindPopover(popupState)}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
-                }}
-              >
-                <Box p={2}>
-              <Typography>{displayInfo}</Typography>
-                </Box>
-              </Popover>
-            </div>
-          )}
-        </PopupState>
-
-      )
+            )}
+          </PopupState>
+  
+        )
+      }
     }
     return (null)
   }
