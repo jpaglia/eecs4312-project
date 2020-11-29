@@ -149,42 +149,39 @@ def notifyParents():
 
 @setup.route('/updateAttendanceRecord', methods=['POST'])
 def updateAttendanceRecord():
-  """
-  Disscription: Endpoint updates attendence record for of student- reason for sick 
-  { 'Name': 'Billy', 
-  'Attendance': "Late", 
-  'Class': "Math", 
-  'Date': '02/04/20', 
-  'Reason For Absence': 'Billy was sick', 
-  'Reason Verified': false, 
-  'Parent Notified': 'N' }
-  """
   data = request.get_json()
   if "Name" not in data:
     return "No key 'Name' in request body", 400
   if "Attendance" not in data:
-    return "No key 'Name' in request body", 400
+    return "No key 'Attendance' in request body", 400
   if "Class" not in data:
-    return "No key 'Name' in request body", 400
+    return "No key 'Class' in request body", 400
   if "Date" not in data:
-    return "No key 'Name' in request body", 400
+    return "No key 'Date' in request body", 400
   if "Reason For Absence" not in data:
-    return "No key 'Name' in request body", 400
+    return "No key 'Reason' in request body", 400
   if "Reason Verified" not in data:
-    return "No key 'Name' in request body", 400
+    return "No key 'Reason Verified' in request body", 400
   if "Parent Notified" not in data:
-    return "No key 'Name' in request body", 400
+    return "No key 'Parent Notified' in request body", 400
 
   firstName = data["Name"].split(" ")[0]
   lastName = data["Name"].split(" ")[1]
-  attendence = data["Attendance"]
-  date = data["Date"]
+  attendance = data["Attendance"]
+  className = data["Class"]
+  mydate = data["Date"] # No need for date conversion here
   reason = data["Reason For Absence"]
   verified = data["Reason Verified"]
+
   parentNotified = data["Parent Notified"]
-  db_queries.updateAttendanceRecord(firstName, lastName, attendence, 
-    date, reason, verified, parentNotified)
-  return jsonify([])
+  if parentNotified == 'Y':
+    parentNotified = True
+  else:
+    parentNotified = False
+   
+  result = db_queries.updateAttendanceRecord(firstName, lastName, attendance, className,
+    mydate, reason, verified, parentNotified)
+  return jsonify(result)
 
 # Filter by class is optional
 @setup.route('/getStudentRecords', methods=['POST'])
