@@ -15,18 +15,6 @@ def getSampleInfo():
 
 @setup.route('/login', methods=['POST'])
 def login():
-  """
-  Description: This endpoint checks to see if a user enters a password properly
-  Input Json Request: {
-    email, 
-    password
-  }
-  return: {
-    valid: Bool 
-    type: str -- type of user
-  }
-  """
-
   req_data = request.get_json()
 
   # Return invalid if no email/password included in request
@@ -111,17 +99,8 @@ def getAttendanceList():
 
   return jsonify(attendances)
 
-
 @setup.route('/notifyParents', methods=['POST'])
 def notifyParents():
-  """
-  Description: This endpoint adds the parent according to the inputs
-  Input Json Request: {
-    Name - Name of Student FirstName and LastName
-    Date - Date 
-    Class - Class Name
-  }
-  """
   data = request.get_json()
 
   for d in data:
@@ -149,16 +128,6 @@ def notifyParents():
 
 @setup.route('/updateAttendanceRecord', methods=['POST'])
 def updateAttendanceRecord():
-  """
-  Disscription: Endpoint updates attendence record for of student- reason for sick 
-  { 'Name': 'Billy', 
-  'Attendance': "Late", 
-  'Class': "Math", 
-  'Date': '02/04/20', 
-  'Reason For Absence': 'Billy was sick', 
-  'Reason Verified': false, 
-  'Parent Notified': 'N' }
-  """
   data = request.get_json()
   if "Name" not in data:
     return "No key 'Name' in request body", 400
@@ -223,17 +192,6 @@ def getTeacherClasses():
 
 @setup.route('/addParent', methods=['POST'])
 def addParent():
-  """
-  Description: This endpoint adds the parent according to the inputs
-  Input Json Request: {
-    name
-    email
-    password
-  }
-  return: {
-    valid: boolean
-  }
-  """
   data = request.get_json()
 
   if 'Name' not in data:
@@ -258,15 +216,6 @@ def addParent():
 
 @setup.route('/removeParent', methods=['POST'])
 def removeParent():
-  """
-  Description: This endpoint removes the selected parent
-  Input Json Request: {
-    name
-  }
-  return: {
-    valid: boolean
-  }
-  """
   data = request.get_json()
 
   if 'Name' not in data:
@@ -281,18 +230,6 @@ def removeParent():
 
 @setup.route('/addTeacher', methods=['POST'])
 def addTeacher():
-  """
-  Description: This endpoint adds the teacher according to the inputs
-  Input Json Request: {
-    name
-    email
-    password
-    class
-  }
-  return: {
-    valid: boolean
-  }
-  """
   data = request.get_json()
 
   if 'Name' not in data:
@@ -320,15 +257,6 @@ def addTeacher():
 
 @setup.route('/removeTeacher', methods=['POST'])
 def removeTeacher():
-  """
-  Description: This endpoint removes the selected teacher
-  Input Json Request: {
-    name
-  }
-  return: {
-    valid: boolean
-  }
-  """
   data = request.get_json()
 
   if 'Name' not in data:
@@ -357,16 +285,8 @@ def getAttendanceStatus():
   result = db_queries.getAttendanceStatus(className, date)
   return jsonify(result)
 
-
 @setup.route('/getChildren', methods=['POST'])
 def getChildren():
-  """
-  Description: gets children of parent
-    Input Json Request: {
-    email:
-  }
-  returns ["Child1", "Child2"]
-  """
   data = request.get_json()
   if not "email" in data:
     return "No key 'date' in request body", 400
@@ -400,3 +320,6 @@ def getClassData():
     classTime = classTimeDict,
     studentList = studentListDict
   )
+
+
+  

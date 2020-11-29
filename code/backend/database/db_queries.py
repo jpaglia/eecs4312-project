@@ -44,47 +44,23 @@ def getStudentRecords(studentName, date, className):
 
     return studentRecord
 
-
 def getpassword(email):
-    """
-    Input (str): email of user 
-    return (str): password of user
-    """
-
     query = db_ops.runQuery("SELECT password from Accounts WHERE email=%s", email)
     if len(query) == 0:
         return ""
     return query[0]['password']
 
-
 def getpersonType(email):
-    """
-    Input (str): email of person 
-    return (str): type of individual Parent/Secretary/Teacher/None 
-    """
-
     query = db_ops.runQuery("SELECT type from Accounts WHERE email=%s", email)
     if len(query) == 0:
         return "None"
     return query[0]['type']
 
-
 def getSchoolName(email):
-    """
-    Input (str): email of secretary
-    return (str): school name
-    """
     query = db_ops.runQuery("SELECT school from Accounts WHERE email=%s", email)
     return query[0]['school']
 
-
 def getListOfClasses(schoolName):
-    """
-    Input (str): name of school
-    return List[str]: List of classes taught at school
-        Example ['Math', 'English', 'Science']
-    """
-
     if schoolName == "" or schoolName == None:
         return []
 
@@ -146,7 +122,6 @@ def notifyParents(firstName, lastName, date, className):
         SET notified = '1' \
         WHERE Student_studentId=%s AND date=%s AND className=%s", studentId, date, className)
     return command
-
 
 def updateAttendanceRecord(firstName, lastName, attendence, 
     date, reason, verified, parentNotified):
