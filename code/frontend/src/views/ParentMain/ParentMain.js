@@ -2,21 +2,26 @@ import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import TopBar from '../../components/TopBar';
 import ParentHome from './ParentHome';
+import { getChildren } from '../../utils/sockets';
 
 class ParentMain extends Component {
 
   componentDidMount() {
-    // Create API call to fetch names of all children data (name, school, and if was absent today)
+    const data = {
+      'email': this.props.email
+    }
+    getChildren(data).then(result => {
+      this.setState({
+        childList: result.data
+      })
+    })
   }
 
   constructor(props) {
     super(props);
     this.state = {
       'currentPage': 'ParentHome',
-      'childList': [{
-        'lateNotification': false,
-        'name': 'Julia P'
-      }]
+      'childList': []
     }
   }
 
@@ -43,6 +48,7 @@ class ParentMain extends Component {
 
 ParentMain.propTypes = {
   onChange: Proptypes.func,
+  email: Proptypes.string
 }
 
 export default ParentMain;

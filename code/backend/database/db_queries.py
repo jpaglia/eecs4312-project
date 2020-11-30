@@ -15,8 +15,6 @@ def getTeacherClasses(email):
         WHERE email=%s"
 
     classes = db_ops.runQuery(query_str, email)
-    
-    print("{}".format(classes))
     return classes
 
 def getStudentRecords(studentName, date, className):
@@ -126,7 +124,6 @@ def notifyParents(firstName, lastName, date, className):
         WHERE Student_studentId=%s AND date=%s AND className=%s", studentId, date, className)
     return command
 
-
 def updateAttendanceRecord(firstName, lastName, attendance, className,
     date, reason, verified, parentNotified):
     studentId = student_id_from_name(firstName, lastName)
@@ -163,7 +160,6 @@ def checkIfParentExists(email):
     return true if email already exists in db
     """
     query = db_ops.runQuery("Select * FROM schooldb1.Accounts Where email=%s", email)
-    print(query)
     if len(query) == 0:
         return False
     return True
@@ -203,21 +199,155 @@ def getAttendanceStatus(className, date):
     return False
 
 def getChildren(email):
-    """
-    Gets list of children of parent
-    """
-    return ["Child1", "Child 2"]
+    qlist = []
 
-def getClassTime(className):
+    query_str = 'SELECT Students.firstName, Students.lastName, email, Class.school from Students \
+                INNER JOIN Student_has_Class ON Students.studentId = Student_has_Class.Student_studentId \
+                INNER JOIN Class ON Student_has_Class.Class_classId = Class.classId \
+                INNER JOIN Student_has_Parent ON Students.studentId = Student_has_Parent.Student_studentId \
+                INNER JOIN Accounts ON Accounts.accountId = Student_has_Parent.Account_parentId \
+                WHERE Class.time = "9:00" AND email="' + email + '"'
+
+    # TODO: filter by today's date too? TBC
+    # query_str = 'SELECT Students.firstName, Students.lastName, email, status, Class.school from Attendance \
+    #             INNER JOIN Student_has_Parent ON Attendance.Student_studentId = Student_has_Parent.Student_studentId \
+    #             INNER JOIN Class ON Attendance.Class_classId = Class.classId \
+    #             INNER JOIN Students ON Attendance.Student_studentId = Students.studentId \
+    #             INNER JOIN Accounts ON Accounts.accountId = Student_has_Parent.Account_parentId \
+    #             WHERE email="' + email + '"'
+
+    query = db_ops.runQuery(query_str)
+
+    for q in query:
+        record = {}
+        record['Name'] = q['firstName'] + ' ' + q['lastName']
+        record['School'] = q['school']
+        record['Attendance'] = 'Present'
+        qlist.append(record)
+    
+    return qlist
+
+def getChildStatusesToday(firstName, lastName, date):
+    qList = []
+    query_str = 'SELECT status from Attendance \
+                INNER JOIN Class ON Attendance.Class_classId = Class.classId \
+                INNER JOIN Students ON Attendance.Student_studentId = Students.studentId \
+                WHERE firstName="' + firstName + '" AND lastName="' + lastName + '" AND date="' + date + '"' 
+    query = db_ops.runQuery(query_str)
+
+    for q in query:
+        qList.append(q['status'])
+
+    return qList
+
+def getClassTime(className, schoolName):
+    query_str = 'SELECT time FROM Class WHERE className="' + className + '" AND school="' + schoolName +'"'
+    time = db_ops.runQuery(query_str)[0]['time']
+    return time
+
+def getClassStudentList(className, schoolName):
+    # Gets all students in a given class (empty records)
+    qList = []
+    query_str = 'SELECT firstName, lastName FROM Student_has_Class \
+                INNER JOIN Class ON Student_has_Class.Class_classId = Class.classId \
+                INNER JOIN Students ON Student_has_Class.Student_studentId = Students.studentId \
+                WHERE className="' + className + '" AND school="' + schoolName +'"'
+    
+    query = db_ops.runQuery(query_str)
+    for q in query:
+        record = {}
+        record['Name'] = q['firstName'] + ' ' + q['lastName']
+        record['Attendance'] = ''
+        qList.append(record)
+    
+    return qList
+
+def getExistingClassRecords(className, schoolName, date):
+    # Gets all students in a class who have existing records
+    qList = []
+    query_str = 'SELECT firstName, lastName, status FROM Attendance \
+                INNER JOIN Class ON Attendance.Class_classId = Class.classId \
+                INNER JOIN Students ON Attendance.Student_studentId = Students.studentId \
+                WHERE className="' + className + '" AND school="' + schoolName + '" AND date="' + date +'"'
+    
+    query = db_ops.runQuery(query_str)
+    for q in query:
+        record = {}
+        record['Name'] = q['firstName'] + ' ' + q['lastName']
+        record['Attendance'] = q['status']
+        qList.append(record)
+    
+    return qList
+
+def getChildClasses(firstName, lastName):
+    qList = []
+    query_str = 'SELECT className, time FROM Student_has_Class \
+                INNER JOIN Class ON Student_has_Class.Class_classId = Class.classId \
+                INNER JOIN Students ON Student_has_Class.Student_studentId = Students.studentId \
+                WHERE firstName="' + firstName + '"'
+    if (lastName != ''):
+        query_str += ' AND lastName="' + lastName + '"'
+    
+    query = db_ops.runQuery(query_str)
+
+    for q in query:
+        record = {}
+        record['className'] = q['className']
+        record['classHour'] = q['time'].split(':')[0]
+        qList.append(record)
+
+    return qList
+
+def getAttedanceRecords(name):
     """
-    Gets the class time of the class passed in
-    Return: [hour, minute]
+    return the attendence record for the child with "name" for all their classes that day
+    return format: list of lists
+                    [["math", "late"], ["english", "present"], ["science", "absent"]]
     """
     pass
 
-def getClassStudentList(className):
+def reportChild(name, className, date, attendance):
     """
-    Gets the students name and attendance for the class passed in
-    Return: [[name, attendence], [name, attendence], ...]
+    add the child's attendence record to the db
     """
     pass
+
+def getTeacherHistoricalAttendance(schoolName, studentName, date, classList):
+    qlist = []
+    # Get ALL attendance records for the school
+    query_str = 'SELECT * from ((Attendance INNER JOIN Class ON Attendance.Class_classId = Class.classId) \
+                INNER JOIN Students ON Attendance.Student_studentId = Students.studentId)'
+    query_str += ' WHERE school="' + str(schoolName) + '"'
+    
+    # Filter by Student Name 
+    if (studentName != ''):
+        if ' ' in studentName:
+            query_str += ' AND firstName="' + studentName.split(' ')[0] + '" AND lastName="' + studentName.split(' ')[1] + '"'
+        else:
+            query_str += ' AND firstName="' + studentName.split(' ')[0] + '"'
+    
+    # Filter by Date
+    if (date != ''):
+        query_str += ' AND date="' + date + '"'
+
+    # Filter by Teacher Classes
+    if len(classList) == 1:
+        query_str += ' AND className="' + classList[0] + '"'
+    elif len(classList) > 1:
+        query_str += ' AND (className="' + classList[0] + '"'
+        for i in range(1,len(classList)):
+            query_str += ' OR className="' + classList[i] + '"'
+        query_str += ')'
+
+    query = db_ops.runQuery(query_str)
+
+    for q in query:
+        record = {}
+        record['Name'] = q['firstName'] + ' ' + q['lastName']
+        record['Attendance'] = q['status']
+        record['Class'] = q['className']
+        record['Date'] = q['date']
+        qlist.append(record)
+    
+    return qlist
+

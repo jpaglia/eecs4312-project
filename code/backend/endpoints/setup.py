@@ -278,37 +278,143 @@ def getAttendanceStatus():
 @setup.route('/getChildren', methods=['POST'])
 def getChildren():
   data = request.get_json()
-  if not "email" in data:
-    return "No key 'date' in request body", 400
-
   email = data["email"]
-  result = db_queries.getChildren(email)
+
+  result = []
+  priorities = {'Absent':1, 'Late':2, 'Present':3}
+  #statuses = {}
+
+  # Get all children
+  queryList = db_queries.getChildren(email)
+
+
+  # Get today's status for each child
+  now = datetime.datetime.now().timestamp()
+  today = datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y')
+    
+  for child in queryList:
+    firstName = child['Name'].split(' ')[0]
+    lastName = child['Name'].split(' ')[1]
+    att = child['Attendance']
+
+    attendanceStatusList = db_queries.getChildStatusesToday(firstName, lastName, today)
+    for status in attendanceStatusList:
+      if (priorities[status] < priorities[att]):
+        child['Attendance'] = status
+        att = status
+
+    result.append(child)
+
+    #queryList.append(attendanceList)
+
+
+  #now = datetime.datetime.now().timestamp()
+  #today = datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y')
+  #existingRecordsList = db_queries.getExistingClassRecords(className, schoolName, today)
+  
+
+  # Track the most important attendance status for each child
+  # for record in queryList:
+  #   name = record['Name']
+  #   att = record['Attendance']
+  #   if ((name not in statuses) or (priorities[statuses[name]] > priorities[att])):
+  #     statuses[name] = att
+    
+  # for record in queryList:
+  #   if (record['Attendance'] == statuses[record['Name']]):
+  #     if record not in result:
+  #       result.append(record)
+
   return jsonify(result)
 
 @setup.route('/getClassData', methods=['POST'])
 def getClassData():
   data = request.get_json()
-  
-  if not "className" in data:
-    return "No key 'className' in request body", 400
-  
   className = data['className']
+  schoolName = data['schoolName']
   
-  [hour, minute] = db_queries.getClassTime(className)
-  studentList = db_queries.getClassStudentList(className)
+  hour = db_queries.getClassTime(className, schoolName)
+  hour = hour.split(':')[0]
+  studentList = db_queries.getClassStudentList(className, schoolName)
 
-  classTimeDict = {"hour": hour, "min": minute}
+  now = datetime.datetime.now().timestamp()
+  today = datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y')
+  existingRecordsList = db_queries.getExistingClassRecords(className, schoolName, today)
   
-  studentListDict = []
-  for i in studentList:
-    name = i[0]
-    attendance = i[1]
-    studentDict = {"Name": name, "Attendance": attendance}
-    studentListDict.append(studentDict)
-  
+  combinedList = []
+  for student in studentList:
+    exists = False
+    for r in existingRecordsList:
+      if student['Name'] in r['Name']:
+        combinedList.append(r)
+        exists = True
+    if (exists == False):
+      combinedList.append(student)
+
   return jsonify(
-    classTime = classTimeDict,
-    studentList = studentListDict
+    classHour = hour,
+    studentList = combinedList
   )
 
+@setup.route('/getChildClasses', methods=['POST'])
+def getChildClasses():
+  data = request.get_json()
+
+  if ' ' in data['name']:
+    firstName = data['name'].split(' ')[0]
+    lastName = data['name'].split(' ')[1]
+  else:
+    firstName = data['name']
+    lastName = ''
+
+  classList = db_queries.getChildClasses(firstName, lastName)
+
+  return jsonify(classList)
+
+@setup.route('/getNotifications', methods=['POST'])
+def getNotifications():
+  data = request.get_json()
+  name = data['name']
+  
+  studentRecords = db_queries.getAttedanceRecords(name)
+  notifications = {}
+
+  for record in studentRecords:
+    className = record[0]
+    attendance = record[1]
+    notifications[className] = attendance
+
+  return jsonify(
+    notifications
+  )
+
+@setup.route('/reportChild', methods=['POST'])
+def reportChild():
+  data = request.get_json()
+  name = data['name']
+  className = data['className']
+  date = data['date']
+  date = int(date) / 1000
+  date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
+  attendance = data['Attendance']
+
+  db_queries.reportChild(name, className, date, attendance)
+
+@setup.route('/getTeacherHistoricalAttendanceList', methods=['POST'])
+def getTeacherHistoricalAttendanceList():
+  data = request.get_json()
+
+  schoolName = data['schoolName']
+  studentName = data['studentName']
+  classList = data['classList']
+  
+  if data['date'] == None:
+    d = ''
+  else:
+    date_int = int(data['date']) / 1000
+    d = datetime.datetime.fromtimestamp(date_int).strftime('%d/%m/%Y')
+
+  attendances = db_queries.getTeacherHistoricalAttendance(schoolName, studentName, d, classList)
+
+  return jsonify(attendances)
 
