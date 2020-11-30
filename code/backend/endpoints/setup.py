@@ -344,6 +344,35 @@ def getChildClasses():
 
   return jsonify(classList)
 
+@setup.route('/getNotifications', methods=['POST'])
+def getNotifications():
+  data = request.get_json()
+  name = data['name']
+  
+  studentRecords = db_queries.getAttedanceRecords(name)
+  notifications = {}
+
+  for record in studentRecords:
+    className = record[0]
+    attendance = record[1]
+    notifications[className] = attendance
+
+  return jsonify(
+    notifications
+  )
+
+@setup.route('/reportChild', methods=['POST'])
+def reportChild():
+  data = request.get_json()
+  name = data['name']
+  className = data['className']
+  date = data['date']
+  date = int(date) / 1000
+  date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
+  attendance = data['Attendance']
+
+  db_queries.reportChild(name, className, date, attendance)
+
 @setup.route('/getTeacherHistoricalAttendanceList', methods=['POST'])
 def getTeacherHistoricalAttendanceList():
   data = request.get_json()
@@ -361,6 +390,4 @@ def getTeacherHistoricalAttendanceList():
   attendances = db_queries.getTeacherHistoricalAttendance(schoolName, studentName, d, classList)
 
   return jsonify(attendances)
-
-
 

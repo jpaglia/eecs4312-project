@@ -278,6 +278,20 @@ def getChildClasses(firstName, lastName):
 
     return qList
 
+def getAttedanceRecords(name):
+    """
+    return the attendence record for the child with "name" for all their classes that day
+    return format: list of lists
+                    [["math", "late"], ["english", "present"], ["science", "absent"]]
+    """
+    pass
+
+def reportChild(name, className, date, attendance):
+    """
+    add the child's attendence record to the db
+    """
+    pass
+
 def getTeacherHistoricalAttendance(schoolName, studentName, date, classList):
     qlist = []
     # Get ALL attendance records for the school
@@ -316,5 +330,4 @@ def getTeacherHistoricalAttendance(schoolName, studentName, date, classList):
         qlist.append(record)
     
     return qlist
-
 

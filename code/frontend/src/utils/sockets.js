@@ -76,8 +76,15 @@ export function getChildClasses(data) {
   return postRequest('getChildClasses', data)
 }
 
+export function getNotifications(data) {
+  return postRequest('getNotifications', data)
+}
+
+export function reportChild(data) {
+  return postRequest('reportChild', data)
+}
+
 export function getTeacherHistoricalAttendanceList(data) {
   return postRequest('getTeacherHistoricalAttendanceList', data)
 }
-
 
