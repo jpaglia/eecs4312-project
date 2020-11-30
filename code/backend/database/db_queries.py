@@ -1,5 +1,6 @@
 import database.db_ops as db_ops
 from datetime import date
+import datetime
 
 def student_id_from_name(firstName, lastName):
     studentId = db_ops.runQuery("SELECT studentId FROM Students WHERE firstName=%s AND lastName=%s", firstName, lastName)
@@ -331,3 +332,23 @@ def getTeacherHistoricalAttendance(schoolName, studentName, date, classList):
     
     return qlist
 
+def addRecord(classId, firstName, lastName, attendence):
+    now = datetime.datetime.now().timestamp()
+    today = datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y')
+    studentId = getStudentId(firstName, lastName)
+    command = "INSERT INTO schooldb1.Attendance (date, Class_classId, Student_studentId, status) \
+        VALUES (%s, %s, %s, %s);"
+    try:
+        db_ops.runCommand(command, today, classId, studentId, attendence)
+        print("hello")
+        return True
+    except Exception:
+        return False
+
+def getClassId(className):
+    query = db_ops.runQuery("SELECT classId FROM Class WHERE Class.className =%s", className)
+    return query[0]["classId"]
+
+def getStudentId(firstName, lastName):
+    query = db_ops.runQuery("SELECT studentId FROM schooldb1.Students WHERE firstName = %s and lastName = %s", firstName, lastName)
+    return query[0]["studentId"]

@@ -391,3 +391,26 @@ def getTeacherHistoricalAttendanceList():
 
   return jsonify(attendances)
 
+@setup.route('/addRecords', methods=['POST'])
+def addRecords():
+  data = request.get_json()
+  if 'className' not in data:
+    return "key 'className' not found in request body", 400
+  if 'classList' not in data:
+    return "key 'classList' not found in request body", 400
+
+  className = data["className"]
+  classList = data["classList"]
+  result = True
+  classId = db_queries.getClassId(className)
+  for student in classList:
+    firstName = student["Name"].split(" ")[0]
+    lastName = student["Name"].split(" ")[1]
+    attendence = student["Attendence"]
+    resultTemp = db_queries.addRecord(classId, firstName, lastName, attendence)
+    result = result and resultTemp
+    print(result)
+
+  return jsonify(
+    valid = result
+  )
