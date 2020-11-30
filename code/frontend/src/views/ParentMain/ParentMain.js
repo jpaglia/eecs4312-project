@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import TopBar from '../../components/TopBar';
 import ParentHome from './ParentHome';
-import ParentCalendar from '../../components/ParentCalendar'
+
 class ParentMain extends Component {
 
   componentDidMount() {
@@ -15,7 +15,7 @@ class ParentMain extends Component {
       'currentPage': 'ParentHome',
       'childList': [{
         'lateNotification': false,
-        'name': 'Billy Bob'
+        'name': 'Julia P'
       }]
     }
   }
@@ -35,10 +35,7 @@ class ParentMain extends Component {
     return (
       <div>
         <TopBar showLogout={true} onChange={this.props.onChange.bind(this)}/>
-          {/* {parentHome} */}
-          <ParentCalendar
-          child={'Julia'}
-          />
+          {parentHome}
       </div>
     );
   }

@@ -1,29 +1,34 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import DropdownSelect from '../../../components/DropdownSelect';
-import Button from '@material-ui/core/Button';
 import AttendanceTable from '../../../components/AttendanceTable';
 import './TeacherAttendanceSheet.scss'
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid';
+import { getAttendanceStatus } from '../../../utils/sockets';
 
-// Working on calendar next
-// Need to add in dates
 class TeacherAttendanceSheet extends Component {
 
   componentDidMount() {
-    //TODO: add /getAttendanceStatus
-    // this.setState({
-    //   attendanceSubmitted: result.data.attendanceSent
-    // })
+    const date = new Date().getTime()
+    const data = {
+      'date': date,
+      'className': this.props.classList[0]
+    }
+    getAttendanceStatus(data).then(result => {
+      if (!result.data.attendanceSubmitted) {
+        // TODO add in getclassData endpoint
+      } else {
+        this.setState({ attendanceSubmitted: true })
+      }
+    })
   }
   
   constructor(props) {
     super(props);
     this.state = {
-      className: '',
+      className: this.props.classList[0],
       rowData: [],
       classStartHour: 0,
-      classStartMin: 0,
       attendanceSubmitted: false
     }
   }
@@ -40,10 +45,22 @@ class TeacherAttendanceSheet extends Component {
 
   handleDropdownChange(e) {
     const newSelection = e.target.value;
-    // Get class Data (students and start time)
-    this.setState({
-      className: newSelection
-    });
+    
+    const date = new Date().getTime()
+    const data = {
+      'date': date,
+      'className': newSelection
+    }
+    getAttendanceStatus(data).then(result => {
+      if (result.data.attendanceSubmitted) {
+        this.setState({
+          className: newSelection,
+          attendanceSubmitted: true
+        });
+      }
+
+      // Else get row data and start time
+    })
   }
 
  
@@ -55,7 +72,6 @@ class TeacherAttendanceSheet extends Component {
      rowData={this.state.rowData}
      currentUser={'Teacher-Record'}
      classStartHour={this.state.classStartHour}
-     classStartMin={this.state.classStartMin}
     />
 
     return (

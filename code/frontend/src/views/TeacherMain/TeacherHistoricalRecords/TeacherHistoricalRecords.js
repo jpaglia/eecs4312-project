@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Proptypes from 'prop-types';
+import PropTypes from 'prop-types';
 import TextField from '../../../components/TextField';
 import DropdownSelect from '../../../components/DropdownSelect';
 import Button from '@material-ui/core/Button';
@@ -29,7 +29,7 @@ class TeacherHistoricalRecords extends Component {
     this.state = {
       studentName: '',
       className: '',
-      allClasses: ['All Classes', 'MATH3U0', 'ENG4U0', 'PHYS4U0'], // Swap on mounting
+      allClasses: this.props.classList,
       calendarAccordion: false,
       startingDate: null,
       searchParams: {
@@ -37,7 +37,7 @@ class TeacherHistoricalRecords extends Component {
         className: '',
         startingDate: null
       },
-      rowData: props.initialRowData
+      rowData: []
     }
   }
 
@@ -60,9 +60,11 @@ class TeacherHistoricalRecords extends Component {
   }
 
   getDropdown() {
+    const list = [...this.state.allClasses]
+    list.unshift('All Classes')
     return <DropdownSelect
       id={`Dropdown_${uuidv4()}`}
-      dropdownOptions={this.state.allClasses}
+      dropdownOptions={list}
       dropdownName={'Search By Class'}
       currentSelection={this.state.className}
       onChange={this.handleDropdownChange.bind(this)}
@@ -177,7 +179,8 @@ class TeacherHistoricalRecords extends Component {
 }
 
 TeacherHistoricalRecords.propTypes = {
-  initialRowData: Proptypes.array.isRequired
+  classList: PropTypes.array.isRequired,
+  email: PropTypes.string
 }
 
 export default TeacherHistoricalRecords;

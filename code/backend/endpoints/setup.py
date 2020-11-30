@@ -64,7 +64,6 @@ def getListOfClasses():
   schoolName = data['schoolName']
 
   listOfClasses = db_queries.getListOfClasses(schoolName)
-
   if listOfClasses == []:
     return "No Classes Found", 404
   else:
@@ -75,25 +74,15 @@ def getListOfClasses():
 @setup.route('/getAttendanceList', methods=['POST'])
 def getAttendanceList():
   data = request.get_json()
-
-  if not "schoolName" in data:
-    return jsonify([])
-
-  studentName = ''
-  className = ''
-  d = ''
-
-  if "studentName" in data:
-    studentName = data['studentName']
-  
-  if "className" in data:
-    className = data['className']
-
-  if "date" in data:
-    d = int(data['date']) / 1000
-    d = datetime.datetime.fromtimestamp(d).strftime('%d/%m/%Y')
-  
   schoolName = data['schoolName']
+  studentName = data['studentName']
+  className = data['className']
+
+  if data['date'] == None:
+    d = ''
+  else:
+    date_int = int(data['date']) / 1000
+    d = datetime.datetime.fromtimestamp(date_int).strftime('%d/%m/%Y')
 
   attendances = db_queries.getAttendanceList(schoolName, studentName, className, d)
 

@@ -15,7 +15,8 @@ class LoginPage extends Component {
     super();
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      error: false
     }
   }
 
@@ -25,6 +26,7 @@ class LoginPage extends Component {
       defaultValue={defaultValue}
       label={label}
       onBlur={this.handleTextFieldBlur.bind(this)}
+      error={this.state.error}
     />
   }
 
@@ -51,15 +53,18 @@ class LoginPage extends Component {
     login(data).then(result => {
       if (result.data.valid) {
         this.props.loginVerified(this.state.email, result.data.type)
+      } else {
+        this.setState({ error: true })
       }
       
     })
-  // this.props.loginVerified(this.state.email, 'Parent')
+  // this.props.loginVerified(this.state.email, 'Teacher')
   }
 
   render() {
     const email = this.getTextField('Email', 'Email')
     const password = this.getTextField('Password', 'Password')
+    const invalidPassword = this.state.error ? 'Invalid Username or Password' : ''
 
     return (
       <div className="outerWrapperLoginPage">
@@ -70,6 +75,7 @@ class LoginPage extends Component {
               Welcome to the TDSB Attendance System!
             </div>
             <div className='loginInner'>
+            <div className='invalidPassword'>{invalidPassword}</div>
             {email}
             {password}
             </div>

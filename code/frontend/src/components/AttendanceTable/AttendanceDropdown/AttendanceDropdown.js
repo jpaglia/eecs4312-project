@@ -30,15 +30,18 @@ class AttendanceDropdown extends Component {
         </option>
     })
     let colorSelect = '#47bc56';
-    if (this.props.value === 'Late') {
+    let value = 'Present'
+    if (this.props.value === 'Late' || this.props.value === 'late') {
       colorSelect = '#e9d200'
-    } else if (this.props.value === 'Absent') {
+      value = 'Late'
+    } else if (this.props.value === 'Absent' || this.props.value === 'absent') {
       colorSelect = '#cf0000'
+      value = 'Absent'
     }
     return (
       <select
         className='dropDownAttendance'
-        value={this.props.value}
+        value={value}
         style={{'backgroundColor': colorSelect, 'color': 'white'}}
         onChange={onAttendanceChange}>
         {options}
@@ -58,17 +61,21 @@ class AttendanceDropdown extends Component {
         </option>
     })
     let colorSelect = '#949494';
-    if (this.props.value === 'Present') {
+    let value = ''
+    if (this.props.value === 'Present' || this.props.value === 'present') {
       colorSelect = '#47bc56'
-    } else if (this.props.value === 'Late') {
+      value = 'Present'
+    } else if (this.props.value === 'Late' || this.props.value === 'late') {
       colorSelect = '#e9d200'
-    } else if (this.props.value === 'Absent') {
+      value = 'Late'
+    } else if (this.props.value === 'Absent' || this.props.value === 'absent') {
       colorSelect = '#cf0000'
+      value = 'Absent'
     }
     return (
       <select
         className='dropDownAttendance'
-        value={this.props.value}
+        value={value}
         style={{'backgroundColor': colorSelect, 'color': 'white'}}
         onChange={onAttendanceChange}>
         {options}
