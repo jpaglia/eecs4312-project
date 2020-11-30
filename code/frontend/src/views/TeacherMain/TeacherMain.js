@@ -7,7 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import TeacherHistoricalRecords from './TeacherHistoricalRecords'
 import TeacherAttendanceSheet from './TeacherAttendanceSheet'
-import { getAttendanceList, getSchoolName } from '../../utils/sockets';
+import { getSchoolName, getTeacherClasses } from '../../utils/sockets';
 // import './TeacherMain.scss'
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,11 +49,17 @@ class TeacherMain extends Component {
       'email': this.props.email
     }
     getSchoolName(data).then(result => {
-      this.setState({
-        schoolName: result.data['schoolName']
+      const schoolName = result.data['schoolName']
+      getTeacherClasses(data).then(result => {
+        const classes = [];
+        for (let i = 0; i < result.data.length; i++) {
+          classes.push(result.data[i]['className'])
+        }
+        this.setState({ schoolName: schoolName, classList: classes })
       })
     })
-    this.getInitialData()
+    
+    
    
   }
   constructor(props) {
@@ -70,25 +76,6 @@ class TeacherMain extends Component {
   onChange(event, newValue) {
     this.setState({
       'value': newValue 
-    })
-  }
-
-  getInitialData() {
-    // Get Search value
-    const searchParams = {
-      studentName: '',
-      className: '',
-      startingDate: null
-    }
-    // TODO
-    // Call endpoint for available ClassList
-    // Add to state
-     
-
-    getAttendanceList(searchParams).then(result => {
-      this.setState({
-        initialHistoricalData : result.data,
-      })
     })
   }
 
@@ -129,12 +116,13 @@ class TeacherMain extends Component {
           </TabPanel>
           <TabPanel value={this.state.value} index={1}>
             <TeacherHistoricalRecords
-              initialRowData={this.state.initialHistoricalData}
+              classList={this.state.classList}
+              email={this.props.email}
             />
           </TabPanel>
           <TabPanel value={this.state.value} index={2}>
             <TeacherAttendanceSheet
-            classList={this.state.classList}
+              classList={this.state.classList}
             />
           </TabPanel>
         </div>

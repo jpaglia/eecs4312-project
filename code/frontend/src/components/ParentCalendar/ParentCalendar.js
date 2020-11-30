@@ -39,23 +39,24 @@ class ParentCalendar extends Component {
     if (view === 'month') {
       const structuredDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
       const dailyData = this.state.structuredDates[structuredDate];
+
       if (typeof (dailyData) !== 'undefined') {
         let isPresent = false;
         let isLate = false;
         let isAbsent = false;
         for (let i = 0; i < dailyData.length; i++) {
-          if (dailyData['Attendance'] === 'absent') {
+          if (dailyData['Attendance'] === 'Absent') {
             isAbsent = true;
-          } else if (dailyData[i]['Attendance'] === 'late') {
+          } else if (dailyData[i]['Attendance'] === 'Late') {
             isLate = true;
-          } else if (dailyData[i]['Attendance'] === 'present') {
+          } else if (dailyData[i]['Attendance'] === 'Present') {
             isPresent = true;
           }
         }
         if (isAbsent) {
-          return 'calendarPresent'
+          return 'calendarAbsent'
         } else if (isLate) {
-          return 'calendarPresent'
+          return 'calendarLate'
         } else if (isPresent) {
           return 'calendarPresent'
         }
@@ -75,7 +76,6 @@ class ParentCalendar extends Component {
       }
 
       getStudentRecords(searchParams).then(result => {
-        
         this.setState({
           calendarDates: result.data
         }, () => this.structureDates())
@@ -87,6 +87,7 @@ class ParentCalendar extends Component {
     if (view === 'month' && (date.getDay() !== 0 && date.getDay() !== 6) && date.getTime() < new Date().getTime()) {
       const structuredDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
       const dailyData = this.state.structuredDates[structuredDate];
+
       if (typeof (dailyData) !== 'undefined') {
         const displayInfo = dailyData.map((singleClass) => {
           const value = singleClass['Attendance'].charAt(0).toUpperCase() + singleClass['Attendance'].slice(1)

@@ -31,7 +31,10 @@ class AttendanceTable extends Component {
         attendanceCheckbox: AttendanceCheckbox,
         attendanceDiv: AttendanceDiv
       },
-      disableButton: true
+      disableButton: true,
+      overlayNoRowsTemplate:
+        '<div style="padding: 10px; font-style:italic;">No attendance records exist</div>',
+
     };
   }
 
@@ -127,19 +130,14 @@ class AttendanceTable extends Component {
     const rowNode = this.gridApi.getRowNode(rowIndex);
     rowNode.setDataValue('Attendance', value)
     console.log(rowNode.data)
-    updateAttendanceRecord(rowNode.data).then(result => {
-      console.log(result)
-    })
+    updateAttendanceRecord(rowNode.data)
     this.gridApi.redrawRows()
    
   }
 
   updateRecord(e) {
-    console.log(e.colDef.field)
     if (e.colDef.field === 'Reason For Absence') {
-      updateAttendanceRecord(e.data).then(result => {
-        console.log(result)
-      })
+      updateAttendanceRecord(e.data)
     }
   }
 
@@ -233,6 +231,7 @@ class AttendanceTable extends Component {
             onGridReady={this.onGridReady}
             rowData={this.props.rowData}
             onCellValueChanged={this.updateRecord}
+            overlayNoRowsTemplate={this.state.overlayNoRowsTemplate}
           />
         </div>
         {notifyParentsButton}
