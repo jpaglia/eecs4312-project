@@ -344,4 +344,23 @@ def getChildClasses():
 
   return jsonify(classList)
 
+@setup.route('/getTeacherHistoricalAttendanceList', methods=['POST'])
+def getTeacherHistoricalAttendanceList():
+  data = request.get_json()
+
+  schoolName = data['schoolName']
+  studentName = data['studentName']
+  classList = data['classList']
+  
+  if data['date'] == None:
+    d = ''
+  else:
+    date_int = int(data['date']) / 1000
+    d = datetime.datetime.fromtimestamp(date_int).strftime('%d/%m/%Y')
+
+  attendances = db_queries.getTeacherHistoricalAttendance(schoolName, studentName, d, classList)
+
+  return jsonify(attendances)
+
+
 

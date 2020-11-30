@@ -275,6 +275,46 @@ def getChildClasses(firstName, lastName):
         record['className'] = q['className']
         record['classHour'] = q['time'].split(':')[0]
         qList.append(record)
-        
+
     return qList
+
+def getTeacherHistoricalAttendance(schoolName, studentName, date, classList):
+    qlist = []
+    # Get ALL attendance records for the school
+    query_str = 'SELECT * from ((Attendance INNER JOIN Class ON Attendance.Class_classId = Class.classId) \
+                INNER JOIN Students ON Attendance.Student_studentId = Students.studentId)'
+    query_str += ' WHERE school="' + str(schoolName) + '"'
+    
+    # Filter by Student Name 
+    if (studentName != ''):
+        if ' ' in studentName:
+            query_str += ' AND firstName="' + studentName.split(' ')[0] + '" AND lastName="' + studentName.split(' ')[1] + '"'
+        else:
+            query_str += ' AND firstName="' + studentName.split(' ')[0] + '"'
+    
+    # Filter by Date
+    if (date != ''):
+        query_str += ' AND date="' + date + '"'
+
+    # Filter by Teacher Classes
+    if len(classList) == 1:
+        query_str += ' AND className="' + classList[0] + '"'
+    elif len(classList) > 1:
+        query_str += ' AND (className="' + classList[0] + '"'
+        for i in range(1,len(classList)):
+            query_str += ' OR className="' + classList[i] + '"'
+        query_str += ')'
+
+    query = db_ops.runQuery(query_str)
+
+    for q in query:
+        record = {}
+        record['Name'] = q['firstName'] + ' ' + q['lastName']
+        record['Attendance'] = q['status']
+        record['Class'] = q['className']
+        record['Date'] = q['date']
+        qlist.append(record)
+    
+    return qlist
+
 
