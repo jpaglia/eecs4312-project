@@ -31,7 +31,7 @@ class TextField extends Component {
       );
     }
     return(
-      <div className='textField'>
+      <div className={this.props.className}>
         <form autoComplete='off'>
         <ThemeProvider theme={COLOUR_THEME}>
             <TextFieldUI
@@ -41,6 +41,8 @@ class TextField extends Component {
               onBlur={this.props.onBlur}
               color='primary'
               defaultValue={this.props.input}
+              multiline={this.props.multiline}
+              error={this.props.error}
             />
           </ThemeProvider>
         </form>
@@ -51,7 +53,9 @@ class TextField extends Component {
 
 TextField.defaultProps = {
   input: '',
-  error: false
+  error: false,
+  multiline: false,
+  className: 'textField'
 }
 
 TextField.propTypes = {
@@ -59,7 +63,9 @@ TextField.propTypes = {
   id: Proptypes.string.isRequired,
   input: Proptypes.string,
   onBlur: Proptypes.func.isRequired,
-  error: Proptypes.bool
+  error: Proptypes.bool,
+  multiline: Proptypes.bool,
+  className: Proptypes.string
 }
 
 export default TextField;

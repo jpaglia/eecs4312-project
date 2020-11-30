@@ -7,7 +7,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
-import { getAttendanceList } from '../../utils/sockets';
+import { getAttendanceList, getSchoolName } from '../../utils/sockets';
 import './SecretaryMain.scss'
 
 function TabPanel(props) {
@@ -47,7 +47,16 @@ function a11yProps(index) {
 
 class SecretaryMain extends Component {
   componentDidMount() {
-    this.getInitialRowData();
+    const data = {
+      'email': this.props.email
+    }
+    getSchoolName(data).then(result => {
+      this.setState({
+        schoolName: result.data['schoolName']
+      })
+      this.getInitialRowData(result.data['schoolName']);
+    })
+    
   }
   constructor(props) {
     super(props);
@@ -79,8 +88,9 @@ class SecretaryMain extends Component {
     )
   }
 
-  getInitialRowData() {
+  getInitialRowData(schoolName) {
     const searchParams = {
+      schoolName: schoolName,
       studentName: '',
       className: '',
       startingDate: null
@@ -99,6 +109,7 @@ class SecretaryMain extends Component {
     const secretaryAttendancePage = 
     <SecretaryAttendance
       initialRowData={this.state.initialRowData}
+      schoolName={this.state.schoolName}
     />;
 
     return (
@@ -134,6 +145,7 @@ class SecretaryMain extends Component {
 
 SecretaryMain.propTypes = {
   onChange: PropTypes.func,
+  email: PropTypes.string.isRequired
 }
 
 export default SecretaryMain;

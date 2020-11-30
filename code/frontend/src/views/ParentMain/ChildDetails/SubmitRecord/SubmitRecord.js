@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import { ThemeProvider } from '@material-ui/styles';
-import { COLOUR_THEME } from '../../../constants';
+import { COLOUR_THEME } from '../../../../constants';
 import Button from '@material-ui/core/Button';
-import './SubmitAttendance.scss';
+import './SubmitRecord.scss';
 
-class SubmitAttendance extends Component {
+class SubmitRecord extends Component {
   componentDidMount() {
     this.timerID = setInterval(
       () => this.tick(),
@@ -18,12 +18,10 @@ class SubmitAttendance extends Component {
   }
 
   tick() {
-    // 30 = minutes need to pass to post
-   const bufferTime = 30 * 60 * 1000;
-   const submitTime = this.state.classStart.getTime() + bufferTime;
+   const submitTime = this.state.classStart.getTime();
    const currentTime = new Date().getTime()
-   if (currentTime >= submitTime && this.state.disableTime) {
-    this.setState({ disableTime: false });
+   if (currentTime > submitTime && !this.state.disableTime) {
+    this.setState({ disableTime: true });
    }
   }
 
@@ -31,8 +29,8 @@ class SubmitAttendance extends Component {
     super(props);
     const today = new Date();
     this.state = {
-      classStart: new Date(today.getFullYear(), today.getMonth(), today.getDate(), this.props.classStartHour),
-      disableTime: true
+      classStart: new Date(today.getFullYear(), today.getMonth(), today.getDate(), this.props.classStartHour, 0),
+      disableTime: false
     }
   }
   
@@ -41,16 +39,15 @@ class SubmitAttendance extends Component {
   render() {
    
     return (
-      <div className='submitAttendance'>
+      <div className='attendanceRecordParentSubmit'>
       <ThemeProvider theme={COLOUR_THEME}>
         <Button
-          className="submitAttendanceButton"
-          onClick={this.props.submitAttendance.bind(this)}
+          onClick={this.props.submitRecordFunc.bind(this)}
           color="primary"
           variant="contained"
           disabled={this.state.disableTime || this.props.disableButton}
           autoFocus>
-            Submit Attendance
+            Submit Record
       </Button>
       </ThemeProvider>
     </div>
@@ -58,10 +55,10 @@ class SubmitAttendance extends Component {
   }
 }
 
-SubmitAttendance.propTypes = {
-  submitAttendance: Proptypes.func,
+SubmitRecord.propTypes = {
+  submitRecordFunc: Proptypes.func,
   classStartHour: Proptypes.number,
   disableButton: Proptypes.bool
 }
 
-export default SubmitAttendance;
+export default SubmitRecord;

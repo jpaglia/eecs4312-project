@@ -1,0 +1,70 @@
+.childDetails {
+  // Using Flex to centre divs without using screen size
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 3vh;
+  padding-top: 40px;
+
+  .childCalendar {
+    width: 55vw;
+  }
+
+  .rightSidepanelParent{
+    width: 45vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .notificationPanel {
+      width: 45vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      height: 250px;
+      margin-right: 60px;
+      .notificationParentTitle {
+        font-size: 20px;
+        font-weight: 500;
+      }
+    }
+    .reportAttendance{
+      margin-top: 15px;
+      margin-right: 60px;
+      width: 35vw;
+      height: 380px;
+      border: 4px solid  #47bc56;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .reportAttendanceTile {
+        font-size: 20px;
+        text-align: center;
+        font-weight: 500;
+        padding-top: 10px;
+      }
+      .reportAttendanceBottom {
+        margin-top: -10px;
+        min-height: 100px;
+        max-height: 100px;
+        width: 30vw;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+      .attendanceRecordParentSubmit{
+        margin-top: 10px;
+        width: 30vw;
+      }
+    }
+  }
+}
+
+.MuiAlert-message{
+  text-align: center;
+  width: 350px;
+}
+
+
+
