@@ -71,3 +71,8 @@ export function getAttendanceStatus(data) {
 export function getChildren(data) {
   return postRequest('getChildren', data)
 }
+
+export function getChildClasses(data) {
+  return postRequest('getChildClasses', data)
+}
+

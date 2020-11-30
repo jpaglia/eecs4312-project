@@ -329,19 +329,19 @@ def getClassData():
     studentList = combinedList
   )
 
-# @setup.route('/getChildClasses', methods=['POST'])
-# def getChildClasses():
-#   data = request.get_json()
-#   className = data['className']
-#   schoolName = data['schoolName']
-  
-#   hour = db_queries.getClassTime(className, schoolName)
-#   hour = hour.split(':')[0]
-#   studentList = db_queries.getClassStudentList(className, schoolName)
+@setup.route('/getChildClasses', methods=['POST'])
+def getChildClasses():
+  data = request.get_json()
 
-#   return jsonify(
-#     classHour = hour,
-#     studentList = studentList
-#   )
+  if ' ' in data['name']:
+    firstName = data['name'].split(' ')[0]
+    lastName = data['name'].split(' ')[1]
+  else:
+    firstName = data['name']
+    lastName = ''
+
+  classList = db_queries.getChildClasses(firstName, lastName)
+
+  return jsonify(classList)
 
 

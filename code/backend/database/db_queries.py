@@ -259,3 +259,22 @@ def getExistingClassRecords(className, schoolName, date):
     
     return qList
 
+def getChildClasses(firstName, lastName):
+    qList = []
+    query_str = 'SELECT className, time FROM Student_has_Class \
+                INNER JOIN Class ON Student_has_Class.Class_classId = Class.classId \
+                INNER JOIN Students ON Student_has_Class.Student_studentId = Students.studentId \
+                WHERE firstName="' + firstName + '"'
+    if (lastName != ''):
+        query_str += ' AND lastName="' + lastName + '"'
+    
+    query = db_ops.runQuery(query_str)
+
+    for q in query:
+        record = {}
+        record['className'] = q['className']
+        record['classHour'] = q['time'].split(':')[0]
+        qList.append(record)
+        
+    return qList
+
