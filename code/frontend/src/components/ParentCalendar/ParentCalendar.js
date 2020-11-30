@@ -7,6 +7,7 @@ import 'react-calendar/dist/Calendar.css';
 import './ParentCalendar.scss';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import Box from '@material-ui/core/Box';
+import { v4 as uuidv4 } from 'uuid'
 
 class ParentCalendar extends Component {
 
@@ -93,7 +94,7 @@ class ParentCalendar extends Component {
           const value = singleClass['Attendance'].charAt(0).toUpperCase() + singleClass['Attendance'].slice(1)
 
           return(
-          <div key={value}>{singleClass['Class']}: {value}</div>
+          <div key={`${value}_${uuidv4()}`}>{singleClass['Class']}: {value}</div>
           )
         })
         
