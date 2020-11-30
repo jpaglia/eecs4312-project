@@ -322,7 +322,7 @@ def getClassData():
   studentList = db_queries.getClassStudentList(className, schoolName)
 
   return jsonify(
-    classTime = hour,
+    classHour = hour,
     studentList = studentList
   )
 
