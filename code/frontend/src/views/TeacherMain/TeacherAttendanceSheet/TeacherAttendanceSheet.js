@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import DropdownSelect from '../../../components/DropdownSelect';
-import Button from '@material-ui/core/Button';
 import AttendanceTable from '../../../components/AttendanceTable';
 import './TeacherAttendanceSheet.scss'
 import { v4 as uuidv4 } from 'uuid'
@@ -23,7 +22,6 @@ class TeacherAttendanceSheet extends Component {
       className: '',
       rowData: [],
       classStartHour: 0,
-      classStartMin: 0,
       attendanceSubmitted: false
     }
   }
@@ -55,7 +53,6 @@ class TeacherAttendanceSheet extends Component {
      rowData={this.state.rowData}
      currentUser={'Teacher-Record'}
      classStartHour={this.state.classStartHour}
-     classStartMin={this.state.classStartMin}
     />
 
     return (
