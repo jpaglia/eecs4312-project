@@ -129,7 +129,6 @@ class AttendanceTable extends Component {
   updateAttendance(value, rowIndex) {
     const rowNode = this.gridApi.getRowNode(rowIndex);
     rowNode.setDataValue('Attendance', value)
-    console.log(rowNode.data)
     updateAttendanceRecord(rowNode.data)
     this.gridApi.redrawRows()
    

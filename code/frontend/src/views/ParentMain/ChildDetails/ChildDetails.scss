@@ -66,5 +66,16 @@
   width: 350px;
 }
 
+.backWrapper {
+  width: 50px;
+  margin-top: -30px;
+  .backButton {
+    width: 100%;
+    filter: invert(69%) sepia(26%) saturate(1063%) hue-rotate(76deg) brightness(86%) contrast(85%);
+  }
 
+  .backButton:hover {
+    filter: invert(37%) sepia(8%) saturate(2902%) hue-rotate(77deg) brightness(110%) contrast(96%);
+  }
+}
 

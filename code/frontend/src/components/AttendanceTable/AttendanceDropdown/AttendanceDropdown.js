@@ -20,7 +20,7 @@ class AttendanceDropdown extends Component {
   }
 
   getDropdown(onAttendanceChange) {
-    const colors = ['#47bc56', '#e9d200', '#cf0000']
+    const colors = ['#47bc56', '#f5d142', '#cf0000']
     const options = this.state.attendanceOptions.map((data) => {
       return <option
         style={{'backgroundColor': colors[data.id], 'color': 'white'}}
@@ -32,7 +32,7 @@ class AttendanceDropdown extends Component {
     let colorSelect = '#47bc56';
     let value = 'Present'
     if (this.props.value === 'Late' || this.props.value === 'late') {
-      colorSelect = '#e9d200'
+      colorSelect = '#f5d142'
       value = 'Late'
     } else if (this.props.value === 'Absent' || this.props.value === 'absent') {
       colorSelect = '#cf0000'
@@ -51,7 +51,7 @@ class AttendanceDropdown extends Component {
 
   
   getDropdownTeacher(onAttendanceChange) {
-    const colors = ['#949494', '#47bc56', '#e9d200', '#cf0000']
+    const colors = ['#949494', '#47bc56', '#f5d142', '#cf0000']
     const options = this.state.attendanceOptionsTeacher.map((data) => {
       return <option
         style={{'backgroundColor': colors[data.id], 'color': 'white'}}
@@ -66,7 +66,7 @@ class AttendanceDropdown extends Component {
       colorSelect = '#47bc56'
       value = 'Present'
     } else if (this.props.value === 'Late' || this.props.value === 'late') {
-      colorSelect = '#e9d200'
+      colorSelect = '#f5d142'
       value = 'Late'
     } else if (this.props.value === 'Absent' || this.props.value === 'absent') {
       colorSelect = '#cf0000'

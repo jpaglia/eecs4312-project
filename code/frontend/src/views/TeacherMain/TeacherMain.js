@@ -118,11 +118,13 @@ class TeacherMain extends Component {
             <TeacherHistoricalRecords
               classList={this.state.classList}
               email={this.props.email}
+              schoolName={this.state.schoolName}
             />
           </TabPanel>
           <TabPanel value={this.state.value} index={2}>
             <TeacherAttendanceSheet
               classList={this.state.classList}
+              schoolName={this.state.schoolName}
             />
           </TabPanel>
         </div>

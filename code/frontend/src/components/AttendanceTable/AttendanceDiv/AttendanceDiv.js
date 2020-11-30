@@ -17,9 +17,9 @@ class AttendanceDiv extends Component {
 
   render() {
     let colorSelect = '#47bc56';
-    if (this.props.value === 'late') {
-      colorSelect = '#e9d200'
-    } else if (this.props.value === 'absent') {
+    if (this.props.value === 'Late') {
+      colorSelect = '#f5d142'
+    } else if (this.props.value === 'Absent') {
       colorSelect = '#cf0000'
     }
     const value = this.props.value.charAt(0).toUpperCase() + this.props.value.slice(1)
