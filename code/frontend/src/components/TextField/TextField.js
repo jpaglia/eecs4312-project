@@ -42,6 +42,7 @@ class TextField extends Component {
               color='primary'
               defaultValue={this.props.input}
               multiline={this.props.multiline}
+              error={this.props.error}
             />
           </ThemeProvider>
         </form>

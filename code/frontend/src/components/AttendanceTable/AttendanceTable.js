@@ -10,6 +10,7 @@ import AttendanceDropdown from './AttendanceDropdown';
 import AttendanceCheckbox from './AttendanceCheckbox';
 import AttendanceDiv from './AttendanceDiv';
 import SubmitAttendance from './SubmitAttendance';
+import { updateAttendanceRecord } from '../../utils/sockets';
 import './AttendanceTable.scss';
 
 
@@ -30,7 +31,10 @@ class AttendanceTable extends Component {
         attendanceCheckbox: AttendanceCheckbox,
         attendanceDiv: AttendanceDiv
       },
-      disableButton: true
+      disableButton: true,
+      overlayNoRowsTemplate:
+        '<div style="padding: 10px; font-style:italic;">No attendance records exist</div>',
+
     };
   }
 
@@ -49,15 +53,15 @@ class AttendanceTable extends Component {
               clicked: this.updateAttendance.bind(this),
               type: 'Secretary'
             },
-            minWidth: 150
+            minWidth: 130
           },
           {
             field: "Class",
-            minWidth: 75
+            minWidth: 85
           },
           {
             field: "Date",
-            minWidth: 90
+            minWidth: 100
           },
           {
             field: "Reason For Absence",
@@ -125,8 +129,16 @@ class AttendanceTable extends Component {
   updateAttendance(value, rowIndex) {
     const rowNode = this.gridApi.getRowNode(rowIndex);
     rowNode.setDataValue('Attendance', value)
+    console.log(rowNode.data)
+    updateAttendanceRecord(rowNode.data)
     this.gridApi.redrawRows()
-    // Call endpoint to update child's attendance record
+   
+  }
+
+  updateRecord(e) {
+    if (e.colDef.field === 'Reason For Absence') {
+      updateAttendanceRecord(e.data)
+    }
   }
 
   // For Teacher Only
@@ -161,7 +173,7 @@ class AttendanceTable extends Component {
     const childrenList = [];
     this.gridApi.forEachNode(function(rowNode, index) {
       if (rowNode.data['Parent Notified'] === 'N' && !rowNode.data['Reason Verified'] && (rowNode.data['Attendance'] === 'Late' || rowNode.data['Attendance'] === 'Absent')) {
-        childrenList.append({'Name' : rowNode.data['Name'], 'Date': rowNode.data['Name'], 'Class': rowNode.data['Class']})
+        childrenList.push({'Name' : rowNode.data['Name'], 'Date': rowNode.data['Name'], 'Class': rowNode.data['Class']})
       }
     })
     // TODO: confirm date works.... may need to format it
@@ -218,6 +230,8 @@ class AttendanceTable extends Component {
             frameworkComponents={this.state.frameworkComponents}
             onGridReady={this.onGridReady}
             rowData={this.props.rowData}
+            onCellValueChanged={this.updateRecord}
+            overlayNoRowsTemplate={this.state.overlayNoRowsTemplate}
           />
         </div>
         {notifyParentsButton}
