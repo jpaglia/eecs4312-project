@@ -314,27 +314,16 @@ def getChildren():
 @setup.route('/getClassData', methods=['POST'])
 def getClassData():
   data = request.get_json()
-  
-  if not "className" in data:
-    return "No key 'className' in request body", 400
-  
   className = data['className']
+  schoolName = data['schoolName']
   
-  [hour, minute] = db_queries.getClassTime(className)
-  studentList = db_queries.getClassStudentList(className)
+  hour = db_queries.getClassTime(className, schoolName)
+  hour = hour.split(':')[0]
+  studentList = db_queries.getClassStudentList(className, schoolName)
 
-  classTimeDict = {"hour": hour, "min": minute}
-  
-  studentListDict = []
-  for i in studentList:
-    name = i[0]
-    attendance = i[1]
-    studentDict = {"Name": name, "Attendance": attendance}
-    studentListDict.append(studentDict)
-  
   return jsonify(
-    classTime = classTimeDict,
-    studentList = studentListDict
+    classTime = hour,
+    studentList = studentList
   )
 
 

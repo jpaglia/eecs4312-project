@@ -15,8 +15,6 @@ def getTeacherClasses(email):
         WHERE email=%s"
 
     classes = db_ops.runQuery(query_str, email)
-    
-    print("{}".format(classes))
     return classes
 
 def getStudentRecords(studentName, date, className):
@@ -162,7 +160,6 @@ def checkIfParentExists(email):
     return true if email already exists in db
     """
     query = db_ops.runQuery("Select * FROM schooldb1.Accounts Where email=%s", email)
-    print(query)
     if len(query) == 0:
         return False
     return True
@@ -213,7 +210,6 @@ def getChildren(email):
                 WHERE email="' + email + '"'
 
     query = db_ops.runQuery(query_str)
-    print(query)
 
     for q in query:
         record = {}
@@ -224,16 +220,25 @@ def getChildren(email):
     
     return qlist
 
-def getClassTime(className):
-    """
-    Gets the class time of the class passed in
-    Return: [hour, minute]
-    """
-    pass
+def getClassTime(className, schoolName):
+    query_str = 'SELECT time FROM Class WHERE className="' + className + '" AND school="' + schoolName +'"'
+    time = db_ops.runQuery(query_str)[0]['time']
+    return time
 
-def getClassStudentList(className):
-    """
-    Gets the students name and attendance for the class passed in
-    Return: [[name, attendence], [name, attendence], ...]
-    """
-    pass
+def getClassStudentList(className, schoolName):
+    qList = []
+    query_str = 'SELECT firstName, lastName, status FROM Attendance \
+                INNER JOIN Class ON Attendance.Class_classId = Class.classId \
+                INNER JOIN Students ON Attendance.Student_studentId = Students.studentId \
+                WHERE className="' + className + '" AND school="' + schoolName +'"'
+    
+    query = db_ops.runQuery(query_str)
+    for q in query:
+        record = {}
+        record['Name'] = q['firstName'] + ' ' + q['lastName']
+        record['Attendance'] = q['status']
+        qList.append(record)
+    
+    return qList
+
+
