@@ -126,7 +126,6 @@ def notifyParents(firstName, lastName, date, className):
         WHERE Student_studentId=%s AND date=%s AND className=%s", studentId, date, className)
     return command
 
-
 def updateAttendanceRecord(firstName, lastName, attendance, className,
     date, reason, verified, parentNotified):
     studentId = student_id_from_name(firstName, lastName)
@@ -203,10 +202,27 @@ def getAttendanceStatus(className, date):
     return False
 
 def getChildren(email):
-    """
-    Gets list of children of parent
-    """
-    return ["Child1", "Child 2"]
+    qlist = []
+    # TODO: filter by today's date too? TBC
+
+    query_str = 'SELECT Students.firstName, Students.lastName, email, status, Class.school from Attendance \
+                INNER JOIN Student_has_Parent ON Attendance.Student_studentId = Student_has_Parent.Student_studentId \
+                INNER JOIN Class ON Attendance.Class_classId = Class.classId \
+                INNER JOIN Students ON Attendance.Student_studentId = Students.studentId \
+                INNER JOIN Accounts ON Accounts.accountId = Student_has_Parent.Account_parentId \
+                WHERE email="' + email + '"'
+
+    query = db_ops.runQuery(query_str)
+    print(query)
+
+    for q in query:
+        record = {}
+        record['Name'] = q['firstName'] + ' ' + q['lastName']
+        record['School'] = q['school']
+        record['Attendance'] = q['status']
+        qlist.append(record)
+    
+    return qlist
 
 def getClassTime(className):
     """

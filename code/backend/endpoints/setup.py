@@ -289,11 +289,26 @@ def getAttendanceStatus():
 @setup.route('/getChildren', methods=['POST'])
 def getChildren():
   data = request.get_json()
-  if not "email" in data:
-    return "No key 'date' in request body", 400
-
   email = data["email"]
-  result = db_queries.getChildren(email)
+
+  result = []
+  priorities = {'Absent':1, 'Late':2, 'Present':3}
+  statuses = {}
+
+  queryList = db_queries.getChildren(email)
+
+  # Track the most important attendance status for each child
+  for record in queryList:
+    name = record['Name']
+    att = record['Attendance']
+    if ((name not in statuses) or (priorities[statuses[name]] > priorities[att])):
+      statuses[name] = att
+    
+  for record in queryList:
+    if (record['Attendance'] == statuses[record['Name']]):
+      if record not in result:
+        result.append(record)
+
   return jsonify(result)
 
 @setup.route('/getClassData', methods=['POST'])
