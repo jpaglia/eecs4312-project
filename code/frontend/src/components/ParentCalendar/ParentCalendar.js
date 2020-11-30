@@ -7,6 +7,7 @@ import 'react-calendar/dist/Calendar.css';
 import './ParentCalendar.scss';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import Box from '@material-ui/core/Box';
+import { v4 as uuidv4 } from 'uuid'
 
 class ParentCalendar extends Component {
 
@@ -44,18 +45,18 @@ class ParentCalendar extends Component {
         let isLate = false;
         let isAbsent = false;
         for (let i = 0; i < dailyData.length; i++) {
-          if (dailyData['Attendance'] === 'absent') {
+          if (dailyData['Attendance'] === 'Absent') {
             isAbsent = true;
-          } else if (dailyData[i]['Attendance'] === 'late') {
+          } else if (dailyData[i]['Attendance'] === 'Late') {
             isLate = true;
-          } else if (dailyData[i]['Attendance'] === 'present') {
+          } else if (dailyData[i]['Attendance'] === 'Present') {
             isPresent = true;
           }
         }
         if (isAbsent) {
-          return 'calendarPresent'
+          return 'calendarAbsent'
         } else if (isLate) {
-          return 'calendarPresent'
+          return 'calendarLate'
         } else if (isPresent) {
           return 'calendarPresent'
         }
@@ -92,7 +93,7 @@ class ParentCalendar extends Component {
           const value = singleClass['Attendance'].charAt(0).toUpperCase() + singleClass['Attendance'].slice(1)
 
           return(
-          <div key={value}>{singleClass['Class']}: {value}</div>
+          <div key={`${value}_${uuidv4()}`}>{singleClass['Class']}: {value}</div>
           )
         })
         
