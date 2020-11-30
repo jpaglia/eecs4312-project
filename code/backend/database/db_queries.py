@@ -226,11 +226,29 @@ def getClassTime(className, schoolName):
     return time
 
 def getClassStudentList(className, schoolName):
+    # Gets all students in a given class (empty records)
+    qList = []
+    query_str = 'SELECT firstName, lastName FROM Student_has_Class \
+                INNER JOIN Class ON Student_has_Class.Class_classId = Class.classId \
+                INNER JOIN Students ON Student_has_Class.Student_studentId = Students.studentId \
+                WHERE className="' + className + '" AND school="' + schoolName +'"'
+    
+    query = db_ops.runQuery(query_str)
+    for q in query:
+        record = {}
+        record['Name'] = q['firstName'] + ' ' + q['lastName']
+        record['Attendance'] = ''
+        qList.append(record)
+    
+    return qList
+
+def getExistingClassRecords(className, schoolName, date):
+    # Gets all students in a class who have existing records
     qList = []
     query_str = 'SELECT firstName, lastName, status FROM Attendance \
                 INNER JOIN Class ON Attendance.Class_classId = Class.classId \
                 INNER JOIN Students ON Attendance.Student_studentId = Students.studentId \
-                WHERE className="' + className + '" AND school="' + schoolName +'"'
+                WHERE className="' + className + '" AND school="' + schoolName + '" AND date="' + date +'"'
     
     query = db_ops.runQuery(query_str)
     for q in query:
@@ -240,5 +258,4 @@ def getClassStudentList(className, schoolName):
         qList.append(record)
     
     return qList
-
 

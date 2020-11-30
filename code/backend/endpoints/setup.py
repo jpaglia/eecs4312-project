@@ -310,9 +310,38 @@ def getClassData():
   hour = hour.split(':')[0]
   studentList = db_queries.getClassStudentList(className, schoolName)
 
+  now = datetime.datetime.now().timestamp()
+  today = datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y')
+  existingRecordsList = db_queries.getExistingClassRecords(className, schoolName, today)
+  
+  combinedList = []
+  for student in studentList:
+    exists = False
+    for r in existingRecordsList:
+      if student['Name'] in r['Name']:
+        combinedList.append(r)
+        exists = True
+    if (exists == False):
+      combinedList.append(student)
+
   return jsonify(
     classHour = hour,
-    studentList = studentList
+    studentList = combinedList
   )
+
+# @setup.route('/getChildClasses', methods=['POST'])
+# def getChildClasses():
+#   data = request.get_json()
+#   className = data['className']
+#   schoolName = data['schoolName']
+  
+#   hour = db_queries.getClassTime(className, schoolName)
+#   hour = hour.split(':')[0]
+#   studentList = db_queries.getClassStudentList(className, schoolName)
+
+#   return jsonify(
+#     classHour = hour,
+#     studentList = studentList
+#   )
 
 
