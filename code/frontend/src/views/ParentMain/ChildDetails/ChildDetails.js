@@ -173,12 +173,30 @@ class ChildDetails extends Component {
     // Add endpoint
   }
 
+  buttonHit() {
+    this.props.onChange('ParentHome', '')
+  }
+
+  getBackButton() {
+    return (
+      <div className="backWrapper"  onClick={this.buttonHit.bind(this)}>
+        <img
+          alt="Back Button"
+          src="back-button.png"
+          className="backButton"
+        />
+      </div>
+    )
+  }
+
   render() {
     const notifications = this.state.notifications.length > 0 ? this.getNotifications() : this.getNoWarnings();
     const reportAttendance = this.state.showReportAbsence ? this.getReportAttendance() : null;
+    const backButton = this.getBackButton()
 
     return (
       <div className="childDetails">
+        {backButton}
         <div className="childCalendar">
           <ParentCalendar
             child={this.props.childName}

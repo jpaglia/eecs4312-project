@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AttendanceTable from '../../../components/AttendanceTable';
 import './TeacherHistoricalRecords.scss'
-import { getAttendanceList } from '../../../utils/sockets';
+import { getTeacherHistoricalAttendanceList } from '../../../utils/sockets';
 
 
 // Working on calendar next
@@ -28,7 +28,7 @@ class TeacherHistoricalRecords extends Component {
     super(props);
     this.state = {
       studentName: '',
-      className: '',
+      className: 'All Classes',
       allClasses: this.props.classList,
       calendarAccordion: false,
       startingDate: null,
@@ -118,12 +118,12 @@ class TeacherHistoricalRecords extends Component {
     // Get Search value
     const searchParams = {
       studentName: this.state.studentName,
-      className: this.state.className === 'All Classes' ? '': this.state.className,
-      startingDate: this.state.startingDate
+      classList: this.state.className === 'All Classes' ? this.state.allClasses: [this.state.className],
+      date: this.state.startingDate,
+      schoolName: this.props.schoolName
     }
-
-    // TODO: Add in proper endpoint here
-    getAttendanceList(searchParams).then(result => {
+    
+    getTeacherHistoricalAttendanceList(searchParams).then(result => {
       this.setState({
         rowData : result.data,
         searchParams: searchParams
@@ -180,7 +180,8 @@ class TeacherHistoricalRecords extends Component {
 
 TeacherHistoricalRecords.propTypes = {
   classList: PropTypes.array.isRequired,
-  email: PropTypes.string
+  email: PropTypes.string,
+  schoolName: PropTypes.string
 }
 
 export default TeacherHistoricalRecords;

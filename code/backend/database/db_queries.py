@@ -201,14 +201,21 @@ def getAttendanceStatus(className, date):
 
 def getChildren(email):
     qlist = []
-    # TODO: filter by today's date too? TBC
 
-    query_str = 'SELECT Students.firstName, Students.lastName, email, status, Class.school from Attendance \
-                INNER JOIN Student_has_Parent ON Attendance.Student_studentId = Student_has_Parent.Student_studentId \
-                INNER JOIN Class ON Attendance.Class_classId = Class.classId \
-                INNER JOIN Students ON Attendance.Student_studentId = Students.studentId \
+    query_str = 'SELECT Students.firstName, Students.lastName, email, Class.school from Students \
+                INNER JOIN Student_has_Class ON Students.studentId = Student_has_Class.Student_studentId \
+                INNER JOIN Class ON Student_has_Class.Class_classId = Class.classId \
+                INNER JOIN Student_has_Parent ON Students.studentId = Student_has_Parent.Student_studentId \
                 INNER JOIN Accounts ON Accounts.accountId = Student_has_Parent.Account_parentId \
-                WHERE email="' + email + '"'
+                WHERE Class.time = "9:00" AND email="' + email + '"'
+
+    # TODO: filter by today's date too? TBC
+    # query_str = 'SELECT Students.firstName, Students.lastName, email, status, Class.school from Attendance \
+    #             INNER JOIN Student_has_Parent ON Attendance.Student_studentId = Student_has_Parent.Student_studentId \
+    #             INNER JOIN Class ON Attendance.Class_classId = Class.classId \
+    #             INNER JOIN Students ON Attendance.Student_studentId = Students.studentId \
+    #             INNER JOIN Accounts ON Accounts.accountId = Student_has_Parent.Account_parentId \
+    #             WHERE email="' + email + '"'
 
     query = db_ops.runQuery(query_str)
 
@@ -216,10 +223,23 @@ def getChildren(email):
         record = {}
         record['Name'] = q['firstName'] + ' ' + q['lastName']
         record['School'] = q['school']
-        record['Attendance'] = q['status']
+        record['Attendance'] = 'Present'
         qlist.append(record)
     
     return qlist
+
+def getChildStatusesToday(firstName, lastName, date):
+    qList = []
+    query_str = 'SELECT status from Attendance \
+                INNER JOIN Class ON Attendance.Class_classId = Class.classId \
+                INNER JOIN Students ON Attendance.Student_studentId = Students.studentId \
+                WHERE firstName="' + firstName + '" AND lastName="' + lastName + '" AND date="' + date + '"' 
+    query = db_ops.runQuery(query_str)
+
+    for q in query:
+        qList.append(q['status'])
+
+    return qList
 
 def getClassTime(className, schoolName):
     query_str = 'SELECT time FROM Class WHERE className="' + className + '" AND school="' + schoolName +'"'

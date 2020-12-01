@@ -4,7 +4,7 @@ import DropdownSelect from '../../../components/DropdownSelect';
 import AttendanceTable from '../../../components/AttendanceTable';
 import './TeacherAttendanceSheet.scss'
 import { v4 as uuidv4 } from 'uuid';
-import { getAttendanceStatus } from '../../../utils/sockets';
+import { getAttendanceStatus, getClassData } from '../../../utils/sockets';
 
 class TeacherAttendanceSheet extends Component {
 
@@ -16,7 +16,17 @@ class TeacherAttendanceSheet extends Component {
     }
     getAttendanceStatus(data).then(result => {
       if (!result.data.attendanceSubmitted) {
-        // TODO add in getclassData endpoint
+        const data = {
+          'schoolName': this.props.schoolName,
+          'className':  this.props.classList[0]
+        }
+        getClassData(data).then(result => {
+          this.setState({
+            attendanceSubmitted: false,
+            rowData: result.data['studentList'],
+            classStartHour: parseInt(result.data['classHour'])
+          })
+        })
       } else {
         this.setState({ attendanceSubmitted: true })
       }
@@ -57,9 +67,19 @@ class TeacherAttendanceSheet extends Component {
           className: newSelection,
           attendanceSubmitted: true
         });
+      } else {
+        const data = {
+          'schoolName': this.props.schoolName,
+          'className':  newSelection
+        }
+        getClassData(data).then(result => {
+          this.setState({
+            attendanceSubmitted: false,
+            rowData: result.data['studentList'],
+            classStartHour: parseInt(result.data['classHour'])
+          })
+        })
       }
-
-      // Else get row data and start time
     })
   }
 
@@ -86,7 +106,8 @@ class TeacherAttendanceSheet extends Component {
 }
 
 TeacherAttendanceSheet.propTypes = {
-    classList: Proptypes.array
+    classList: Proptypes.array,
+    schoolName: Proptypes.string
 }
 
 export default TeacherAttendanceSheet;

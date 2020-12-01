@@ -21,16 +21,25 @@ class ParentHome extends Component {
   }
 
   createClickableChildBox(childInfo) {
-    if (childInfo.lateNotification) {
+    if (childInfo.Attendance === 'Absent' ) {
       return (
-        <div className="tileShapeWarning" key={uuidv4()} onClick={this.onClick.bind(this, "ChildDetails", childInfo.name)}>
-          {childInfo.name}
+        <div className="tileShapeAbsent" key={uuidv4()} onClick={this.onClick.bind(this, "ChildDetails", childInfo.Name)}>
+          {childInfo.Name}
+          <div className='schoolNameChildTile'>{childInfo.School}</div>
+        </div>
+      )
+    } else if(childInfo.Attendance === 'Late') {
+      return (
+        <div className="tileShapeLate" key={uuidv4()} onClick={this.onClick.bind(this, "ChildDetails", childInfo.Name)}>
+          {childInfo.Name}
+          <div className='schoolNameChildTile'>{childInfo.School}</div>
         </div>
       )
     }
     return (
-      <div className="tileShape" key={uuidv4()} onClick={this.onClick.bind(this, "ChildDetails", childInfo.name)}>
-        {childInfo.name}
+      <div className="tileShapePresent" key={uuidv4()} onClick={this.onClick.bind(this, "ChildDetails", childInfo.Name)}>
+        {childInfo.Name}
+        <div className='schoolNameChildTile'>{childInfo.School}</div>
       </div>
     )
   }
@@ -42,6 +51,7 @@ class ParentHome extends Component {
     const pageDetails = this.state.currentPage === 'ChildDetails' ?
     <ChildDetails
       childName={this.state.selectedChild}
+      onChange={this.onClick.bind(this)}
     /> :  <div className="tileRow"> {rowButtons} </div>;
 
     return (

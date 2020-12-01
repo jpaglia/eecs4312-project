@@ -46,7 +46,7 @@ class ParentCalendar extends Component {
         let isLate = false;
         let isAbsent = false;
         for (let i = 0; i < dailyData.length; i++) {
-          if (dailyData['Attendance'] === 'Absent') {
+          if (dailyData[i]['Attendance'] === 'Absent') {
             isAbsent = true;
           } else if (dailyData[i]['Attendance'] === 'Late') {
             isLate = true;
@@ -85,7 +85,8 @@ class ParentCalendar extends Component {
   }
 
   getTileContent(date, view) {
-    if (view === 'month' && (date.getDay() !== 0 && date.getDay() !== 6) && date.getTime() < new Date().getTime()) {
+    const timeAddition = 86400000;
+    if (view === 'month' && (date.getDay() !== 0 && date.getDay() !== 6) && date.getTime() < (new Date().getTime() + timeAddition)) {
       const structuredDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
       const dailyData = this.state.structuredDates[structuredDate];
 

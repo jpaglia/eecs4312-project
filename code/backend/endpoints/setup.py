@@ -282,21 +282,48 @@ def getChildren():
 
   result = []
   priorities = {'Absent':1, 'Late':2, 'Present':3}
-  statuses = {}
+  #statuses = {}
 
+  # Get all children
   queryList = db_queries.getChildren(email)
 
-  # Track the most important attendance status for each child
-  for record in queryList:
-    name = record['Name']
-    att = record['Attendance']
-    if ((name not in statuses) or (priorities[statuses[name]] > priorities[att])):
-      statuses[name] = att
+
+  # Get today's status for each child
+  now = datetime.datetime.now().timestamp()
+  today = datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y')
     
-  for record in queryList:
-    if (record['Attendance'] == statuses[record['Name']]):
-      if record not in result:
-        result.append(record)
+  for child in queryList:
+    firstName = child['Name'].split(' ')[0]
+    lastName = child['Name'].split(' ')[1]
+    att = child['Attendance']
+
+    attendanceStatusList = db_queries.getChildStatusesToday(firstName, lastName, today)
+    for status in attendanceStatusList:
+      if (priorities[status] < priorities[att]):
+        child['Attendance'] = status
+        att = status
+
+    result.append(child)
+
+    #queryList.append(attendanceList)
+
+
+  #now = datetime.datetime.now().timestamp()
+  #today = datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y')
+  #existingRecordsList = db_queries.getExistingClassRecords(className, schoolName, today)
+  
+
+  # Track the most important attendance status for each child
+  # for record in queryList:
+  #   name = record['Name']
+  #   att = record['Attendance']
+  #   if ((name not in statuses) or (priorities[statuses[name]] > priorities[att])):
+  #     statuses[name] = att
+    
+  # for record in queryList:
+  #   if (record['Attendance'] == statuses[record['Name']]):
+  #     if record not in result:
+  #       result.append(record)
 
   return jsonify(result)
 
