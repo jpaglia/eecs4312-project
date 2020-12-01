@@ -106,8 +106,6 @@ def notifyParents():
     lastName = name.split(" ")[1]
 
     mydate = d["Date"]
-    mydate = int(mydate) / 1000
-    mydate = datetime.datetime.fromtimestamp(mydate).strftime('%d/%m/%Y')
 
     className = d["Class"]
 
