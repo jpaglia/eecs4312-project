@@ -332,23 +332,35 @@ def getTeacherHistoricalAttendance(schoolName, studentName, date, classList):
     
     return qlist
 
-def addRecord(classId, firstName, lastName, attendence):
+def addRecord(className, firstName, lastName, attendence):
     now = datetime.datetime.now().timestamp()
     today = datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y')
     studentId = getStudentId(firstName, lastName)
     command = "INSERT INTO schooldb1.Attendance (date, Class_classId, Student_studentId, status) \
         VALUES (%s, %s, %s, %s);"
     try:
-        db_ops.runCommand(command, today, classId, studentId, attendence)
-        print("hello")
-        return True
-    except Exception:
+        command_check  = "SELECT * FROM schooldb1.Attendance INNER JOIN schooldb1.Class \
+            ON schooldb1.Attendance.Class_classId = schooldb1.Class.classId \
+            WHERE Student_studentId = %s and className = %s and date = %s"
+        query = db_ops.runQuery(command_check, str(studentId), className, today)
+        if len(query) == 0:
+            print("HERE")
+            classId = getClassIdForStudent(className, studentId)
+            query = db_ops.runCommand(command, today, classId, studentId, attendence)
+            return True
         return False
-
-def getClassId(className):
-    query = db_ops.runQuery("SELECT classId FROM Class WHERE Class.className =%s", className)
-    return query[0]["classId"]
+    except Exception as e:
+        print(e)
+        return False
 
 def getStudentId(firstName, lastName):
     query = db_ops.runQuery("SELECT studentId FROM schooldb1.Students WHERE firstName = %s and lastName = %s", firstName, lastName)
     return query[0]["studentId"]
+
+
+def getClassIdForStudent(className, studentID):
+    query = db_ops.runQuery(
+        "SELECT * FROM schooldb1.Class INNER JOIN schooldb1.Student_has_Class \
+        ON schooldb1.Class.classId = schooldb1.Student_has_Class.Class_classId \
+        WHERE className = %s and Student_studentId = %s", className, str(studentID))
+    return query[0]["classId"]

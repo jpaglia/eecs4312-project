@@ -402,12 +402,11 @@ def addRecords():
   className = data["className"]
   classList = data["classList"]
   result = True
-  classId = db_queries.getClassId(className)
   for student in classList:
     firstName = student["Name"].split(" ")[0]
     lastName = student["Name"].split(" ")[1]
     attendence = student["Attendence"]
-    resultTemp = db_queries.addRecord(classId, firstName, lastName, attendence)
+    resultTemp = db_queries.addRecord(className, firstName, lastName, attendence)
     result = result and resultTemp
     print(result)
 
