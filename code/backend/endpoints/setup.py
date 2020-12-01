@@ -280,11 +280,9 @@ def getChildren():
 
   result = []
   priorities = {'Absent':1, 'Late':2, 'Present':3}
-  #statuses = {}
 
   # Get all children
   queryList = db_queries.getChildren(email)
-
 
   # Get today's status for each child
   now = datetime.datetime.now().timestamp()
@@ -300,28 +298,7 @@ def getChildren():
       if (priorities[status] < priorities[att]):
         child['Attendance'] = status
         att = status
-
     result.append(child)
-
-    #queryList.append(attendanceList)
-
-
-  #now = datetime.datetime.now().timestamp()
-  #today = datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y')
-  #existingRecordsList = db_queries.getExistingClassRecords(className, schoolName, today)
-  
-
-  # Track the most important attendance status for each child
-  # for record in queryList:
-  #   name = record['Name']
-  #   att = record['Attendance']
-  #   if ((name not in statuses) or (priorities[statuses[name]] > priorities[att])):
-  #     statuses[name] = att
-    
-  # for record in queryList:
-  #   if (record['Attendance'] == statuses[record['Name']]):
-  #     if record not in result:
-  #       result.append(record)
 
   return jsonify(result)
 
@@ -372,42 +349,21 @@ def getChildClasses():
 @setup.route('/getNotifications', methods=['POST'])
 def getNotifications():
   data = request.get_json()
-
-  if 'name' not in data:
-    return "key 'name' not found in request body", 400
-  
   name = data['name']
-  studentRecords = db_queries.getAttedanceRecords(name)
-  notifications = {}
 
-  for record in studentRecords:
-    className = record[0]
-    attendance = record[1]
-    notifications[className] = attendance
+  records = db_queries.getAttedanceRecords(name)
 
-  return jsonify(
-    notifications
-  )
+  return jsonify(records)
 
 @setup.route('/reportChild', methods=['POST'])
 def reportChild():
   data = request.get_json()
-  if 'name' not in data:
-    return "key 'name' not found in request body", 400
-  if 'className' not in data:
-    return "key 'className' not found in request body", 400
-  if 'date' not in data:
-    return "key 'date' not found in request body", 400
-  if 'Attendance' not in data:
-    return "key 'Class' not found in request body", 400
-  if 'Reason' not in data:
-    return "key 'Reason' not found in request body", 400
-  
   name = data['name']
   className = data['className']
   date = data['date']
   date = int(date) / 1000
   date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
+  
   attendance = data['Attendance']
   reason = data['Reason']
   result = db_queries.reportChild(name, className, date, attendance, reason)
