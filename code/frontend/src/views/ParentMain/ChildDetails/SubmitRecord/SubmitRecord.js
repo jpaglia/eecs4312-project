@@ -37,7 +37,7 @@ class SubmitRecord extends Component {
 
   // TODO: Add button hover
   render() {
-   
+   // this.state.disableTime || this.props.disableButton
     return (
       <div className='attendanceRecordParentSubmit'>
       <ThemeProvider theme={COLOUR_THEME}>
@@ -45,7 +45,7 @@ class SubmitRecord extends Component {
           onClick={this.props.submitRecordFunc.bind(this)}
           color="primary"
           variant="contained"
-          disabled={this.state.disableTime || this.props.disableButton}
+          disabled={false}
           autoFocus>
             Submit Record
       </Button>

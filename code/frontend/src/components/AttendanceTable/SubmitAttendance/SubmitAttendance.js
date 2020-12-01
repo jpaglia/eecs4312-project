@@ -45,7 +45,7 @@ class SubmitAttendance extends Component {
       <ThemeProvider theme={COLOUR_THEME}>
         <Button
           className="submitAttendanceButton"
-          onClick={this.props.submitAttendance.bind(this)}
+          onClick={this.props.submitAttendance}
           color="primary"
           variant="contained"
           disabled={this.state.disableTime || this.props.disableButton}
