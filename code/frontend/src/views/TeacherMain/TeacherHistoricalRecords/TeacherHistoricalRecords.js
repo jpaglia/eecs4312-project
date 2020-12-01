@@ -60,8 +60,10 @@ class TeacherHistoricalRecords extends Component {
   }
 
   getDropdown() {
-    const list = [...this.state.allClasses]
-    list.unshift('All Classes')
+    const list = ['All Classes']
+    for (let i = 0; i < this.state.allClasses.length; i++) {
+      list.push(this.state.allClasses[i])
+    }
     return <DropdownSelect
       id={`Dropdown_${uuidv4()}`}
       dropdownOptions={list}

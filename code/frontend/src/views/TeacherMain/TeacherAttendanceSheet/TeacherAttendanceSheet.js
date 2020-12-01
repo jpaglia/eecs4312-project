@@ -55,7 +55,6 @@ class TeacherAttendanceSheet extends Component {
 
   handleDropdownChange(e) {
     const newSelection = e.target.value;
-    
     const date = new Date().getTime()
     const data = {
       'date': date,
@@ -76,7 +75,8 @@ class TeacherAttendanceSheet extends Component {
           this.setState({
             attendanceSubmitted: false,
             rowData: result.data['studentList'],
-            classStartHour: parseInt(result.data['classHour'])
+            classStartHour: parseInt(result.data['classHour']),
+            className: newSelection,
           })
         })
       }
@@ -92,6 +92,8 @@ class TeacherAttendanceSheet extends Component {
      rowData={this.state.rowData}
      currentUser={'Teacher-Record'}
      classStartHour={this.state.classStartHour}
+     className={this.state.className}
+     schoolName={this.props.schoolName}
     />
 
     return (
