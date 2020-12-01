@@ -145,7 +145,7 @@ def addParent(name, email, password):
     return true if parent added to the db with their info, false otherwise
     """
     today = date.today()
-    today = today.strftime("%m/%d/%y")
+    today = today.strftime("%d/%m/%Y")
     firstName = name.split(" ")[0]
     lastName = name.split(" ")[1]
     command = "INSERT INTO schooldb1.Accounts (creationDate, email, password, firstName, lastName, type) VALUES (%s, %s, %s, %s, %s, %s);"
@@ -304,7 +304,19 @@ def getAttedanceRecords(name):
     return format: list of lists
                     [["math", "late"], ["english", "present"], ["science", "absent"]]
     """
-    pass
+    firstName = name.split(" ")[0]
+    lastName = name.split(" ")[1]
+    studentId = student_id_from_name(firstName, lastName)
+    today = date.today()
+    today = today.strftime("%d/%m/%Y")
+    query_str = 'SELECT * FROM schooldb1.Attendance INNER JOIN schooldb1.Class \
+                ON schooldb1.Attendance.Class_classId = schooldb1.Class.classId \
+                WHERE date= "' + today + '" and Student_studentId= "' + str(studentId) +'"'
+    return_list = []
+    query = db_ops.runQuery(query_str)
+    for data in query:
+        return_list.append([data['className'], data['status']])
+    return return_list
 
 def reportChild(name, className, date, attendance, reason):
     """

@@ -374,8 +374,11 @@ def getChildClasses():
 @setup.route('/getNotifications', methods=['POST'])
 def getNotifications():
   data = request.get_json()
-  name = data['name']
+
+  if 'name' not in data:
+    return "key 'name' not found in request body", 400
   
+  name = data['name']
   studentRecords = db_queries.getAttedanceRecords(name)
   notifications = {}
 
