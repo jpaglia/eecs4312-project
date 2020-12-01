@@ -391,14 +391,28 @@ def getNotifications():
 @setup.route('/reportChild', methods=['POST'])
 def reportChild():
   data = request.get_json()
+  if 'name' not in data:
+    return "key 'name' not found in request body", 400
+  if 'className' not in data:
+    return "key 'className' not found in request body", 400
+  if 'date' not in data:
+    return "key 'date' not found in request body", 400
+  if 'Attendance' not in data:
+    return "key 'Class' not found in request body", 400
+  if 'Reason' not in data:
+    return "key 'Reason' not found in request body", 400
+  
   name = data['name']
   className = data['className']
   date = data['date']
   date = int(date) / 1000
   date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
   attendance = data['Attendance']
-
-  db_queries.reportChild(name, className, date, attendance)
+  reason = data['Reason']
+  result = db_queries.reportChild(name, className, date, attendance, reason)
+  return jsonify(
+    valid = result
+  )
 
 @setup.route('/getTeacherHistoricalAttendanceList', methods=['POST'])
 def getTeacherHistoricalAttendanceList():

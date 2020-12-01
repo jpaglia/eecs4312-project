@@ -306,11 +306,38 @@ def getAttedanceRecords(name):
     """
     pass
 
-def reportChild(name, className, date, attendance):
+def reportChild(name, className, date, attendance, reason):
     """
     add the child's attendence record to the db
     """
-    pass
+    firstName = name.split(" ")[0]
+    lastName = name.split(" ")[1]
+    studentId = student_id_from_name(firstName, lastName)
+
+    # check to see if row already in attendence table. If yes just update, if no then insert row
+    query_str = 'SELECT * FROM schooldb1.Attendance INNER JOIN schooldb1.Class \
+            ON schooldb1.Attendance.Class_classId = schooldb1.Class.classId \
+            WHERE Student_studentId = "' + str(studentId) + '" and className = "' + str(className) + '" and date = "' + date +'"'
+    queryResult = db_ops.runQuery(query_str)
+    print(studentId)
+    if len(queryResult) == 1:
+        db_ops.runCommand("UPDATE schooldb1.Attendance INNER JOIN schooldb1.Class \
+            ON schooldb1.Attendance.Class_classId = schooldb1.Class.classId \
+            SET status = %s, reason = %s \
+            WHERE Student_studentId=%s AND date=%s AND className=%s", attendance, reason, str(studentId), date, className)
+    else:
+        query_str = 'SELECT * FROM schooldb1.Class INNER JOIN schooldb1.Student_has_Class \
+            ON schooldb1.Class.classId = schooldb1.Student_has_Class.Class_classId \
+            WHERE className = "' + str(className) + '" and Student_studentId = "' + str(studentId) +'"'
+        print("Here")
+        query = db_ops.runQuery(query_str)
+        classId = query[0]["classId"]
+        print(classId)
+        command = "INSERT INTO schooldb1.Attendance (date, Class_classId, Student_studentId, status, reason) VALUES (%s, %s, %s, %s, %s);"
+        db_ops.runCommand(command, date, classId, str(studentId), attendance, reason)
+    
+    return True
+
 
 def getTeacherHistoricalAttendance(schoolName, studentName, date, classList):
     qlist = []
