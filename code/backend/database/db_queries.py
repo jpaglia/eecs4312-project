@@ -373,11 +373,3 @@ def addRecord(className, firstName, lastName, attendance, schoolName):
 def getStudentId(firstName, lastName):
     query = db_ops.runQuery("SELECT studentId FROM schooldb1.Students WHERE firstName = %s and lastName = %s", firstName, lastName)
     return query[0]["studentId"]
-
-
-def getClassIdForStudent(className, studentID):
-    query = db_ops.runQuery(
-        "SELECT * FROM schooldb1.Class INNER JOIN schooldb1.Student_has_Class \
-        ON schooldb1.Class.classId = schooldb1.Student_has_Class.Class_classId \
-        WHERE className = %s and Student_studentId = %s", className, str(studentID))
-    return query[0]["classId"]
