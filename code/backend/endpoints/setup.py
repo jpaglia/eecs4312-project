@@ -106,8 +106,6 @@ def notifyParents():
     lastName = name.split(" ")[1]
 
     mydate = d["Date"]
-    mydate = int(mydate) / 1000
-    mydate = datetime.datetime.fromtimestamp(mydate).strftime('%d/%m/%Y')
 
     className = d["Class"]
 
@@ -282,11 +280,9 @@ def getChildren():
 
   result = []
   priorities = {'Absent':1, 'Late':2, 'Present':3}
-  #statuses = {}
 
   # Get all children
   queryList = db_queries.getChildren(email)
-
 
   # Get today's status for each child
   now = datetime.datetime.now().timestamp()
@@ -302,28 +298,7 @@ def getChildren():
       if (priorities[status] < priorities[att]):
         child['Attendance'] = status
         att = status
-
     result.append(child)
-
-    #queryList.append(attendanceList)
-
-
-  #now = datetime.datetime.now().timestamp()
-  #today = datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y')
-  #existingRecordsList = db_queries.getExistingClassRecords(className, schoolName, today)
-  
-
-  # Track the most important attendance status for each child
-  # for record in queryList:
-  #   name = record['Name']
-  #   att = record['Attendance']
-  #   if ((name not in statuses) or (priorities[statuses[name]] > priorities[att])):
-  #     statuses[name] = att
-    
-  # for record in queryList:
-  #   if (record['Attendance'] == statuses[record['Name']]):
-  #     if record not in result:
-  #       result.append(record)
 
   return jsonify(result)
 
@@ -375,18 +350,10 @@ def getChildClasses():
 def getNotifications():
   data = request.get_json()
   name = data['name']
-  
-  studentRecords = db_queries.getAttedanceRecords(name)
-  notifications = {}
 
-  for record in studentRecords:
-    className = record[0]
-    attendance = record[1]
-    notifications[className] = attendance
+  records = db_queries.getAttedanceRecords(name)
 
-  return jsonify(
-    notifications
-  )
+  return jsonify(records)
 
 @setup.route('/reportChild', methods=['POST'])
 def reportChild():
@@ -396,9 +363,13 @@ def reportChild():
   date = data['date']
   date = int(date) / 1000
   date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
+  
   attendance = data['Attendance']
-
-  db_queries.reportChild(name, className, date, attendance)
+  reason = data['Reason']
+  result = db_queries.reportChild(name, className, date, attendance, reason)
+  return jsonify(
+    valid = result
+  )
 
 @setup.route('/getTeacherHistoricalAttendanceList', methods=['POST'])
 def getTeacherHistoricalAttendanceList():

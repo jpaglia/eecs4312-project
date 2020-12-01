@@ -2,13 +2,6 @@ import database.db_ops as db_ops
 from datetime import date
 import datetime
 
-def student_id_from_name(firstName, lastName):
-    studentId = db_ops.runQuery("SELECT studentId FROM Students WHERE firstName=%s AND lastName=%s", firstName, lastName)
-    if len(studentId) < 1 or not 'studentId' in studentId[0]:
-        return ""
-    
-    return studentId[0]['studentId']
-
 def getTeacherClasses(email):
     query_str = "SELECT className FROM schooldb1.Teacher_has_Class \
         INNER JOIN Accounts on Accounts.accountId = Teacher_has_Class.Account_teacherId \
@@ -117,7 +110,7 @@ def getAttendanceList(schoolName, studentName, className, date):
 
 def notifyParents(firstName, lastName, date, className):
     # First get the student ID given the info
-    studentId = student_id_from_name(firstName, lastName)
+    studentId = getStudentId(firstName, lastName)
 
     command = db_ops.runCommand("UPDATE Attendance \
         INNER JOIN Class ON Attendance.Class_classId = Class.classId \
@@ -127,7 +120,7 @@ def notifyParents(firstName, lastName, date, className):
 
 def updateAttendanceRecord(firstName, lastName, attendance, className,
     date, reason, verified, parentNotified):
-    studentId = student_id_from_name(firstName, lastName)
+    studentId = getStudentId(firstName, lastName)
 
     if studentId == "":
         return False
@@ -146,7 +139,7 @@ def addParent(name, email, password):
     return true if parent added to the db with their info, false otherwise
     """
     today = date.today()
-    today = today.strftime("%m/%d/%y")
+    today = today.strftime("%d/%m/%Y")
     firstName = name.split(" ")[0]
     lastName = name.split(" ")[1]
     command = "INSERT INTO schooldb1.Accounts (creationDate, email, password, firstName, lastName, type) VALUES (%s, %s, %s, %s, %s, %s);"
@@ -208,14 +201,6 @@ def getChildren(email):
                 INNER JOIN Student_has_Parent ON Students.studentId = Student_has_Parent.Student_studentId \
                 INNER JOIN Accounts ON Accounts.accountId = Student_has_Parent.Account_parentId \
                 WHERE Class.time = "9:00" AND email="' + email + '"'
-
-    # TODO: filter by today's date too? TBC
-    # query_str = 'SELECT Students.firstName, Students.lastName, email, status, Class.school from Attendance \
-    #             INNER JOIN Student_has_Parent ON Attendance.Student_studentId = Student_has_Parent.Student_studentId \
-    #             INNER JOIN Class ON Attendance.Class_classId = Class.classId \
-    #             INNER JOIN Students ON Attendance.Student_studentId = Students.studentId \
-    #             INNER JOIN Accounts ON Accounts.accountId = Student_has_Parent.Account_parentId \
-    #             WHERE email="' + email + '"'
 
     query = db_ops.runQuery(query_str)
 
@@ -300,18 +285,52 @@ def getChildClasses(firstName, lastName):
     return qList
 
 def getAttedanceRecords(name):
-    """
-    return the attendence record for the child with "name" for all their classes that day
-    return format: list of lists
-                    [["math", "late"], ["english", "present"], ["science", "absent"]]
-    """
-    pass
+    qList = []
+    firstName = name.split(" ")[0]
+    lastName = name.split(" ")[1]
+    studentId = getStudentId(firstName, lastName)
+    today = date.today().strftime("%d/%m/%Y")
 
-def reportChild(name, className, date, attendance):
-    """
-    add the child's attendence record to the db
-    """
-    pass
+    query_str = 'SELECT * FROM schooldb1.Attendance INNER JOIN schooldb1.Class \
+                ON schooldb1.Attendance.Class_classId = schooldb1.Class.classId \
+                WHERE date= "' + today + '" and Student_studentId= "' + str(studentId) +'"'
+    query = db_ops.runQuery(query_str)
+
+    for q in query:
+        record = {}
+        record['className'] = q['className']
+        record['attendance'] = q['status']
+        qList.append(record)
+
+    return qList
+
+def reportChild(name, className, date, attendance, reason):
+    firstName = name.split(" ")[0]
+    lastName = name.split(" ")[1]
+    studentId = getStudentId(firstName, lastName)
+
+    # check to see if row already in attendence table. 
+    # If yes just update, if no then insert row
+    query_str = 'SELECT * FROM schooldb1.Attendance INNER JOIN schooldb1.Class \
+            ON schooldb1.Attendance.Class_classId = schooldb1.Class.classId \
+            WHERE Student_studentId = "' + str(studentId) + '" and className = "' + str(className) + '" and date = "' + date +'"'
+    queryResult = db_ops.runQuery(query_str)
+    if len(queryResult) == 1:
+        db_ops.runCommand("UPDATE schooldb1.Attendance INNER JOIN schooldb1.Class \
+            ON schooldb1.Attendance.Class_classId = schooldb1.Class.classId \
+            SET status = %s, reason = %s WHERE Student_studentId=%s AND date=%s AND className=%s", 
+            attendance, reason, str(studentId), date, className)
+    else:
+        query_str = 'SELECT * FROM schooldb1.Class INNER JOIN schooldb1.Student_has_Class \
+            ON schooldb1.Class.classId = schooldb1.Student_has_Class.Class_classId \
+            WHERE className = "' + str(className) + '" and Student_studentId = "' + str(studentId) +'"'
+        query = db_ops.runQuery(query_str)
+        classId = query[0]["classId"]
+        command = "INSERT INTO schooldb1.Attendance (date, Class_classId, Student_studentId, status, reason) VALUES (%s, %s, %s, %s, %s);"
+        db_ops.runCommand(command, date, classId, str(studentId), attendance, reason)
+    
+    return True
+
 
 def getTeacherHistoricalAttendance(schoolName, studentName, date, classList):
     qlist = []
@@ -373,3 +392,5 @@ def addRecord(className, firstName, lastName, attendance, schoolName):
 def getStudentId(firstName, lastName):
     query = db_ops.runQuery("SELECT studentId FROM schooldb1.Students WHERE firstName = %s and lastName = %s", firstName, lastName)
     return query[0]["studentId"]
+
+
