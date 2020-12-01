@@ -428,15 +428,13 @@ def addRecords():
 
   className = data["className"]
   classList = data["classList"]
-  result = True
+  schoolName = data["schoolName"]
   for student in classList:
     firstName = student["Name"].split(" ")[0]
     lastName = student["Name"].split(" ")[1]
-    attendence = student["Attendence"]
-    resultTemp = db_queries.addRecord(className, firstName, lastName, attendence)
-    result = result and resultTemp
-    print(result)
+    attendance = student["Attendance"]
+    db_queries.addRecord(className, firstName, lastName, attendance, schoolName)
 
   return jsonify(
-    valid = result
+    valid = True
   )

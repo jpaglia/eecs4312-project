@@ -10,14 +10,13 @@ import AttendanceDropdown from './AttendanceDropdown';
 import AttendanceCheckbox from './AttendanceCheckbox';
 import AttendanceDiv from './AttendanceDiv';
 import SubmitAttendance from './SubmitAttendance';
-import { updateAttendanceRecord } from '../../utils/sockets';
+import { updateAttendanceRecord, addRecords } from '../../utils/sockets';
 import './AttendanceTable.scss';
 
 
 class AttendanceTable extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       columnDefs: this.getTableColumnDefs(),
       defaultColDef: {
@@ -118,7 +117,7 @@ class AttendanceTable extends Component {
                 clicked: this.markAttendance.bind(this),
                 type: 'Teacher-Record'
               },
-              minWidth: 150
+              minWidth: 130
             }
           ]
         )
@@ -193,9 +192,17 @@ class AttendanceTable extends Component {
 
   
   submitAttendance() {
-   // TODO
-   // endpoint to submit attendance 
-   console.log('test')
+  const data = [];
+  this.gridApi.forEachNode(function(rowNode, index) {
+    data.push(rowNode.data)
+  })
+  const paramData = {
+    'className': this.props.className,
+    'classList': data,
+    'schoolName': this.props.schoolName
+  }
+
+  addRecords(paramData)
   }
 
   // Submit record for Teacher
@@ -219,7 +226,7 @@ class AttendanceTable extends Component {
           id="myGrid"
           style={{
             height: "60vh",
-            width: this.props.currentUser === 'Teacher-Record' ? "405px" : "1075px"
+            width: this.props.currentUser === 'Teacher-Record' ? "385px" : "1075px"
           }}
           className="ag-theme-alpine"
         >
@@ -244,7 +251,8 @@ AttendanceTable.propTypes = {
   notifyParents: Proptypes.func,
   rowData: Proptypes.array.isRequired,
   currentUser: Proptypes.string.isRequired,
-  classStartHour: Proptypes.number
+  classStartHour: Proptypes.number,
+  schoolName: Proptypes.string
 }
 
 export default AttendanceTable;

@@ -88,6 +88,6 @@ export function getTeacherHistoricalAttendanceList(data) {
   return postRequest('getTeacherHistoricalAttendanceList', data)
 }
 
-export function getTeacherHistoricalAttendanceList(data) {
+export function addRecords(data) {
   return postRequest('addRecords', data)
 }
