@@ -417,7 +417,8 @@ class DbWrapper:
 
         query_str = 'SELECT * FROM schooldb1.Attendance INNER JOIN schooldb1.Class \
                     ON schooldb1.Attendance.Class_classId = schooldb1.Class.classId \
-                    WHERE date= "' + today + '" and Student_studentId= "' + str(studentId) +'"'
+                    WHERE date= "' + today + '" AND Student_studentId= "' + str(studentId) +'" \
+                    AND Attendance.status <> "Present"'
         query = self.runQuery(query_str)
 
         for q in query:
