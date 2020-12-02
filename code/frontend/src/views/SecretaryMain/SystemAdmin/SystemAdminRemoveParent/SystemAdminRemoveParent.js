@@ -30,6 +30,7 @@ class SystemAdminRemoveParent extends Component {
         onSearch={this.handleSearch.bind(this)}
         searchResult={this.state.parentName}
         onBlur={this.handleSearchBlur.bind(this)}
+        onSelect={this.handleSearch.bind(this)}
       />)
   }
 

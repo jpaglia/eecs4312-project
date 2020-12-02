@@ -41,14 +41,14 @@
 
 .classListWrapper{
     width: 89vw;
-    border-radius: 5px;
-    
+    height: 210px;
     padding-bottom: 5px;
     display: flex;
     flex-direction: column;
     .classListSystemAdmin {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         padding-left: 10px;
         .SystemAdminListOfClasses{
             min-width: 130px;
