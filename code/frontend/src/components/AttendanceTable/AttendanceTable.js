@@ -226,7 +226,7 @@ class AttendanceTable extends Component {
           id="myGrid"
           style={{
             height: "60vh",
-            width: this.props.currentUser === 'Teacher-Record' ? "385px" : "1075px"
+            width: this.props.currentUser === 'Teacher-Record' ? "385px" : "1080px"
           }}
           className="ag-theme-alpine"
         >

@@ -54,7 +54,6 @@ class SecretaryMain extends Component {
       this.setState({
         schoolName: result.data['schoolName']
       })
-      this.getInitialRowData(result.data['schoolName']);
     })
     
   }
@@ -88,27 +87,28 @@ class SecretaryMain extends Component {
     )
   }
 
-  getInitialRowData(schoolName) {
-    const searchParams = {
-      schoolName: schoolName,
-      studentName: '',
-      className: '',
-      startingDate: null
-    }
+  // getInitialRowData(schoolName) {
+  //   const searchParams = {
+  //     schoolName: schoolName,
+  //     studentName: '',
+  //     className: '',
+  //     startingDate: null
+  //   }
 
-    getAttendanceList(searchParams).then(result => {
-      this.setState({
-        initialRowData: result.data
-      })
-    })
-  }
+  //   getAttendanceList(searchParams).then(result => {
+  //     this.setState({
+  //       initialRowData: result.data
+  //     })
+  //   })
+  // }
   
   render() {
     const secretaryMainPage = this.getMainPage();
-    const systemAdminPage = <SystemAdmin />;
+    const systemAdminPage = <SystemAdmin
+    schoolName={this.state.schoolName}
+    />;
     const secretaryAttendancePage = 
     <SecretaryAttendance
-      initialRowData={this.state.initialRowData}
       schoolName={this.state.schoolName}
     />;
 

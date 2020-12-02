@@ -24,13 +24,12 @@ class SecretaryAttendance extends Component {
     }
     getAttendanceList(this.state.searchParams).then(result => {
       const rowData = result.data;
-
       getListOfClasses(data).then(result => {
         const classes = result.data['classes']
         classes.unshift('All Classes')
         this.setState({
           allClasses: classes,
-          initialRowData: rowData
+          rowData: rowData
         })
       })
     })
@@ -44,13 +43,14 @@ class SecretaryAttendance extends Component {
       className: '',
       allClasses: [],
       calendarAccordion: false,
-      startingDate: null,
+      date: null,
       searchParams: {
         studentName: '',
         className: '',
-        startingDate: null
+        date: null,
+        schoolName: props.schoolName
       },
-      rowData: props.initialRowData
+      rowData: []
     }
   }
 
@@ -90,7 +90,7 @@ class SecretaryAttendance extends Component {
   }
 
   getMiniCalendarFilter() {
-    const currentSelection = this.state.startingDate === null ? 'All': new Date(this.state.startingDate).toDateString()
+    const currentSelection = this.state.date === null ? 'All': new Date(this.state.date).toDateString()
     return (
       <div className='calendarAccordian'>
           <Accordion  className='accordionZIndex'>
@@ -104,7 +104,7 @@ class SecretaryAttendance extends Component {
             <AccordionDetails>
               <MiniCalendar
                 updateDates={this.handleDateChange.bind(this)}
-                selectedDate={this.state.startingDate}
+                selectedDate={this.state.date}
               />
             </AccordionDetails>
           </Accordion>
@@ -113,13 +113,13 @@ class SecretaryAttendance extends Component {
   }
 
   handleDateChange(e) {
-    if (this.state.startingDate === e.getTime()) {
+    if (this.state.date === e.getTime()) {
       this.setState({
-        startingDate: null
+        date: null
       })
     } else {
       this.setState({
-        startingDate: e.getTime()
+        date: e.getTime()
       })
     }
   }
@@ -130,7 +130,7 @@ class SecretaryAttendance extends Component {
       schoolName: this.props.schoolName,
       studentName: this.state.studentName,
       className: this.state.className === 'All Classes' ? '': this.state.className,
-      date: this.state.startingDate
+      date: this.state.date
     }
    
     getAttendanceList(searchParams).then(result => {
@@ -200,7 +200,6 @@ class SecretaryAttendance extends Component {
 }
 
 SecretaryAttendance.propTypes = {
-  initialRowData: Proptypes.array.isRequired,
   schoolName: Proptypes.string.isRequired
 }
 
