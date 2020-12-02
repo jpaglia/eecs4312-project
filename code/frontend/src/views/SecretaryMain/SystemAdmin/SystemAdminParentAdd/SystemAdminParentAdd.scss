@@ -1,10 +1,15 @@
 .accordionWrapper {
     width: 100vw;
+    //text-align: center;
+    //border-radius: 10px;
+    //color: white;
+    //background-color: #47bc56;
     font-size: 16px;
     padding-left: 10px;
     padding-right: 10px;
     display: flex;
     flex-direction: column;
+    overflow-x: auto;
 
     .textBoxWrapper {
         width: 80vw;
@@ -13,9 +18,9 @@
         justify-content: space-between;
     }
     
-    .buttonWrapper {
+    .buttonWrapperParentAdd {
         // TODO: fix formatting for addParent and addTeacher
-        width: 40vw;
+        width: 25vw;
         padding-top: 30px;
         padding-right: 30px;
         display: flex;
@@ -27,8 +32,24 @@
         width: 45vw;
     }
 
-
+    .childBoxWrapper {
+        width: 90vw;
+        display: flex;
+        flex-direction: row;
+    }
+    
   }
 
 
-
+  .error{
+    padding-left: 10px;
+    color: #cf0000;
+    font-style: italic;
+    font-size: 14px;
+}
+.success {
+    padding-left: 10px;
+    color: #47bc56;
+    font-style: italic;
+    font-size: 14px;
+}
