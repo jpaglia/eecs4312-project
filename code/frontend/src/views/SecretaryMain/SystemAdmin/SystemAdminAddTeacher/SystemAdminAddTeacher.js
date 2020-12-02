@@ -67,8 +67,8 @@ class SystemAdminAddTeacher extends Component {
       const menuItem =
         <div
           id={data.value}
+          key={data.value}
           className='SystemAdminListOfClasses'
-          key={`${i}_lisOfClasses`}
         >
           <FormControlLabel
             control={

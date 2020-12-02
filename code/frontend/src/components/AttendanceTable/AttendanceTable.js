@@ -202,6 +202,7 @@ class AttendanceTable extends Component {
   }
 
   addRecords(paramData)
+  this.props.onAttendanceSubmitted()
   }
 
   // Submit record for Teacher
@@ -251,7 +252,8 @@ AttendanceTable.propTypes = {
   rowData: Proptypes.array.isRequired,
   currentUser: Proptypes.string.isRequired,
   classStartHour: Proptypes.number,
-  schoolName: Proptypes.string
+  schoolName: Proptypes.string,
+  onAttendanceSubmitted: Proptypes.func
 }
 
 export default AttendanceTable;

@@ -66,7 +66,7 @@ class TeacherMain extends Component {
     super(props);
     this.state = {
       'value': 0,
-      'schoolName': 'Maplewood High School',   // get this based on login, or hardcode for demo idk
+      'schoolName': '',   // get this based on login, or hardcode for demo idk
       'initialHistoricalData': [],
       'teacherEmail': props.email,
       'classList': [] // Update with endpoint on mount
@@ -80,8 +80,7 @@ class TeacherMain extends Component {
   }
 
   getMainPage() {
-    return (
-      <div className='secretaryWrapperPage'>
+    const mainDiv = this.state.schoolName !== '' ?(
       <div className='welcomePageTitleTextBox'>
         <div className='titleText'>
           Welcome to
@@ -90,6 +89,11 @@ class TeacherMain extends Component {
           {this.state.schoolName}
         </div>
       </div>
+    ): null
+
+    return (
+      <div className='secretaryWrapperPage'>
+        {mainDiv}
       </div>
     )
   }

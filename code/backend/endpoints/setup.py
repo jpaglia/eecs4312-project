@@ -3,19 +3,30 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from database import db_queries
+from database import db_credentials as db
 import json
 import requests
 import datetime
 
+params = {
+    'user': db.USERNAME,
+    'password': db.PASSWORD,
+    'host': db.HOST,
+    'database': db.DB_NAME,
+    'port': db.PORT
+}
 setup = Blueprint("setup", __name__)
 
 @setup.route('/getPassword', methods=['GET'])
 def getSampleInfo():
-  return str(db_queries.getListOfClasses("York"))
+  dbw = db_queries.DbWrapper()
+  dbw.close()
+  return str(dbw.getListOfClasses("York"))
 
 @setup.route('/login', methods=['POST'])
 def login():
   req_data = request.get_json()
+  dbw = db_queries.DbWrapper()
 
   # Return invalid if no email/password included in request
   # Can also return an http 400 response
@@ -29,12 +40,13 @@ def login():
       valid = False,
       type = None
     )
-  actual_password = db_queries.getpassword(email)
-  persontype = db_queries.getpersonType(email)
+  actual_password = dbw.getpassword(email)
+  persontype = dbw.getpersonType(email)
   valid = False
   if actual_password == password:
     valid = True
 
+  dbw.close()
   return jsonify(
     valid = valid,
     type = persontype
@@ -42,20 +54,23 @@ def login():
 
 @setup.route('/getSchoolName', methods=['POST'])
 def getSchoolName():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
   if not "email" in data:
     return "No Email found in request body", 400
 
   email = data['email']
 
-  schoolName = db_queries.getSchoolName(email)
+  schoolName = dbw.getSchoolName(email)
 
+  dbw.close()
   return jsonify(
     schoolName = schoolName
   )
 
 @setup.route('/getListOfClasses', methods=['POST'])
 def getListOfClasses():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
 
   if not "schoolName" in data:
@@ -63,7 +78,8 @@ def getListOfClasses():
 
   schoolName = data['schoolName']
 
-  listOfClasses = db_queries.getListOfClasses(schoolName)
+  listOfClasses = dbw.getListOfClasses(schoolName)
+  dbw.close()
   if listOfClasses == []:
     return "No Classes Found", 404
   else:
@@ -73,6 +89,7 @@ def getListOfClasses():
 
 @setup.route('/getAttendanceList', methods=['POST'])
 def getAttendanceList():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
   schoolName = data['schoolName']
   studentName = data['studentName']
@@ -84,12 +101,13 @@ def getAttendanceList():
     date_int = int(data['date']) / 1000
     d = datetime.datetime.fromtimestamp(date_int).strftime('%d/%m/%Y')
 
-  attendances = db_queries.getAttendanceList(schoolName, studentName, className, d)
-
+  attendances = dbw.getAttendanceList(schoolName, studentName, className, d)
+  dbw.close()
   return jsonify(attendances)
 
 @setup.route('/notifyParents', methods=['POST'])
 def notifyParents():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
 
   for d in data:
@@ -109,27 +127,14 @@ def notifyParents():
 
     className = d["Class"]
 
-    db_queries.notifyParents(firstName, lastName, mydate, className)
-
+    dbw.notifyParents(firstName, lastName, mydate, className)
+  dbw.close()
   return jsonify([])
 
 @setup.route('/updateAttendanceRecord', methods=['POST'])
 def updateAttendanceRecord():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
-  if "Name" not in data:
-    return "No key 'Name' in request body", 400
-  if "Attendance" not in data:
-    return "No key 'Attendance' in request body", 400
-  if "Class" not in data:
-    return "No key 'Class' in request body", 400
-  if "Date" not in data:
-    return "No key 'Date' in request body", 400
-  if "Reason For Absence" not in data:
-    return "No key 'Reason' in request body", 400
-  if "Reason Verified" not in data:
-    return "No key 'Reason Verified' in request body", 400
-  if "Parent Notified" not in data:
-    return "No key 'Parent Notified' in request body", 400
 
   firstName = data["Name"].split(" ")[0]
   lastName = data["Name"].split(" ")[1]
@@ -145,13 +150,16 @@ def updateAttendanceRecord():
   else:
     parentNotified = False
    
-  result = db_queries.updateAttendanceRecord(firstName, lastName, attendance, className,
+  result = dbw.updateAttendanceRecord(firstName, lastName, attendance, className,
     mydate, reason, verified, parentNotified)
+  
+  dbw.close()
   return jsonify(result)
 
 # Filter by class is optional
 @setup.route('/getStudentRecords', methods=['POST'])
 def getStudentRecords():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
   className = ''
 
@@ -168,23 +176,29 @@ def getStudentRecords():
   date = int(date) / 1000
   date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
 
-  result = db_queries.getStudentRecords(name, date, className) 
+  result = dbw.getStudentRecords(name, date, className) 
+  dbw.close()
   return jsonify(result)
 
 @setup.route('/getTeacherClasses', methods=['POST'])
 def getTeacherClasses():
+  dbw = db_queries.DbWrapper()
+  
   data = request.get_json()
 
   if 'email' not in data:
     return "key 'email' not found in request body", 400
   email = data["email"]
 
-  classes = db_queries.getTeacherClasses(email)
+  # classes = db_queries.getTeacherClasses(email)
+  classes = dbw.getTeacherClasses(email)
+  dbw.close()
 
   return jsonify(classes)
 
 @setup.route('/addParent', methods=['POST'])
 def addParent():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
 
   name = data['Name']
@@ -192,13 +206,13 @@ def addParent():
   password = data['Password']
   childList = data['ChildList']
 
-  if (db_queries.accountExists(email)):
+  if (dbw.accountExists(email)):
     return jsonify(
       valid = False,
       message = 'Parent Exists with Email: {}'.format(email)
     )
-  added = db_queries.addPerson(name, email, password, "Parent")
-  associated = db_queries.setParentChildren(name, childList)
+  added = dbw.addPerson(name, email, password, "Parent")
+  associated = dbw.setParentChildren(name, childList)
   result = added and associated
 
   if (result):
@@ -206,6 +220,7 @@ def addParent():
   else:
     msg = '{} could not be added to the system'.format(name)
 
+  dbw.close()
   return jsonify(
       valid = result,
       message = msg
@@ -213,11 +228,13 @@ def addParent():
 
 @setup.route('/removePerson', methods=['POST'])
 def removePerson():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
 
   name = data['Name']
 
-  removed = db_queries.removePerson(name)
+  removed = dbw.removePerson(name)
+  dbw.close()
   return jsonify(
     valid = removed
   )
@@ -225,27 +242,31 @@ def removePerson():
 @setup.route('/addTeacher', methods=['POST'])
 def addTeacher():
   data = request.get_json()
+  dbw = db_queries.DbWrapper()
 
   name = data['Name']
   email = data['Email']
   password = data['Password']
   classList = data['ClassList']
   schoolName = data['schoolName']
+  personType = data['type']
 
-  if (db_queries.accountExists(email)):
+  if (dbw.accountExists(email)):
     return jsonify(
       valid = False,
       message = 'Teacher with name Exists: {}'.format(name)
     )
-  added = db_queries.addPerson(name, email, password, "Teacher")
-  associated = db_queries.setTeacherClasses(name, classList, schoolName)
+  added = dbw.addPerson(name, email, password, personType)
+  associated = dbw.setTeacherClasses(name, classList, schoolName)
+  dbw.close()
   result = added and associated
 
   if (result):
     msg = '{} has been added to the system'.format(name)
   else:
     msg = '{} could not be added to the system'.format(name)
-
+  
+  dbw.close()
   return jsonify(
       valid = result,
       message = msg
@@ -253,17 +274,20 @@ def addTeacher():
 
 @setup.route('/getAttendanceStatus', methods=['POST'])
 def getAttendanceStatus():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
   className = data['className']
   date = data['date']
   date = int(date) / 1000
   date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
   
-  result = db_queries.getAttendanceStatus(className, date)
+  result = dbw.getAttendanceStatus(className, date)
+  dbw.close()
   return jsonify(result)
 
 @setup.route('/getChildren', methods=['POST'])
 def getChildren():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
   email = data["email"]
 
@@ -271,7 +295,7 @@ def getChildren():
   priorities = {'Absent':1, 'Late':2, 'Present':3}
 
   # Get all children
-  queryList = db_queries.getChildren(email)
+  queryList = dbw.getChildren(email)
 
   # Get today's status for each child
   now = datetime.datetime.now().timestamp()
@@ -282,28 +306,30 @@ def getChildren():
     lastName = child['Name'].split(' ')[1]
     att = child['Attendance']
 
-    attendanceStatusList = db_queries.getChildStatusesToday(firstName, lastName, today)
+    attendanceStatusList = dbw.getChildStatusesToday(firstName, lastName, today)
     for status in attendanceStatusList:
       if (priorities[status] < priorities[att]):
         child['Attendance'] = status
         att = status
     result.append(child)
 
+  dbw.close()
   return jsonify(result)
 
 @setup.route('/getClassData', methods=['POST'])
 def getClassData():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
   className = data['className']
   schoolName = data['schoolName']
   
-  hour = db_queries.getClassTime(className, schoolName)
+  hour = dbw.getClassTime(className, schoolName)
   hour = hour.split(':')[0]
-  studentList = db_queries.getClassStudentList(className, schoolName)
+  studentList = dbw.getClassStudentList(className, schoolName)
 
   now = datetime.datetime.now().timestamp()
   today = datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y')
-  existingRecordsList = db_queries.getExistingClassRecords(className, schoolName, today)
+  existingRecordsList = dbw.getExistingClassRecords(className, schoolName, today)
   
   combinedList = []
   for student in studentList:
@@ -315,6 +341,7 @@ def getClassData():
     if (exists == False):
       combinedList.append(student)
 
+  dbw.close()
   return jsonify(
     classHour = hour,
     studentList = combinedList
@@ -322,6 +349,7 @@ def getClassData():
 
 @setup.route('/getChildClasses', methods=['POST'])
 def getChildClasses():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
 
   if ' ' in data['name']:
@@ -331,21 +359,25 @@ def getChildClasses():
     firstName = data['name']
     lastName = ''
 
-  classList = db_queries.getChildClasses(firstName, lastName)
+  classList = dbw.getChildClasses(firstName, lastName)
 
+  dbw.close()
   return jsonify(classList)
 
 @setup.route('/getNotifications', methods=['POST'])
 def getNotifications():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
   name = data['name']
 
-  records = db_queries.getAttedanceRecords(name)
+  records = dbw.getAttedanceRecords(name)
 
+  dbw.close()
   return jsonify(records)
 
 @setup.route('/reportChild', methods=['POST'])
 def reportChild():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
   name = data['name']
   className = data['className']
@@ -355,13 +387,15 @@ def reportChild():
   
   attendance = data['Attendance']
   reason = data['Reason']
-  result = db_queries.reportChild(name, className, date, attendance, reason)
+  result = dbw.reportChild(name, className, date, attendance, reason)
+  dbw.close()
   return jsonify(
     valid = result
   )
 
 @setup.route('/getTeacherHistoricalAttendanceList', methods=['POST'])
 def getTeacherHistoricalAttendanceList():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
 
   schoolName = data['schoolName']
@@ -374,12 +408,13 @@ def getTeacherHistoricalAttendanceList():
     date_int = int(data['date']) / 1000
     d = datetime.datetime.fromtimestamp(date_int).strftime('%d/%m/%Y')
 
-  attendances = db_queries.getTeacherHistoricalAttendance(schoolName, studentName, d, classList)
-
+  attendances = dbw.getTeacherHistoricalAttendance(schoolName, studentName, d, classList)
+  dbw.close()
   return jsonify(attendances)
 
 @setup.route('/addRecords', methods=['POST'])
 def addRecords():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
   if 'className' not in data:
     return "key 'className' not found in request body", 400
@@ -393,21 +428,22 @@ def addRecords():
     firstName = student["Name"].split(" ")[0]
     lastName = student["Name"].split(" ")[1]
     attendance = student["Attendance"]
-    db_queries.addRecord(className, firstName, lastName, attendance, schoolName)
-
+    dbw.addRecord(className, firstName, lastName, attendance, schoolName)
+  dbw.close()
   return jsonify(
     valid = True
   )
 
 @setup.route('/searchRecords', methods=['POST'])
 def searchRecords():
+  dbw = db_queries.DbWrapper()
   data = request.get_json()
   firstName = data['name'].split(' ')[0]
   lastName = data['name'].split(' ')[1]
   schoolName = data['schoolName']
   recordType = data['type']
 
-  result = db_queries.recordExists(firstName, lastName, recordType, schoolName)
-  
+  result = dbw.recordExists(firstName, lastName, recordType, schoolName)
+  dbw.close()
   return jsonify(result)
 
