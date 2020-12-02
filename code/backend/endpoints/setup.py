@@ -415,9 +415,10 @@ def searchRecords():
   data = request.get_json()
   firstName = data['name'].split(' ')[0]
   lastName = data['name'].split(' ')[1]
+  schoolName = data['schoolName']
   recordType = data['type']
 
-  result = db_queries.recordExists(firstName, lastName, recordType)
+  result = db_queries.recordExists(firstName, lastName, recordType, schoolName)
   
   return jsonify(result)
 
