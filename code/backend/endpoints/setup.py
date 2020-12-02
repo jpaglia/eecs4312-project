@@ -227,6 +227,7 @@ def addTeacher():
   email = data['Email']
   password = data['Password']
   classList = data['ClassList']
+  schoolName = data['schoolName']
 
   if (db_queries.accountExists(email)):
     print("Teacher with name Exists: {}".format(name))
@@ -234,7 +235,7 @@ def addTeacher():
       valid = "False"
     )
   added = db_queries.addPerson(name, email, password, "Teacher")
-  associated = db_queries.setTeacherClasses(name, classList)
+  associated = db_queries.setTeacherClasses(name, classList, schoolName)
 
   result = added and associated
   return jsonify(

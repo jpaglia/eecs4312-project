@@ -210,7 +210,7 @@ def removePerson(name):
         return False   
     return True
 
-def setTeacherClasses(name, classList):
+def setTeacherClasses(name, classList, schoolName):
     firstName = name.split(" ")[0]
     lastName = name.split(" ")[1]
     teacherId = account_id_from_name(firstName, lastName)
@@ -221,12 +221,16 @@ def setTeacherClasses(name, classList):
             print("ERROR - COULD NOT FIND CLASS ID={}".format(classId))
             return False
 
-        command = "INSERT INTO schooldb1.Teacher_has_Class (Account_teacherId, Class_classId) VALUES (%s, %s);"
+        command = "INSERT INTO schooldb1.Teacher_has_Class (Account_teacherId, Class_classId) VALUES (%s, %s)"
+
+        class_command = "UPDATE Accounts SET school =%s WHERE firstName=%s AND lastName=%s" 
+
         try:
             db_ops.runCommand(command,teacherId,classId)
+            db_ops.runCommand(class_command, schoolName, firstName, lastName)
         except Exception as e:
             print("Error - {}".format(e))
-            return False   
+            return False
     return True
 
 def removeTeacher(name):
