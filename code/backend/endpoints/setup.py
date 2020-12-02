@@ -211,7 +211,7 @@ def addParent():
       valid = False,
       message = 'Parent Exists with Email: {}'.format(email)
     )
-  added = dbw.addPerson(name, email, password, "Parent")
+  added = dbw.addParent(name, email, password, "Parent")
   associated = dbw.setParentChildren(name, childList)
   result = added and associated
 
@@ -256,7 +256,7 @@ def addTeacher():
       valid = False,
       message = 'Teacher with name Exists: {}'.format(name)
     )
-  added = dbw.addPerson(name, email, password, personType)
+  added = dbw.addTeacher(name, email, password, personType, schoolName)
   associated = dbw.setTeacherClasses(name, classList, schoolName)
   dbw.close()
   result = added and associated
