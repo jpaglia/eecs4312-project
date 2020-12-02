@@ -9,6 +9,20 @@ def student_id_from_name(firstName, lastName):
     
     return studentId[0]['studentId']
 
+def account_id_from_name(firstName, lastName):
+    accountId = db_ops.runQuery("SELECT accountId FROM Accounts WHERE firstName=%s AND lastName=%s", firstName, lastName)
+    if len(accountId) < 1 or not 'accountId' in accountId[0]:
+        return ""
+    
+    return accountId[0]['accountId']
+
+def class_id_from_name(className):
+    classId = db_ops.runQuery("SELECT classId FROM Class WHERE className=%s", className)
+    if len(classId) < 1 or not 'classId' in classId[0]:
+        return ""
+    
+    return classId[0]['classId']
+
 def getTeacherClasses(email):
     query_str = "SELECT className FROM schooldb1.Teacher_has_Class \
         INNER JOIN Accounts on Accounts.accountId = Teacher_has_Class.Account_teacherId \
@@ -141,22 +155,41 @@ def updateAttendanceRecord(firstName, lastName, attendance, className,
 
     return True
 
-def addParent(name, email, password):
-    """
-    return true if parent added to the db with their info, false otherwise
-    """
+def addPerson(name, email, password, personType):
     today = date.today()
-    today = today.strftime("%m/%d/%y")
+    today = today.strftime("%d/%m/%y")
     firstName = name.split(" ")[0]
     lastName = name.split(" ")[1]
     command = "INSERT INTO schooldb1.Accounts (creationDate, email, password, firstName, lastName, type) VALUES (%s, %s, %s, %s, %s, %s);"
     try:
-        db_ops.runCommand(command, today, email, password, firstName, lastName, "Parent")
+        db_ops.runCommand(command, today, email, password, firstName, lastName, personType)
         return True
-    except Exception:
+    except Exception as e:
+        print("ERROR - {}".format(e))
         return False
 
-def checkIfParentExists(email):
+def setParentChildren(parentName, childList):
+    firstName = parentName.split(" ")[0]
+    lastName = parentName.split(" ")[1]
+    parentId = account_id_from_name(firstName, lastName)
+
+    for child in childList:
+        childFirst = child.split(" ")[0]
+        childLast = child.split(" ")[1]
+        childId = student_id_from_name(childFirst, childLast)
+        if childId == "":
+            print("ERROR - COULD NOT FIND CHILD ID={}".format(childId))
+            return False
+
+        command = "INSERT INTO schooldb1.Student_has_Parent (Student_studentId, Account_parentId) VALUES (%s, %s);"
+        try:
+            db_ops.runCommand(command,childId, parentId)
+        except Exception as e:
+            print("Error - {}".format(e))
+            return False   
+    return True
+
+def accountExists(email):
     """
     return true if email already exists in db
     """
@@ -165,23 +198,36 @@ def checkIfParentExists(email):
         return False
     return True
 
-def removeParent(name):
-    """
-    remove the parent from the db
-    """
-    pass
+def removePerson(name):
+    firstName = name.split(" ")[0]
+    lastName = name.split(" ")[1]
 
-def addTeacher(name, email, password, subject):
-    """
-    return true if teacher added to the db with their info, false otherwise
-    """
-    pass
+    command = "DELETE FROM schooldb1.Accounts WHERE firstName=%s AND lastName=%s"
+    try:
+        db_ops.runCommand(command,firstName, lastName)
+    except Exception as e:
+        print("Error - {}".format(e))
+        return False   
+    return True
 
-def checkIfTeacherExists(name):
-    """
-    return true if name already exists in db
-    """
-    pass
+def setTeacherClasses(name, classList):
+    firstName = name.split(" ")[0]
+    lastName = name.split(" ")[1]
+    teacherId = account_id_from_name(firstName, lastName)
+
+    for c in classList:
+        classId = class_id_from_name(c)
+        if classId == "":
+            print("ERROR - COULD NOT FIND CLASS ID={}".format(classId))
+            return False
+
+        command = "INSERT INTO schooldb1.Teacher_has_Class (Account_teacherId, Class_classId) VALUES (%s, %s);"
+        try:
+            db_ops.runCommand(command,teacherId,classId)
+        except Exception as e:
+            print("Error - {}".format(e))
+            return False   
+    return True
 
 def removeTeacher(name):
     """
