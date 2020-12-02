@@ -249,13 +249,14 @@ def addTeacher():
   password = data['Password']
   classList = data['ClassList']
   schoolName = data['schoolName']
+  personType = data['type']
 
   if (dbw.accountExists(email)):
     return jsonify(
       valid = False,
       message = 'Teacher with name Exists: {}'.format(name)
     )
-  added = dbw.addPerson(name, email, password, "Teacher")
+  added = dbw.addPerson(name, email, password, personType)
   associated = dbw.setTeacherClasses(name, classList, schoolName)
   dbw.close()
   result = added and associated

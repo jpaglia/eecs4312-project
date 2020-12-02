@@ -128,15 +128,6 @@ class DbWrapper:
         
         return classId[0]['classId']
 
-    # def getTeacherClasses(email):
-    #     query_str = "SELECT className FROM schooldb1.Teacher_has_Class \
-    #         INNER JOIN Accounts on Accounts.accountId = Teacher_has_Class.Account_teacherId \
-    #         INNER JOIN Class ON Class.classId = Teacher_has_Class.Class_classId \
-    #         WHERE email=%s"
-
-    #     classes = self.runQuery(query_str, email)
-    #     return classes
-
     def getStudentRecords(self, studentName, date, className):
         # Get School Name
         query_str = "SELECT school from ((Attendance INNER JOIN Class ON Attendance.Class_classId = Class.classId) \
@@ -301,29 +292,6 @@ class DbWrapper:
             print("Error - {}".format(e))
             return False   
         return True
-
-    # def setTeacherClasses(name, classList, schoolName):
-    #     firstName = name.split(" ")[0]
-    #     lastName = name.split(" ")[1]
-    #     teacherId = account_id_from_name(firstName, lastName)
-
-    #     for c in classList:
-    #         classId = class_id_from_name(c)
-    #         if classId == "":
-    #             print("ERROR - COULD NOT FIND CLASS ID={}".format(classId))
-    #             return False
-
-    #         command = "INSERT INTO schooldb1.Teacher_has_Class (Account_teacherId, Class_classId) VALUES (%s, %s)"
-
-    #         class_command = "UPDATE Accounts SET school =%s WHERE firstName=%s AND lastName=%s" 
-
-    #         try:
-    #             self.runCommand(command,teacherId,classId)
-    #             self.runCommand(class_command, schoolName, firstName, lastName)
-    #         except Exception as e:
-    #             print("Error - {}".format(e))
-    #             return False
-    #     return True
 
     def getAttendanceStatus(self, className, date):
         query_str = 'SELECT COUNT(*) FROM schooldb1.Attendance INNER JOIN Class ON Attendance.Class_classId = Class.classId'
