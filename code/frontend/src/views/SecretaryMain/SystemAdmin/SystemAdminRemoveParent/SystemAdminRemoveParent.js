@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import SearchField from '../../../../components/SearchField';
 import { ThemeProvider } from '@material-ui/styles';
 import { COLOUR_THEME } from '../../../../constants';
-
+import { searchRecords, removePerson } from '../../../../utils/sockets';
 class SystemAdminRemoveParent extends Component {
 
 
@@ -18,6 +18,7 @@ class SystemAdminRemoveParent extends Component {
     this.state = {
       parentNameQuery: '',
       parentName: '',
+      errorSearch: false
     }
   }
 
@@ -31,6 +32,7 @@ class SystemAdminRemoveParent extends Component {
         searchResult={this.state.parentName}
         onBlur={this.handleSearchBlur.bind(this)}
         onSelect={this.handleSearch.bind(this)}
+        error={this.state.errorSearch}
       />)
   }
 
@@ -44,8 +46,23 @@ class SystemAdminRemoveParent extends Component {
   handleSearch() {
     // Do search endpoint here
     // Add type
-    this.setState({
-      parentName: this.state.parentNameQuery
+    const data = {
+      'name': this.state.parentNameQuery,
+      'schoolName': this.props.schoolName,
+      'type': this.props.removeParentBool ? 'Parent' : 'Teacher'
+    }
+    searchRecords(data).then(result => {
+      if (result.data) {
+          this.setState({
+            parentName: this.state.parentNameQuery,
+            errorSearch: false
+          })
+      } else {
+        this.setState({
+          errorSearch: true,
+          parentName: '',
+        })
+      }
     })
   }
 
@@ -73,7 +90,12 @@ class SystemAdminRemoveParent extends Component {
                   {searchRemove}
                 </div>
                 <div className="buttonWrapper">
-                  <Button onClick={this.props.removeParentBool ? this.removeParent.bind(this) : this.removeTeacher.bind(this)} color="primary" variant="contained" autoFocus>
+                  <Button
+                    onClick={this.removePerson.bind(this)}
+                    color="primary"
+                    variant="contained"
+                    disabled={this.state.parentName === ''}
+                    autoFocus>
                     {buttonText}
                     </Button>
                 </div>
@@ -86,15 +108,23 @@ class SystemAdminRemoveParent extends Component {
   }
 
 
-  removeParent() {
-    // add endpoint
-    // need school name and type
+  removePerson() {
+   
+    const data = {
+      'Name': this.state.parentName,
+      'schoolName': this.props.schoolName
+    }
+    removePerson(data).then(result => {
+      if (result.data.valid) {
+        this.setState({
+          parentNameQuery: '',
+          parentName: '',
+          errorSearch: false
+        })
+      }
+    })
   }
 
-  removeTeacher() {
-    // add endpoint
-    // need school name and type
-  }
 }
 
 SystemAdminRemoveParent.defaultProps = {
@@ -102,6 +132,7 @@ SystemAdminRemoveParent.defaultProps = {
 }
 SystemAdminRemoveParent.propTypes = {
   removeParentBool: Proptypes.bool,
+  schoolName: Proptypes.bool,
 }
 
 export default SystemAdminRemoveParent;

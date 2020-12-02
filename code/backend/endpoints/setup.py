@@ -194,7 +194,7 @@ def addParent():
 
   if (db_queries.accountExists(email)):
     return jsonify(
-      valid = False
+      valid = False,
       message = 'Parent Exists with Email: {}'.format(email)
     )
   added = db_queries.addPerson(name, email, password, "Parent")
@@ -207,7 +207,7 @@ def addParent():
     msg = '{} could not be added to the system'.format(name)
 
   return jsonify(
-      valid = result
+      valid = result,
       message = msg
     )
 
@@ -234,7 +234,7 @@ def addTeacher():
 
   if (db_queries.accountExists(email)):
     return jsonify(
-      valid = False
+      valid = False,
       message = 'Teacher with name Exists: {}'.format(name)
     )
   added = db_queries.addPerson(name, email, password, "Teacher")
@@ -247,7 +247,7 @@ def addTeacher():
     msg = '{} could not be added to the system'.format(name)
 
   return jsonify(
-      valid = result
+      valid = result,
       message = msg
     )
 

@@ -9,24 +9,33 @@ import TextField from '../../../components/TextField';
 import DropdownSelect from '../../../components/DropdownSelect';
 import SubmitRecord from './SubmitRecord';
 import { v4 as uuidv4 } from 'uuid';
+import { getChildClasses, getNotifications, reportChild } from '../../../utils/sockets';
 
 class ChildDetails extends Component {
 
   componentDidMount() {
-    // /getNotifications endpoint
-    // /getChildClasses endpoint
-    // TODO: update state
+    const data = {
+      name: this.props.childName
+    }
+    getNotifications(data).then(result => {
+      getChildClasses(data).then(classResult => {
+        this.setState({
+          childClasses: classResult.data,
+          notifications: result.data
+        })
+      })
+    })
   }
   constructor() {
     super();
     this.state = {
       'currentPage': 'ChildDetails',
-      'notifications': [{'className': 'Math', 'attendance': 'Late'}, {'className': 'Science', 'attendance': 'Absent'}],
+      'notifications': [],
       'showReportAbsence': false,
       'reportInfo': '',
-      'childClasses': [{'className': 'Math', 'classHour': 14}],
+      'childClasses': [],
       'selectedClass': '',
-      'lateOrAbsent': 'Late',
+      'lateOrAbsent': '',
       'selectedTime': 0
     }
   }
@@ -164,13 +173,24 @@ class ChildDetails extends Component {
         <SubmitRecord
           disableButton={this.checkSubmitDisabled()}
           submitRecordFunc={this.sendRecord.bind(this)}
-          classStartHour={this.state.selectedTime}
+          classStartHour={parseInt(this.state.selectedTime)}
         />
     </div>)
   }
 
   sendRecord() {
-    // Add endpoint
+    const data = {
+      'name': this.props.childName,
+      'className': this.state.selectedClass,
+      'date': new Date().getTime(),
+      'Attendance': this.state.lateOrAbsent,
+      'Reason': this.state.reportInfo
+    }
+    reportChild(data).then(result => {
+      this.setState({
+        'showReportAbsence': false
+      })
+    })
   }
 
   buttonHit() {
