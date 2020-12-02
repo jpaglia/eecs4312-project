@@ -331,7 +331,6 @@ def reportChild(name, className, date, attendance, reason):
     
     return True
 
-
 def getTeacherHistoricalAttendance(schoolName, studentName, date, classList):
     qlist = []
     # Get ALL attendance records for the school
@@ -392,5 +391,22 @@ def addRecord(className, firstName, lastName, attendance, schoolName):
 def getStudentId(firstName, lastName):
     query = db_ops.runQuery("SELECT studentId FROM schooldb1.Students WHERE firstName = %s and lastName = %s", firstName, lastName)
     return query[0]["studentId"]
+
+def recordExists(firstName, lastName, recordType):
+    if (recordType == 'Student'):
+        # Search for student record
+        query_str = 'SELECT * FROM schooldb1.Students WHERE firstName = "' + \
+                    firstName + '" AND lastName = "' + lastName + '"'
+    else:
+        # Search for parent/teacher record
+        query_str = 'SELECT * FROM schooldb1.Accounts WHERE firstName = "' + \
+                    firstName + '" AND lastName = "' + lastName + '" AND type="' + recordType + '"' 
+
+    query = db_ops.runQuery(query_str)
+    if len(query) == 1:
+        return True
+    else:
+        return False
+
 
 

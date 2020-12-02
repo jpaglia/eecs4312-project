@@ -409,3 +409,15 @@ def addRecords():
   return jsonify(
     valid = True
   )
+
+@setup.route('/searchRecords', methods=['POST'])
+def searchRecords():
+  data = request.get_json()
+  firstName = data['name'].split(' ')[0]
+  lastName = data['name'].split(' ')[1]
+  recordType = data['type']
+
+  result = db_queries.recordExists(firstName, lastName, recordType)
+  
+  return jsonify(result)
+
