@@ -127,12 +127,12 @@ class SystemAdminAddTeacher extends Component {
                 </div>
                 <div className="addTeachersButtonWrapper">
                   <div className="buttonWrapper">
-                    <Button onClick={this.addTeacher.bind(this)} color="primary" variant="contained" autoFocus>
+                    <Button onClick={this.addTeacher.bind(this, 'Teacher')} color="primary" variant="contained" autoFocus>
                       Add Teacher
                       </Button>
                   </div>
                   <div className="buttonWrapper">
-                    <Button onClick={this.addSupplyTeacher.bind(this)} color="primary" variant="contained" autoFocus>
+                    <Button onClick={this.addTeacher.bind(this, 'Supply Teacher')} color="primary" variant="contained" autoFocus>
                       Add Supply Teacher
                       </Button>
                     <div className={errorClassName}>
@@ -148,10 +148,12 @@ class SystemAdminAddTeacher extends Component {
     );
   }
 
-  addTeacher() {
+  addTeacher(type) {
     const classList = []
-    for (let i = 0; i < this.state.classList; i++) {
-      classList.push(classList[i]['value'])
+    for (let i = 0; i < this.state.classList.length; i++) {
+      if (this.state.classList[i]['checked']) {
+        classList.push(this.state.classList[i]['value'])
+      }
     }
 
     const data = {
@@ -160,32 +162,8 @@ class SystemAdminAddTeacher extends Component {
       'Password': this.state.teacherPassword,
       schoolName: this.props.schoolName,
       ClassList: classList,
-      type: 'Teacher'
+      type: type
     }
-    console.log(data)
-    addTeacher(data).then(result => {
-      this.setState({
-        errorAdd: result.data.value,
-        message: result.data.message
-      })
-    })
-  }
-
-  addSupplyTeacher() {
-    const classList = []
-    for (let i = 0; i < this.state.classList; i++) {
-      classList.push(classList[i]['value'])
-    }
-
-    const data = {
-      'Name': this.state.teacherName,
-      'Email': this.state.teacherEmail,
-      'Password': this.state.teacherPassword,
-      schoolName: this.props.schoolName,
-      ClassList: classList,
-      type: 'Supply Teacher'
-    }
-    console.log(data)
     addTeacher(data).then(result => {
       this.setState({
         errorAdd: result.data.value,
