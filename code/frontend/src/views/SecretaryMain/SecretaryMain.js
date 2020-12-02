@@ -55,12 +55,12 @@ class SecretaryMain extends Component {
         schoolName: result.data['schoolName']
       })
     })
-    
+
   }
   constructor(props) {
     super(props);
     this.state = {
-      'schoolName': 'Maplewood High School',   // get this based on login, or hardcode for demo idk
+      'schoolName': '',
       'value': 0,
       'initialRowData': []
     }
@@ -68,13 +68,12 @@ class SecretaryMain extends Component {
 
   onChange(event, newValue) {
     this.setState({
-      'value': newValue 
+      'value': newValue
     })
   }
 
   getMainPage() {
-    return (
-      <div className='secretaryWrapperPage'>
+    const mainDiv = this.state.schoolName !== '' ? (
       <div className='welcomePageTitleTextBox'>
         <div className='titleText'>
           Welcome to
@@ -82,7 +81,11 @@ class SecretaryMain extends Component {
         <div className='schoolNameText'>
           {this.state.schoolName}
         </div>
-      </div>
+      </div>): null
+  
+    return (
+      <div className='secretaryWrapperPage'>  
+        {mainDiv}
       </div>
     )
   }
@@ -101,25 +104,25 @@ class SecretaryMain extends Component {
   //     })
   //   })
   // }
-  
+
   render() {
     const secretaryMainPage = this.getMainPage();
     const systemAdminPage = <SystemAdmin
-    schoolName={this.state.schoolName}
-    />;
-    const secretaryAttendancePage = 
-    <SecretaryAttendance
       schoolName={this.state.schoolName}
     />;
+    const secretaryAttendancePage =
+      <SecretaryAttendance
+        schoolName={this.state.schoolName}
+      />;
 
     return (
       <div>
         <TopBar
-            showLogout={true}
-            onChange={this.props.onChange.bind(this)}
-            showBack={true}
-            onBack={this.onChange.bind(this)}
-          />
+          showLogout={true}
+          onChange={this.props.onChange.bind(this)}
+          showBack={true}
+          onBack={this.onChange.bind(this)}
+        />
         <div>
           <AppBar className="appBarStyle" position="static">
             <Tabs value={this.state.value} onChange={this.onChange.bind(this)} aria-label="simple tabs example">
@@ -132,8 +135,8 @@ class SecretaryMain extends Component {
             {secretaryMainPage}
           </TabPanel>
           <TabPanel value={this.state.value} index={1}>
-              {systemAdminPage}
-            </TabPanel>
+            {systemAdminPage}
+          </TabPanel>
           <TabPanel value={this.state.value} index={2}>
             {secretaryAttendancePage}
           </TabPanel>
