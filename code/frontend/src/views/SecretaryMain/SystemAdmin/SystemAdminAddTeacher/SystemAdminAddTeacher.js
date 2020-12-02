@@ -67,8 +67,8 @@ class SystemAdminAddTeacher extends Component {
       const menuItem =
         <div
           id={data.value}
+          key={data.value}
           className='SystemAdminListOfClasses'
-          key={`${i}_lisOfClasses`}
         >
           <FormControlLabel
             control={
@@ -162,7 +162,6 @@ class SystemAdminAddTeacher extends Component {
       ClassList: classList,
       type: 'Teacher'
     }
-    console.log(data)
     addTeacher(data).then(result => {
       this.setState({
         errorAdd: result.data.value,
@@ -185,7 +184,6 @@ class SystemAdminAddTeacher extends Component {
       ClassList: classList,
       type: 'Supply Teacher'
     }
-    console.log(data)
     addTeacher(data).then(result => {
       this.setState({
         errorAdd: result.data.value,

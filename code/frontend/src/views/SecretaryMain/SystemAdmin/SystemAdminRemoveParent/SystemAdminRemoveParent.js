@@ -18,7 +18,9 @@ class SystemAdminRemoveParent extends Component {
     this.state = {
       parentNameQuery: '',
       parentName: '',
-      errorSearch: false
+      errorSearch: false,
+      errorRemove: false,
+      message: ''
     }
   }
 
@@ -71,6 +73,7 @@ class SystemAdminRemoveParent extends Component {
     const title = this.props.removeParentBool ? 'SEARCH FOR A PARENT' : 'SEARCH FOR A TEACHER' 
     const buttonText = this.props.removeParentBool ? 'Remove Parent' : 'Remove Teacher'
     const accordionText = this.props.removeParentBool ? 'Remove a Parent' : 'Remove a Teacher'
+    const errorClassName = this.state.errorRemove ? 'error' : 'success';
 
     return (
       <div>
@@ -98,6 +101,9 @@ class SystemAdminRemoveParent extends Component {
                     autoFocus>
                     {buttonText}
                     </Button>
+                    <div className={errorClassName}>
+                      {this.state.message}
+                    </div>
                 </div>
               </div>
             </AccordionDetails>
@@ -119,7 +125,14 @@ class SystemAdminRemoveParent extends Component {
         this.setState({
           parentNameQuery: '',
           parentName: '',
-          errorSearch: false
+          errorSearch: false,
+          errorRemove: false,
+          message: `${this.state.parentName} has been removed from the system`
+        })
+      } else {
+        this.setState({
+          errorRemove: true,
+          message: `${this.state.parentName} has not been removed from the system`
         })
       }
     })
@@ -132,7 +145,7 @@ SystemAdminRemoveParent.defaultProps = {
 }
 SystemAdminRemoveParent.propTypes = {
   removeParentBool: Proptypes.bool,
-  schoolName: Proptypes.bool,
+  schoolName: Proptypes.string,
 }
 
 export default SystemAdminRemoveParent;
