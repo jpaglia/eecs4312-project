@@ -187,80 +187,69 @@ def getTeacherClasses():
 def addParent():
   data = request.get_json()
 
-  if 'Name' not in data:
-    return "key 'Name' not found in request body", 400
-  if 'Email' not in data:
-    return "key 'Email' not found in request body", 400
-  if 'Password' not in data:
-    return "key 'Password' not found in request body", 400
-
   name = data['Name']
   email = data['Email']
   password = data['Password']
+  childList = data['ChildList']
 
-  if (db_queries.checkIfParentExists(email)):
+  if (db_queries.accountExists(email)):
     return jsonify(
-      valid = "False"
+      valid = False
+      message = 'Parent Exists with Email: {}'.format(email)
     )
-  added = db_queries.addParent(name, email, password)
+  added = db_queries.addPerson(name, email, password, "Parent")
+  associated = db_queries.setParentChildren(name, childList)
+  result = added and associated
+
+  if (result):
+    msg = '{} has been added to the system'.format(name)
+  else:
+    msg = '{} could not be added to the system'.format(name)
+
   return jsonify(
-      valid = added
+      valid = result
+      message = msg
     )
 
-@setup.route('/removeParent', methods=['POST'])
-def removeParent():
+@setup.route('/removePerson', methods=['POST'])
+def removePerson():
   data = request.get_json()
-
-  if 'Name' not in data:
-    return "key 'Name' not found in request body", 400
 
   name = data['Name']
 
-  db_queries.removeParent(name)
+  removed = db_queries.removePerson(name)
   return jsonify(
-    valid = "True"
+    valid = removed
   )
 
 @setup.route('/addTeacher', methods=['POST'])
 def addTeacher():
   data = request.get_json()
 
-  if 'Name' not in data:
-    return "key 'Name' not found in request body", 400
-  if 'Email' not in data:
-    return "key 'Email' not found in request body", 400
-  if 'Password' not in data:
-    return "key 'Password' not found in request body", 400
-  if 'Class' not in data:
-    return "key 'Class' not found in request body", 400
-
   name = data['Name']
   email = data['Email']
   password = data['Password']
-  subject = data['Class']
+  classList = data['ClassList']
+  schoolName = data['schoolName']
 
-  if (db_queries.checkIfTeacherExists(name)):
+  if (db_queries.accountExists(email)):
     return jsonify(
-      valid = "False"
+      valid = False
+      message = 'Teacher with name Exists: {}'.format(name)
     )
-  added = db_queries.addTeacher(name, email, password, subject)
+  added = db_queries.addPerson(name, email, password, "Teacher")
+  associated = db_queries.setTeacherClasses(name, classList, schoolName)
+  result = added and associated
+
+  if (result):
+    msg = '{} has been added to the system'.format(name)
+  else:
+    msg = '{} could not be added to the system'.format(name)
+
   return jsonify(
-      valid = added
+      valid = result
+      message = msg
     )
-
-@setup.route('/removeTeacher', methods=['POST'])
-def removeTeacher():
-  data = request.get_json()
-
-  if 'Name' not in data:
-    return "key 'Name' not found in request body", 400
-
-  name = data['Name']
-
-  db_queries.removeTeacher(name)
-  return jsonify(
-    valid = "True"
-  )
 
 @setup.route('/getAttendanceStatus', methods=['POST'])
 def getAttendanceStatus():
