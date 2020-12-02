@@ -169,15 +169,13 @@ class SecretaryAttendance extends Component {
   }
 
   notifyParents(childList) {
-    // call endpoint to notify parents with childList
-    // refetch data with this.state.searchParams
-    // notifyParents(childList).then(result => {
-    //   getAttendanceList(this.state.searchParams).then(result => {
-    //     this.setState({
-    //       rowData : result.data,
-    //     })
-    //   })
-    // })
+    notifyParents(childList).then(result => {
+      getAttendanceList(this.state.searchParams).then(result => {
+        this.setState({
+          rowData : result.data,
+        })
+      })
+    })
   }
 
 

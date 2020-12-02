@@ -171,10 +171,9 @@ class AttendanceTable extends Component {
     const childrenList = [];
     this.gridApi.forEachNode(function(rowNode, index) {
       if (rowNode.data['Parent Notified'] === 'N' && !rowNode.data['Reason Verified'] && (rowNode.data['Attendance'] === 'Late' || rowNode.data['Attendance'] === 'Absent')) {
-        childrenList.push({'Name' : rowNode.data['Name'], 'Date': rowNode.data['Name'], 'Class': rowNode.data['Class']})
+        childrenList.push({'Name' : rowNode.data['Name'], 'Date': rowNode.data['Date'], 'Class': rowNode.data['Class']})
       }
     })
-    // TODO: confirm date works.... may need to format it
     this.props.notifyParents(childrenList);
   }
 
@@ -203,6 +202,7 @@ class AttendanceTable extends Component {
   }
 
   addRecords(paramData)
+  this.props.onAttendanceSubmitted()
   }
 
   // Submit record for Teacher
@@ -252,7 +252,8 @@ AttendanceTable.propTypes = {
   rowData: Proptypes.array.isRequired,
   currentUser: Proptypes.string.isRequired,
   classStartHour: Proptypes.number,
-  schoolName: Proptypes.string
+  schoolName: Proptypes.string,
+  onAttendanceSubmitted: Proptypes.func
 }
 
 export default AttendanceTable;

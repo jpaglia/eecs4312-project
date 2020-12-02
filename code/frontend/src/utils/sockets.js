@@ -91,3 +91,11 @@ export function getTeacherHistoricalAttendanceList(data) {
 export function addRecords(data) {
   return postRequest('addRecords', data)
 }
+
+export function searchRecords(data) {
+  return postRequest('searchRecords', data)
+}
+
+export function removePerson(data) {
+  return postRequest('removePerson', data)
+}

@@ -61,7 +61,7 @@ class TeacherAttendanceSheet extends Component {
       'className': newSelection
     }
     getAttendanceStatus(data).then(result => {
-      if (result.data.attendanceSubmitted) {
+      if (result.data) {
         this.setState({
           className: newSelection,
           attendanceSubmitted: true
@@ -83,7 +83,9 @@ class TeacherAttendanceSheet extends Component {
     })
   }
 
- 
+  onAttendanceSubmitted() {
+    this.setState({ attendanceSubmitted: true })
+  }
 
   render() {
     const dropdown = this.getDropdown();
@@ -94,6 +96,7 @@ class TeacherAttendanceSheet extends Component {
      classStartHour={this.state.classStartHour}
      className={this.state.className}
      schoolName={this.props.schoolName}
+     onAttendanceSubmitted={this.onAttendanceSubmitted.bind(this)}
     />
 
     return (

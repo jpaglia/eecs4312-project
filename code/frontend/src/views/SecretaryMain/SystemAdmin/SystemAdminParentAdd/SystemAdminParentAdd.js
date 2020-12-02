@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { ThemeProvider } from '@material-ui/styles';
 import { COLOUR_THEME } from '../../../../constants';
+import { searchRecords, addParent } from '../../../../utils/sockets';
 import './SystemAdminParentAdd.scss'
 
 class SystemAdminParentAdd extends Component {
@@ -20,7 +21,11 @@ class SystemAdminParentAdd extends Component {
       parentPassword: '',
       parentChildren: [''],
       searchResult: '',
-      searchQuery: ''
+      searchQuery: '',
+      errorSearch: false,
+      message: '',
+      errorAdd: false,
+      oneValidChild: false
     }
   }
 
@@ -37,6 +42,7 @@ class SystemAdminParentAdd extends Component {
     let i = 0;
     return this.state.parentChildren.map((value) => {
       let searchResult = i === this.state.parentChildren.length-1 ? this.state.searchResult : '';
+      const errorSearch = (i === this.state.parentChildren.length-1) && this.state.errorSearch;
       i++;
       return (
       <SearchField
@@ -49,21 +55,35 @@ class SystemAdminParentAdd extends Component {
         onSelect={this.onSelectChild.bind(this)}
         searchResult={searchResult}
         onBlur={this.handleSearchBlur.bind(this)}
+        error={errorSearch}
       />)
     })
   }
 
   handleSearch() {
-    // Do search endpoint here
-    this.setState({
-      searchResult: this.state.searchQuery
+    const data = {
+      'name': this.state.searchQuery,
+      'schoolName': this.props.schoolName,
+      'type': 'Student'
+    }
+    searchRecords(data).then(result => {
+      if (result.data) {
+          this.setState({
+            searchResult: this.state.searchQuery,
+            errorSearch: false
+          })
+      } else {
+        this.setState({
+          errorSearch: true
+        })
+      }
     })
   }
 
   handleTextFieldBlur(e) {
     const textInput = e.target.value;
     this.setState({
-      [e.target.key]: textInput
+      [e.target.id]: textInput
     });
   }
 
@@ -80,16 +100,20 @@ class SystemAdminParentAdd extends Component {
     newList.push('')
     this.setState({
       parentChildren: newList,
-      searchResult: ''
+      searchResult: '',
+      oneValidChild: true
     })
+    console.log(this.state)
   }
 
   render() {
-    const parentName = this.getTextField('ParentName', 'Parent Name')
-    const parentEmail = this.getTextField('ParentEmail', 'Parent Email')
-    const parentPassword = this.getTextField('ParentPassword', 'Parent Password')
-
+    const parentName = this.getTextField('parentName', 'Parent Name')
+    const parentEmail = this.getTextField('parentEmail', 'Parent Email')
+    const parentPassword = this.getTextField('parentPassword', 'Parent Password') 
+    const diableButton = this.state.parentName === '' || this.state.parentEmail === '' ||
+    this.state.parentPassword === '' || !this.state.oneValidChild;
     const getChild = this.getSearchField('getChild', 'Assign Child')
+    const errorClassName = this.state.errorAdd ? 'error' : 'success';
 
     return (
       <div>
@@ -112,10 +136,18 @@ class SystemAdminParentAdd extends Component {
                   <div className="childBoxWrapper">
                    {getChild}
                   </div>
-                  <div className="buttonWrapper">
-                    <Button onClick={this.addParent.bind(this)} color="primary" variant="contained" autoFocus>
-                      Add Parent
+                  <div className="buttonWrapperParentAdd">
+                    <Button
+                      onClick={this.addParent.bind(this)}
+                      color="primary"
+                      variant="contained"
+                      disabled={diableButton}
+                      autoFocus>
+                        Add Parent
                     </Button>
+                    <div className={errorClassName}>
+                      {this.state.message}
+                    </div>
                   </div>
                 </div>
               </AccordionDetails>
@@ -126,8 +158,31 @@ class SystemAdminParentAdd extends Component {
   }
 
   addParent() {
-    // Insert Endpoint Here
-    // TODO
+    const childList = [...this.state.parentChildren]
+    childList.pop()
+    const data = {
+      'Name': this.state.parentName,
+      'Email': this.state.parentEmail,
+      'Password':this.state.parentPassword,
+      'ChildList': childList
+    }
+    addParent(data).then(result => {
+      if (result.data.valid) {
+        this.setState({
+          searchResult: '',
+          searchQuery: '',
+          errorSearch: false,
+          message: result.data.message,
+          errorAdd: false,
+          oneValidChild: false
+        })
+      } else {
+        this.setState({
+          message: result.data.message,
+          errorAdd: true
+        })
+      }
+    })
   }
 }
 
