@@ -527,10 +527,9 @@ class DbWrapper:
         else:
             # Search for parent/teacher record
             query_str = 'SELECT firstName FROM schooldb1.Accounts WHERE firstName = "' + \
-                        firstName + '" AND lastName = "' + lastName + \
-                        '" AND type="' + recordType
+                        firstName + '" AND lastName = "' + lastName
             if (recordType == "Parent"):
-                query_str += '"'
+                query_str += '" AND type="' + recordType + '"'
             else:
                 query_str += '" AND school = "' + schoolName + '"'
             
