@@ -121,11 +121,18 @@ class SystemAdminAddTeacher extends Component {
                     {listofClasses}
                   </div>
                 </div>
-                <div className="buttonWrapper">
-                  <Button onClick={this.addTeacher.bind(this)} color="primary" variant="contained" autoFocus>
-                    Add Teacher
-                    </Button>
-                </div>
+                <div className="addTeachersButtonWrapper">
+                  <div className="buttonWrapper">
+                    <Button onClick={this.addTeacher.bind(this)} color="primary" variant="contained" autoFocus>
+                      Add Teacher
+                      </Button>
+                  </div>
+                  <div className="buttonWrapper">
+                    <Button onClick={this.addSupplyTeacher.bind(this)} color="primary" variant="contained" autoFocus>
+                      Add Supply Teacher
+                      </Button>
+                  </div>
+                  </div>
               </div>
             </AccordionDetails>
           </Accordion>
@@ -139,10 +146,10 @@ class SystemAdminAddTeacher extends Component {
     // TODO
   }
 
-  getClasses() {
-    // add endpoint
+  addSupplyTeacher() {
 
   }
+
 }
 
 SystemAdminAddTeacher.propTypes = {
