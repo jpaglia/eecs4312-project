@@ -65,7 +65,7 @@ class DbWrapper:
         classes = self.runQuery(query_str, email)
         return classes
     
-    def addPerson(self, name, email, password, personType):
+    def addParent(self, name, email, password, personType):
         today = date.today()
         today = today.strftime("%d/%m/%Y")
         firstName = name.split(" ")[0]
@@ -73,6 +73,19 @@ class DbWrapper:
         command = "INSERT INTO schooldb1.Accounts (creationDate, email, password, firstName, lastName, type) VALUES (%s, %s, %s, %s, %s, %s);"
         try:
             self.runCommand(command, today, email, password, firstName, lastName, personType)
+            return True
+        except Exception as e:
+            print("ERROR - {}".format(e))
+            return False
+
+    def addTeacher(self, name, email, password, personType, schoolName):
+        today = date.today()
+        today = today.strftime("%d/%m/%Y")
+        firstName = name.split(" ")[0]
+        lastName = name.split(" ")[1]
+        command = "INSERT INTO schooldb1.Accounts (creationDate, email, password, firstName, lastName, type, school) VALUES (%s, %s, %s, %s, %s, %s, %s);"
+        try:
+            self.runCommand(command, today, email, password, firstName, lastName, personType, schoolName)
             return True
         except Exception as e:
             print("ERROR - {}".format(e))
