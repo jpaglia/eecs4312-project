@@ -13,9 +13,12 @@ class SystemAdmin extends Component {
       <div>
         <div className="AddParent">
           <ThemeProvider theme={COLOUR_THEME}>
-            <SystemAdminParentAdd/>
+            <SystemAdminParentAdd
+               schoolName={this.props.schoolName}
+            />
             <SystemAdminRemoveParent
               removeParentBool={true}
+              schoolName={this.props.schoolName}
             />
             <SystemAdminAddTeacher
               schoolName={this.props.schoolName}
