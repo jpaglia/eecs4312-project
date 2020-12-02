@@ -193,17 +193,22 @@ def addParent():
   childList = data['ChildList']
 
   if (db_queries.accountExists(email)):
-    print("Parent Exists with Email: {}".format(email))
     return jsonify(
-      valid = "False"
+      valid = False
+      message = 'Parent Exists with Email: {}'.format(email)
     )
   added = db_queries.addPerson(name, email, password, "Parent")
   associated = db_queries.setParentChildren(name, childList)
-
   result = added and associated
+
+  if (result):
+    msg = '{} has been added to the system'.format(name)
+  else:
+    msg = '{} could not be added to the system'.format(name)
 
   return jsonify(
       valid = result
+      message = msg
     )
 
 @setup.route('/removePerson', methods=['POST'])
@@ -228,16 +233,22 @@ def addTeacher():
   schoolName = data['schoolName']
 
   if (db_queries.accountExists(email)):
-    print("Teacher with name Exists: {}".format(name))
     return jsonify(
-      valid = "False"
+      valid = False
+      message = 'Teacher with name Exists: {}'.format(name)
     )
   added = db_queries.addPerson(name, email, password, "Teacher")
   associated = db_queries.setTeacherClasses(name, classList, schoolName)
-
   result = added and associated
+
+  if (result):
+    msg = '{} has been added to the system'.format(name)
+  else:
+    msg = '{} could not be added to the system'.format(name)
+
   return jsonify(
       valid = result
+      message = msg
     )
 
 @setup.route('/getAttendanceStatus', methods=['POST'])
