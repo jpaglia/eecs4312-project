@@ -56,9 +56,9 @@ class LoginPage extends Component {
       } else {
         this.setState({ error: true })
       }
-      
+
     })
-  // this.props.loginVerified(this.state.email, 'Teacher')
+    // this.props.loginVerified(this.state.email, 'Secretary')
   }
 
   render() {
@@ -75,9 +75,9 @@ class LoginPage extends Component {
               Welcome to the TDSB Attendance System!
             </div>
             <div className='loginInner'>
-            <div className='invalidPassword'>{invalidPassword}</div>
-            {email}
-            {password}
+              <div className='invalidPassword'>{invalidPassword}</div>
+              {email}
+              {password}
             </div>
             <div id={`loginButton_${uuidv4()}`} className="wrapperLoginPageButton">
               <Button onClick={this.signIn.bind(this)} color="primary" variant="contained" autoFocus>

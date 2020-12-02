@@ -1,10 +1,15 @@
 .accordionWrapper {
     width: 100vw;
+    //text-align: center;
+    //border-radius: 10px;
+    //color: white;
+    //background-color: #47bc56;
     font-size: 16px;
     padding-left: 10px;
     padding-right: 10px;
     display: flex;
     flex-direction: column;
+    overflow-x: auto;
 
     .textBoxWrapper {
         width: 80vw;
@@ -27,7 +32,12 @@
         width: 45vw;
     }
 
-
+    .childBoxWrapper {
+        width: 90vw;
+        display: flex;
+        flex-direction: row;
+    }
+    
   }
 
 

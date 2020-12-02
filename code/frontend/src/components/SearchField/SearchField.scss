@@ -1,0 +1,24 @@
+.searchFieldWrapper {
+  display: flex;
+  flex-direction: column;
+  .searchField {
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    height: 70px;
+    max-width: 300px;
+    min-width: 300px;
+  }
+
+  .searchButtonWrapper {
+    width: 50px;
+    height: 50px;
+  }
+
+  .searchResultButton {
+    width: 222px;
+    height: 40px;
+    margin-top: -17px;
+    border-radius: 0px 0px 5px 5px;
+  }
+}

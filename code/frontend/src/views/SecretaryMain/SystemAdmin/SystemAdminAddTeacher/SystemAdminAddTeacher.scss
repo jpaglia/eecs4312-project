@@ -1,0 +1,65 @@
+.accordionWrapper {
+    width: 100vw;
+    //text-align: center;
+    //border-radius: 10px;
+    //color: white;
+    //background-color: #47bc56;
+    font-size: 16px;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+
+    .textBoxWrapper {
+        width: 80vw;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .buttonWrapper {
+        // TODO: fix formatting for addParent and addTeacher
+        width: 40vw;
+        padding-top: 30px;
+        padding-right: 30px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .searchBarWrapper {
+        width: 45vw;
+    }
+
+    .childBoxWrapper {
+        width: 90vw;
+        display: flex;
+        flex-direction: row;
+    }
+  }
+
+.classListWrapper{
+    width: 89vw;
+    height: 210px;
+    padding-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    .classListSystemAdmin {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding-left: 10px;
+        .SystemAdminListOfClasses{
+            min-width: 130px;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}
+
+.addTeachersButtonWrapper{
+    display: flex;
+    flex-direction: row;
+    width: 470px;
+}
