@@ -95,3 +95,7 @@ export function addRecords(data) {
 export function searchRecords(data) {
   return postRequest('searchRecords', data)
 }
+
+export function removePerson(data) {
+  return postRequest('removePerson', data)
+}

@@ -11,7 +11,7 @@ import { FormControlLabel } from '@material-ui/core';
 import { Checkbox as CheckBoxUI } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { COLOUR_THEME } from '../../../../constants';
-import { getListOfClasses } from '../../../../utils/sockets';
+import { getListOfClasses, addTeacher } from '../../../../utils/sockets';
 import './SystemAdminAddTeacher.scss'
 
 class SystemAdminAddTeacher extends Component {
@@ -38,7 +38,9 @@ class SystemAdminAddTeacher extends Component {
       teacherName: '',
       teacherEmail: '',
       teacherPassword: '',
-      classList: [{ 'value': 'Math', 'checked': false }, { 'value': 'Sci', 'checked': false }]
+      errorAdd: false,
+      message: '',
+      classList: []
     }
   }
 
@@ -54,7 +56,7 @@ class SystemAdminAddTeacher extends Component {
   handleTextFieldBlur(e) {
     const textInput = e.target.value;
     this.setState({
-      [e.target.key]: textInput
+      [e.target.id]: textInput
     });
   }
 
@@ -66,6 +68,7 @@ class SystemAdminAddTeacher extends Component {
         <div
           id={data.value}
           className='SystemAdminListOfClasses'
+          key={`${i}_lisOfClasses`}
         >
           <FormControlLabel
             control={
@@ -92,10 +95,11 @@ class SystemAdminAddTeacher extends Component {
 
 
   render() {
-    const teacherName = this.getTextField('TeacherName', 'Teacher Name')
-    const teacherEmail = this.getTextField('TeacherEmail', 'Teacher Email')
-    const teacherPassword = this.getTextField('TeacherPassword', 'Teacher Password')
+    const teacherName = this.getTextField('teacherName', 'Teacher Name')
+    const teacherEmail = this.getTextField('teacherEmail', 'Teacher Email')
+    const teacherPassword = this.getTextField('teacherPassword', 'Teacher Password')
     const listofClasses = this.listOfClasses();
+    const errorClassName = this.state.errorAdd ? 'error' : 'success';
 
     return (
       <div>
@@ -131,8 +135,11 @@ class SystemAdminAddTeacher extends Component {
                     <Button onClick={this.addSupplyTeacher.bind(this)} color="primary" variant="contained" autoFocus>
                       Add Supply Teacher
                       </Button>
+                    <div className={errorClassName}>
+                      {this.state.message}
+                    </div>
                   </div>
-                  </div>
+                </div>
               </div>
             </AccordionDetails>
           </Accordion>
@@ -142,12 +149,49 @@ class SystemAdminAddTeacher extends Component {
   }
 
   addTeacher() {
-    // Insert Endpoint Here
-    // TODO
+    const classList = []
+    for (let i = 0; i < this.state.classList; i++) {
+      classList.push(classList[i]['value'])
+    }
+
+    const data = {
+      'Name': this.state.teacherName,
+      'Email': this.state.teacherEmail,
+      'Password': this.state.teacherPassword,
+      schoolName: this.props.schoolName,
+      ClassList: classList,
+      type: 'Teacher'
+    }
+    console.log(data)
+    addTeacher(data).then(result => {
+      this.setState({
+        errorAdd: result.data.value,
+        message: result.data.message
+      })
+    })
   }
 
   addSupplyTeacher() {
+    const classList = []
+    for (let i = 0; i < this.state.classList; i++) {
+      classList.push(classList[i]['value'])
+    }
 
+    const data = {
+      'Name': this.state.teacherName,
+      'Email': this.state.teacherEmail,
+      'Password': this.state.teacherPassword,
+      schoolName: this.props.schoolName,
+      ClassList: classList,
+      type: 'Supply Teacher'
+    }
+    console.log(data)
+    addTeacher(data).then(result => {
+      this.setState({
+        errorAdd: result.data.value,
+        message: result.data.message
+      })
+    })
   }
 
 }

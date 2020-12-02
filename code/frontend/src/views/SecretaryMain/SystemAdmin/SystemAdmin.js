@@ -25,6 +25,7 @@ class SystemAdmin extends Component {
             />
             <SystemAdminRemoveParent
               removeParentBool={false}
+              schoolName={this.props.schoolName}
             />
           </ThemeProvider>
         </div>

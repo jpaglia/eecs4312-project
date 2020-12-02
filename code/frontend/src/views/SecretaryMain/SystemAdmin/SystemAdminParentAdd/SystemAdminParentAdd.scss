@@ -18,9 +18,9 @@
         justify-content: space-between;
     }
     
-    .buttonWrapper {
+    .buttonWrapperParentAdd {
         // TODO: fix formatting for addParent and addTeacher
-        width: 40vw;
+        width: 25vw;
         padding-top: 30px;
         padding-right: 30px;
         display: flex;
@@ -41,4 +41,15 @@
   }
 
 
-
+  .error{
+    padding-left: 10px;
+    color: #cf0000;
+    font-style: italic;
+    font-size: 14px;
+}
+.success {
+    padding-left: 10px;
+    color: #47bc56;
+    font-style: italic;
+    font-size: 14px;
+}
