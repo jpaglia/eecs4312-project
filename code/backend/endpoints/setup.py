@@ -161,22 +161,16 @@ def updateAttendanceRecord():
 def getStudentRecords():
   dbw = db_queries.DbWrapper()
   data = request.get_json()
-  className = ''
-
-  if not "Name" in data:
-    return "No key 'Name' in request body", 400
-  if not "date" in data:
-    return "No key 'date' in request body", 400
-  if "className" in data:
-    className = data['className']
 
   name = data['Name']
-  date = data['date']
+  className = data['className']
+  if data['date'] == None:
+    d = ''
+  else:
+    date_int = int(data['date']) / 1000
+    d = datetime.datetime.fromtimestamp(date_int).strftime('%d/%m/%Y')
 
-  date = int(date) / 1000
-  date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
-
-  result = dbw.getStudentRecords(name, date, className) 
+  result = dbw.getStudentRecords(name, d, className) 
   dbw.close()
   return jsonify(result)
 
