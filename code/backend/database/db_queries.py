@@ -419,7 +419,8 @@ class DbWrapper:
                     ON schooldb1.Attendance.Class_classId = schooldb1.Class.classId \
                     WHERE date= "' + today + '" AND Student_studentId= "' + str(studentId) +'" \
                     AND Attendance.status <> "Present" \
-                    AND Attendance.verified = "0"'
+                    AND Attendance.verified = "0" \
+                    AND Attendance.notified = "1"'
         query = self.runQuery(query_str)
 
         for q in query:
