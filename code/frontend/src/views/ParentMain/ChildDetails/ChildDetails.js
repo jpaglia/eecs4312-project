@@ -125,12 +125,13 @@ class ChildDetails extends Component {
     const newSelection = e.target.value;
     let newTime = 0
     for (let i = 0; i < this.state.childClasses.length; i++) {
-      if (newSelection === this.state.childClasses[i]['className']) {
+      if (newSelection.split(':')[0] === this.state.childClasses[i]['className']) {
         newTime = this.state.childClasses[i]['classHour']
       }
     }
     this.setState({
-      selectedClass: newSelection, selectedTime: newTime
+      selectedClass: newSelection, 
+      selectedTime: newTime
     });
   }
 
