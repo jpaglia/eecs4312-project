@@ -1,0 +1,26 @@
+.parentFilterButtonWrapper{
+  padding-top: 20px;
+  padding-left: calc(50vw - 255px);
+  max-width: 200px;
+  .parentFilterButton {
+    width: 250px;
+    height: 50px
+  }
+}
+
+.parentFilterRowWrapper {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  max-width: 50vw;
+  min-width: 50vw;
+  height: 80px;
+  .parentAttendanceLeft {
+    display: flex;
+    flex-direction: row;
+    .parentAttendanceSpacer {
+      padding-right: 72.5px;
+    }
+  }
+}

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import TopBar from '../../components/TopBar';
-import ParentHome from './ParentHome';
 import { getChildren } from '../../utils/sockets';
+import ParentAttendanceView from './ParentAttendanceView';
 
 class ParentMain extends Component {
 
@@ -11,9 +11,12 @@ class ParentMain extends Component {
       'email': this.props.email
     }
     getChildren(data).then(result => {
-      console.log(result)
+      const allChildren = []
+      for (let i = 0; i < result.data.length; i++) {
+        allChildren.push(result.data[i]['Name'])
+      }
       this.setState({
-        childList: result.data
+        allChildren: allChildren 
       })
     })
   }
@@ -22,7 +25,7 @@ class ParentMain extends Component {
     super(props);
     this.state = {
       'currentPage': 'ParentHome',
-      'childList': []
+      'allChildren': []
     }
   }
 
@@ -33,10 +36,14 @@ class ParentMain extends Component {
   }
 
   render() {
-    const parentHome = this.state.currentPage === 'ParentHome' ?
-    <ParentHome
-      childList={this.state.childList}
-    /> : null;
+    // const parentHome = this.state.currentPage === 'ParentHome' ?
+    // <ParentHome
+    //   childList={this.state.childList}
+    // /> : null;
+
+    const parentHome = <ParentAttendanceView
+      allChildren={this.state.allChildren}
+    />
   
     return (
       <div>
