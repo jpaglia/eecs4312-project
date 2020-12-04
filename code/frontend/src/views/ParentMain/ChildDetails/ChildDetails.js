@@ -36,7 +36,8 @@ class ChildDetails extends Component {
       'childClasses': [],
       'selectedClass': '',
       'lateOrAbsent': '',
-      'selectedTime': 0
+      'selectedTime': 0,
+      'calendarClass': ''
     }
   }
 
@@ -44,7 +45,7 @@ class ChildDetails extends Component {
     let notifications = [...this.state.notifications];
     for (let i = 0; i < this.state.notifications.length; i++) {
       if (className === this.state.notifications[i]['className']) {
-        notifications.splice(i,1)
+        notifications.splice(i, 1)
       }
     }
     this.setState({ notifications: notifications })
@@ -53,24 +54,24 @@ class ChildDetails extends Component {
   getNotifications() {
     const today = new Date().toDateString();
     return this.state.notifications.map((notificationData) => {
-      const severity = notificationData['attendance'] === 'Late' ? 'warning':'error';
+      const severity = notificationData['attendance'] === 'Late' ? 'warning' : 'error';
       const statement = notificationData['attendance'] === 'Late' ? `${this.props.childName} was late for ${notificationData['className']} on ${today}` :
-      `${this.props.childName} was absent for ${notificationData['className']} on ${today}`;
+        `${this.props.childName} was absent for ${notificationData['className']} on ${today}`;
       return (
-      <Alert 
+        <Alert
           key={notificationData['className']}
           action={
             <IconButton
               aria-label="close"
               color="inherit"
               size="small"
-              onClick={() => {this.clearNotification(notificationData['className'])}}
+              onClick={() => { this.clearNotification(notificationData['className']) }}
             >
               <CloseIcon fontSize="inherit" />
             </IconButton>}
           severity={severity}>
-            {statement}
-          </Alert>
+          {statement}
+        </Alert>
       )
     })
   }
@@ -84,7 +85,7 @@ class ChildDetails extends Component {
   }
 
   updateShowReport() {
-    this.setState({ showReportAbsence: !this.state.showReportAbsence})
+    this.setState({ showReportAbsence: !this.state.showReportAbsence })
   }
 
   getTextField(defaultValue, label) {
@@ -105,9 +106,10 @@ class ChildDetails extends Component {
     });
   }
 
-  getDropdown() {
+  getClassDropdown(className) {
     const elements = this.state.childClasses.map((element) => {
-      return element['className']
+      const startTime = parseInt(element['classHour']) > 12 ? `${parseInt(element['classHour']) - 12}:00 PM` : `${element['classHour']}:00 AM`
+      return `${element['className']}: ${startTime}`
     })
     return <DropdownSelect
       id={`Dropdown_${uuidv4()}`}
@@ -115,7 +117,7 @@ class ChildDetails extends Component {
       dropdownName={'Select Class'}
       currentSelection={this.state.selectedClass}
       onChange={this.handleDropdownChange.bind(this)}
-      className='dropdownWrapperSmall'
+      className={className}
     />
   }
 
@@ -123,12 +125,13 @@ class ChildDetails extends Component {
     const newSelection = e.target.value;
     let newTime = 0
     for (let i = 0; i < this.state.childClasses.length; i++) {
-      if (newSelection === this.state.childClasses[i]['className']) {
+      if (newSelection.split(':')[0] === this.state.childClasses[i]['className']) {
         newTime = this.state.childClasses[i]['classHour']
       }
     }
     this.setState({
-      selectedClass: newSelection, selectedTime: newTime
+      selectedClass: newSelection, 
+      selectedTime: newTime
     });
   }
 
@@ -145,11 +148,13 @@ class ChildDetails extends Component {
 
   handleDropdownAttendanceChange(e) {
     const newSelection = e.target.value;
-   
+
     this.setState({
       lateOrAbsent: newSelection
     });
   }
+
+
 
   checkSubmitDisabled() {
     return this.state.reportInfo === '' || this.state.lateOrAbsent === '' || this.state.selectedClass === ''
@@ -158,23 +163,23 @@ class ChildDetails extends Component {
   // For reporting Absence/Late
   getReportAttendance() {
     const reasoning = this.getTextField('Reasoning...', 'Reason for Being Absent/Late')
-    const classListDropdown = this.getDropdown();
+    const classListDropdown = this.getClassDropdown('dropdownWrapperSmall');
     const attendanceDropdown = this.getDropdownAttendance()
 
-    return(<div className='reportAttendance'>
+    return (<div className='reportAttendance'>
       <div className='reportAttendanceTile'>Report Attendance</div>
       <div className='reportAttendanceBottom'>
-          {classListDropdown}
-          {attendanceDropdown}
+        {classListDropdown}
+        {attendanceDropdown}
       </div>
       <div>
         {reasoning}
       </div>
-        <SubmitRecord
-          disableButton={this.checkSubmitDisabled()}
-          submitRecordFunc={this.sendRecord.bind(this)}
-          classStartHour={parseInt(this.state.selectedTime)}
-        />
+      <SubmitRecord
+        disableButton={this.checkSubmitDisabled()}
+        submitRecordFunc={this.sendRecord.bind(this)}
+        classStartHour={this.state.selectedTime}
+      />
     </div>)
   }
 
@@ -199,7 +204,7 @@ class ChildDetails extends Component {
 
   getBackButton() {
     return (
-      <div className="backWrapper"  onClick={this.buttonHit.bind(this)}>
+      <div className="backWrapper" onClick={this.buttonHit.bind(this)}>
         <img
           alt="Back Button"
           src="back-button.png"
@@ -221,16 +226,17 @@ class ChildDetails extends Component {
           <ParentCalendar
             child={this.props.childName}
             onSelectToday={this.updateShowReport.bind(this)}
+            childClasses={this.state.childClasses}
           />
         </div>
         <div className='rightSidepanelParent'>
-        <div className="notificationPanel">
-          <div className='notificationParentTitle'>
-          Notifications
+          <div className="notificationPanel">
+            <div className='notificationParentTitle'>
+              Notifications
           </div>
-          {notifications}
-        </div>
-        {reportAttendance}
+            {notifications}
+          </div>
+          {reportAttendance}
         </div>
       </div>
 

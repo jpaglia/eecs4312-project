@@ -9,8 +9,19 @@ class SubmitRecord extends Component {
   componentDidMount() {
     this.timerID = setInterval(
       () => this.tick(),
-      5000
+      2000
     );
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.classStartHour !== this.props.classStartHour) {
+      const today = new Date();
+      const newClassStart =  new Date(today.getFullYear(), today.getMonth(), today.getDate(), this.props.classStartHour, this.state.bufferTime);
+      this.setState({
+        classStart: newClassStart,
+        disableTime: false,
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -28,9 +39,11 @@ class SubmitRecord extends Component {
   constructor(props) {
     super(props);
     const today = new Date();
+    const bufferTime = 30
     this.state = {
-      classStart: new Date(today.getFullYear(), today.getMonth(), today.getDate(), this.props.classStartHour, 0),
-      disableTime: false
+      classStart: new Date(today.getFullYear(), today.getMonth(), today.getDate(), this.props.classStartHour, bufferTime),
+      disableTime: false,
+      bufferTime: bufferTime
     }
   }
   
@@ -56,7 +69,7 @@ class SubmitRecord extends Component {
 
 SubmitRecord.propTypes = {
   submitRecordFunc: Proptypes.func,
-  classStartHour: Proptypes.number,
+  classStartHour: Proptypes.any,
   disableButton: Proptypes.bool
 }
 

@@ -3,6 +3,7 @@ import Proptypes from 'prop-types';
 import Calendar from 'react-calendar';
 import Popover from '@material-ui/core/Popover';
 import { getStudentRecords } from '../../utils/sockets';
+import DropdownSelect from '../../components/DropdownSelect';
 import 'react-calendar/dist/Calendar.css';
 import './ParentCalendar.scss';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
@@ -15,20 +16,49 @@ class ParentCalendar extends Component {
     const activeStartDate = new Date()
     this.viewChange(activeStartDate, 'month')
   }
-
   constructor() {
     super();
     this.state = {
       calendarDates: [],
-      structuredDates: {}
+      structuredDates: {},
+      value: new Date(),
+      calendarClass: ''
     }
+
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.calendarClass !== prevState.calendarClass) {
+      this.viewChange(this.state.value, 'month')
+    }
+  }
+
+  // Calendar Attendance Class
+  getCalendarClassDropdown(className) {
+    const elements = this.props.childClasses.map((element) => {
+      return element['className']
+    })
+    elements.unshift('All Classes')
+    return <DropdownSelect
+      id={`Dropdown_${uuidv4()}`}
+      dropdownOptions={elements}
+      dropdownName={'Select Class'}
+      currentSelection={this.state.calendarClass}
+      onChange={this.handleCalendarClassDropdownChange.bind(this)}
+      className={className}
+    />
+  }
+
+  handleCalendarClassDropdownChange(e) {
+    const newSelection = e.target.value;
+    this.setState({ calendarClass: newSelection })
   }
 
   structureDates() {
     const dateObj = {}
 
     for (let i = 0; i < this.state.calendarDates.length; i++) {
-      if (typeof(dateObj[`${this.state.calendarDates[i]['Date']}`]) === 'undefined') {
+      if (typeof (dateObj[`${this.state.calendarDates[i]['Date']}`]) === 'undefined') {
         dateObj[`${this.state.calendarDates[i]['Date']}`] = [];
       }
       dateObj[`${this.state.calendarDates[i]['Date']}`].push({ 'Class': this.state.calendarDates[i]['Class'], 'Attendance': this.state.calendarDates[i]['Attendance'] })
@@ -38,7 +68,19 @@ class ParentCalendar extends Component {
 
   getclass(date, view) {
     if (view === 'month') {
-      const structuredDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+      let structuredDate = ''
+      if (date.getDate() < 10) {
+        structuredDate = `0${date.getDate()}/`
+      } else {
+        structuredDate = `${date.getDate()}/`
+      }
+      if (date.getMonth() < 9) {
+        structuredDate = structuredDate + `0${date.getMonth() + 1}/`
+      } else {
+        structuredDate = structuredDate + `${date.getMonth() + 1}/`
+      }
+      structuredDate = structuredDate + `${date.getFullYear()}`
+
       const dailyData = this.state.structuredDates[structuredDate];
 
       if (typeof (dailyData) !== 'undefined') {
@@ -68,43 +110,54 @@ class ParentCalendar extends Component {
   }
 
   viewChange(activeStartDate, view) {
-
     if (view === 'month') {
       const searchParams = {
         Name: this.props.child,
-        className: '',
+        className: this.state.calenderClass === 'All Classes' ? '' : this.state.calendarClass,
         date: activeStartDate.getTime()
       }
 
       getStudentRecords(searchParams).then(result => {
+      
         this.setState({
-          calendarDates: result.data
+          calendarDates: result.data,
+          value: activeStartDate
         }, () => this.structureDates())
       })
     }
   }
 
   getTileContent(date, view) {
-    const timeAddition = 86400000;
-    if (view === 'month' && (date.getDay() !== 0 && date.getDay() !== 6) && date.getTime() < (new Date().getTime() + timeAddition)) {
-      const structuredDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+    if (view === 'month' && (date.getDay() !== 0 && date.getDay() !== 6)) {
+      let structuredDate = ''
+      if (date.getDate() < 10) {
+        structuredDate = `0${date.getDate()}/`
+      } else {
+        structuredDate = `${date.getDate()}/`
+      }
+      if (date.getMonth() < 9) {
+        structuredDate = structuredDate + `0${date.getMonth() + 1}/`
+      } else {
+        structuredDate = structuredDate + `${date.getMonth() + 1}/`
+      }
+      structuredDate = structuredDate + `${date.getFullYear()}`
       const dailyData = this.state.structuredDates[structuredDate];
 
       if (typeof (dailyData) !== 'undefined') {
         const displayInfo = dailyData.map((singleClass) => {
           const value = singleClass['Attendance'].charAt(0).toUpperCase() + singleClass['Attendance'].slice(1)
 
-          return(
-          <div key={`${value}_${uuidv4()}`}>{singleClass['Class']}: {value}</div>
+          return (
+            <div key={`${value}_${uuidv4()}`}>{singleClass['Class']}: {value}</div>
           )
         })
-        
+
         return (
           <PopupState variant="popover" popupId="demo-popup-popover">
             {(popupState) => (
               <div>
                 <div className='parentCalendarPopover' {...bindTrigger(popupState)}>
-  
+
                 </div>
                 <Popover
                   {...bindPopover(popupState)}
@@ -118,13 +171,13 @@ class ParentCalendar extends Component {
                   }}
                 >
                   <Box p={2}>
-                {displayInfo}
+                    {displayInfo}
                   </Box>
                 </Popover>
               </div>
             )}
           </PopupState>
-  
+
         )
       }
     }
@@ -138,21 +191,27 @@ class ParentCalendar extends Component {
   }
 
   render() {
+    const classAttendanceDropdown = this.getCalendarClassDropdown('dropdownWrapper')
 
     return (
-      <div className='parentCalendarWrapper'>
-        <Calendar
-          className='calendarInner'
-          minDetail={'year'}
-          onChange={this.showRecord.bind(this)}
-          showNeighboringMonth={false}
-          selectRange={false}
-          onActiveStartDateChange={({ activeStartDate, view }) => this.viewChange(activeStartDate, view)}
-          tileClassName={({ date, view }) => this.getclass(date, view)}
-          tileDisabled={({ date, view }) => (view === 'month') && (date.getDay() === 0 || date.getDay() === 6)}
-          tileContent={({ date, view }) => this.getTileContent(date, view)}
-        />
-
+      <div>
+        <div className='childDetailsTopBar'>
+        {classAttendanceDropdown}
+        </div>
+        <div className='parentCalendarWrapper'>
+          <Calendar
+            value={this.state.value}
+            className='calendarInner'
+            minDetail={'year'}
+            onChange={this.showRecord.bind(this)}
+            showNeighboringMonth={false}
+            selectRange={false}
+            onActiveStartDateChange={({ activeStartDate, view }) => this.viewChange(activeStartDate, view)}
+            tileClassName={({ date, view }) => this.getclass(date, view)}
+            tileDisabled={({ date, view }) => (view === 'month') && (date.getDay() === 0 || date.getDay() === 6)}
+            tileContent={({ date, view }) => this.getTileContent(date, view)}
+          />
+        </div>
       </div>
     );
   }
@@ -160,7 +219,8 @@ class ParentCalendar extends Component {
 
 ParentCalendar.propTypes = {
   child: Proptypes.string.isRequired,
-  onSelectToday: Proptypes.func.isRequired
+  onSelectToday: Proptypes.func.isRequired,
+  calenderClass: Proptypes.string.isRequired
 }
 
 export default ParentCalendar;

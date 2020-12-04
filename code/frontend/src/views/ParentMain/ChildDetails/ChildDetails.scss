@@ -5,7 +5,6 @@
   justify-content: space-between;
   padding-bottom: 3vh;
   padding-top: 40px;
-
   .childCalendar {
     width: 55vw;
   }
@@ -79,3 +78,8 @@
   }
 }
 
+.childDetailsTopBar {
+ position: absolute;
+ top: 90px;
+ left: 80px;
+}

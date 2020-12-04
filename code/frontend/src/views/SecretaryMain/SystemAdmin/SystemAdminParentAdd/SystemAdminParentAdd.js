@@ -103,7 +103,6 @@ class SystemAdminParentAdd extends Component {
       searchResult: '',
       oneValidChild: true
     })
-    console.log(this.state)
   }
 
   render() {

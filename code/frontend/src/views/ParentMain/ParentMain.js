@@ -11,7 +11,6 @@ class ParentMain extends Component {
       'email': this.props.email
     }
     getChildren(data).then(result => {
-      console.log(result)
       this.setState({
         childList: result.data
       })

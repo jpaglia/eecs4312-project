@@ -380,7 +380,7 @@ def reportChild():
   dbw = db_queries.DbWrapper()
   data = request.get_json()
   name = data['name']
-  className = data['className']
+  className = data['className'].split(':')[0]
   date = data['date']
   date = int(date) / 1000
   date = datetime.datetime.fromtimestamp(date).strftime('%d/%m/%Y')
