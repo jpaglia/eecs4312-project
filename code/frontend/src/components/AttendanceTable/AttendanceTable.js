@@ -158,8 +158,7 @@ class AttendanceTable extends Component {
   updateVerifiedReason(value, rowIndex) {
     const rowNode = this.gridApi.getRowNode(rowIndex);
     rowNode.setDataValue('Reason Verified', value)
-
-    // Call endpoint to update child's attendance record
+    updateAttendanceRecord(rowNode.data)
   }
 
   onGridReady = (params) => {

@@ -44,8 +44,6 @@ class LoginPage extends Component {
   }
 
   signIn() {
-    // Insert Endpoint Here
-    // TODO
     const data = {
       'email': this.state.email,
       'password': this.state.password

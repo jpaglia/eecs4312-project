@@ -39,11 +39,12 @@ class ParentCalendar extends Component {
       return element['className']
     })
     elements.unshift('All Classes')
+    const currentSelection = this.state.calendarClass === '' ? 'All Classes' : this.state.calendarClass;
     return <DropdownSelect
       id={`Dropdown_${uuidv4()}`}
       dropdownOptions={elements}
       dropdownName={'Select Class'}
-      currentSelection={this.state.calendarClass}
+      currentSelection={currentSelection}
       onChange={this.handleCalendarClassDropdownChange.bind(this)}
       className={className}
     />
@@ -51,7 +52,12 @@ class ParentCalendar extends Component {
 
   handleCalendarClassDropdownChange(e) {
     const newSelection = e.target.value;
-    this.setState({ calendarClass: newSelection })
+    if (newSelection === 'All Classes') {
+      this.setState({ calendarClass: '' })
+    } else {
+      this.setState({ calendarClass: newSelection })
+    }
+   
   }
 
   structureDates() {
@@ -113,7 +119,7 @@ class ParentCalendar extends Component {
     if (view === 'month') {
       const searchParams = {
         Name: this.props.child,
-        className: this.state.calenderClass === 'All Classes' ? '' : this.state.calendarClass,
+        className: this.state.calendarClass,
         date: activeStartDate.getTime()
       }
 
@@ -219,8 +225,7 @@ class ParentCalendar extends Component {
 
 ParentCalendar.propTypes = {
   child: Proptypes.string.isRequired,
-  onSelectToday: Proptypes.func.isRequired,
-  calenderClass: Proptypes.string.isRequired
+  onSelectToday: Proptypes.func.isRequired
 }
 
 export default ParentCalendar;
