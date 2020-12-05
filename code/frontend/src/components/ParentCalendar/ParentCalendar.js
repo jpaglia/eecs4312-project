@@ -28,7 +28,7 @@ class ParentCalendar extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.calendarClass !== prevState.calendarClass) {
+    if (this.state.calendarClass !== prevState.calendarClass || prevProps.showReportAbsence !== this.props.showReportAbsence) {
       this.viewChange(this.state.value, 'month')
     }
   }
@@ -134,7 +134,8 @@ class ParentCalendar extends Component {
   }
 
   getTileContent(date, view) {
-    if (view === 'month' && (date.getDay() !== 0 && date.getDay() !== 6)) {
+    // && (date.getDay() !== 0 && date.getDay() !== 6) - remove disable weekend
+    if (view === 'month') {
       let structuredDate = ''
       if (date.getDate() < 10) {
         structuredDate = `0${date.getDate()}/`
@@ -214,7 +215,7 @@ class ParentCalendar extends Component {
             selectRange={false}
             onActiveStartDateChange={({ activeStartDate, view }) => this.viewChange(activeStartDate, view)}
             tileClassName={({ date, view }) => this.getclass(date, view)}
-            tileDisabled={({ date, view }) => (view === 'month') && (date.getDay() === 0 || date.getDay() === 6)}
+            tileDisabled={false} //({ date, view }) => (view === 'month') && (date.getDay() === 0 || date.getDay() === 6) remove disable weekend
             tileContent={({ date, view }) => this.getTileContent(date, view)}
           />
         </div>

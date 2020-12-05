@@ -227,6 +227,7 @@ class ChildDetails extends Component {
             child={this.props.childName}
             onSelectToday={this.updateShowReport.bind(this)}
             childClasses={this.state.childClasses}
+            showReportAbsence={this.state.showReportAbsence}
           />
         </div>
         <div className='rightSidepanelParent'>
