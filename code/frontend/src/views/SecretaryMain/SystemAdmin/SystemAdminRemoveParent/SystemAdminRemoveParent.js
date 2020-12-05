@@ -46,8 +46,6 @@ class SystemAdminRemoveParent extends Component {
   }
 
   handleSearch() {
-    // Do search endpoint here
-    // Add type
     const data = {
       'name': this.state.parentNameQuery,
       'schoolName': this.props.schoolName,
