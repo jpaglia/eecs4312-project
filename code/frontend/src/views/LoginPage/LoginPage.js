@@ -50,7 +50,11 @@ class LoginPage extends Component {
     }
     login(data).then(result => {
       if (result.data.valid) {
-        this.props.loginVerified(this.state.email, result.data.type)
+        let type = result.data.type;
+        if (type === 'Supply Teacher') {
+          type = 'Teacher'
+        }
+        this.props.loginVerified(this.state.email, type)
       } else {
         this.setState({ error: true })
       }
