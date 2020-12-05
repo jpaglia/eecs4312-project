@@ -311,7 +311,7 @@ class DbWrapper:
         query_str += ' WHERE className="' + className + '" AND date="' + date + '"'
         query_count = self.runQuery(query_str)[0]['COUNT(*)']
         
-        if (query_count > 0):
+        if (query_count > 5):
             return True
 
         return False

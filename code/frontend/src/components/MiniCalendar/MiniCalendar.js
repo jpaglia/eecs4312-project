@@ -13,6 +13,7 @@ class MiniCalendar extends Component {
   }
 
   render() {
+    // ({date, view}) => (view === 'month') && ((this.props.disableTile && date.getTime() > today.getTime())
     const today = new Date();
     const dateObj = this.props.selectedDate === null ? null : new Date(this.props.selectedDate);
     return (
@@ -22,7 +23,7 @@ class MiniCalendar extends Component {
         value={dateObj}
         selectRange={false}
         tileDisabled={({date, view}) => (view === 'month')
-          && (date.getDay() === 0 || date.getDay() === 6 || 
+          && ( 
           (this.props.disableTile && date.getTime() > today.getTime()))
         }
         tileClassName={({date}) => this.setTile(date)}

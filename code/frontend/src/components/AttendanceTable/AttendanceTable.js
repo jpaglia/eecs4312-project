@@ -99,7 +99,7 @@ class AttendanceTable extends Component {
           },
           {
             field: "Date",
-            minWidth: 269
+            minWidth: 249
           }
         ]
       )

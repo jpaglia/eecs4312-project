@@ -215,7 +215,7 @@ class ParentCalendar extends Component {
             selectRange={false}
             onActiveStartDateChange={({ activeStartDate, view }) => this.viewChange(activeStartDate, view)}
             tileClassName={({ date, view }) => this.getclass(date, view)}
-            tileDisabled={false} //({ date, view }) => (view === 'month') && (date.getDay() === 0 || date.getDay() === 6) remove disable weekend
+            tileDisabled={() => false} //({ date, view }) => (view === 'month') && (date.getDay() === 0 || date.getDay() === 6) remove disable weekend
             tileContent={({ date, view }) => this.getTileContent(date, view)}
           />
         </div>
