@@ -207,9 +207,10 @@ def addParent():
   childList = data['ChildList']
 
   if (dbw.accountExists(email)):
+    associated = dbw.setParentChildren(name, childList)
     return jsonify(
-      valid = False,
-      message = 'Parent Exists with Email: {}'.format(email)
+      valid = associated,
+      message = 'Parent Exists with Email: {}, updated children'.format(email)
     )
   added = dbw.addParent(name, email, password, "Parent")
   associated = dbw.setParentChildren(name, childList)
