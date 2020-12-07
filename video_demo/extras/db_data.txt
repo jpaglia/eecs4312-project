@@ -1,0 +1,18 @@
+**Data Used for this Prototype**
+
+Number of Schools: 2
+Number of Students: 100
+Number of Classes: 30
+Number of Teachers: 12
+Number of Parents: 30
+Attendance Records: Populated for the month of November
+
+Existing Data Mentioned in the Demo Video:
+1. Maplewood High School - main school for this demo
+2. Rockdale Secondary School - the other school in the database
+3. Bernard Pearle - secretary at Maplewood
+4. William Zeeker - student at Rockdale
+5. Julia Paglia - student at Maplewood
+6. Dennis Paglia - student at Maplewood
+7. Jimmy Riptone - student at Maplewood
+8. Ron Weasle - teacher at Rockdale
